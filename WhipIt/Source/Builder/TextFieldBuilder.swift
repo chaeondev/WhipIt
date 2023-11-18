@@ -8,9 +8,10 @@
 import UIKit
 
 extension UITextField {
-    static func underlineTextFieldBuilder(placeholder: String, textColor: UIColor, textAlignment: NSTextAlignment = .center) -> UnderlineTextField {
+    static func underlineTextFieldBuilder(placeholder: String, textColor: UIColor, textAlignment: NSTextAlignment = .center, font: UIFont = Font.light14) -> UnderlineTextField {
         let view = UnderlineTextField()
         view.setPlaceholder(placeholder: placeholder)
+        view.font = font
         view.textColor = textColor
         view.textAlignment = textAlignment
         return view
