@@ -7,9 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DE3832312B091BAF002C6960 /* SUIT-Variable.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE3832302B091BAF002C6960 /* SUIT-Variable.ttf */; };
+		DE3832342B091CBD002C6960 /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3832332B091CBD002C6960 /* Font.swift */; };
+		DE3832362B0932E5002C6960 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3832352B0932E5002C6960 /* SignUpViewController.swift */; };
+		DE3832392B093694002C6960 /* ViewModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3832382B093694002C6960 /* ViewModelType.swift */; };
+		DE38323B2B0936D0002C6960 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE38323A2B0936D0002C6960 /* LoginViewModel.swift */; };
 		DE6DCD242B0623E6009236FD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6DCD232B0623E6009236FD /* AppDelegate.swift */; };
 		DE6DCD262B0623E6009236FD /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6DCD252B0623E6009236FD /* SceneDelegate.swift */; };
-		DE6DCD282B0623E6009236FD /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6DCD272B0623E6009236FD /* ViewController.swift */; };
 		DE6DCD2D2B0623E8009236FD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE6DCD2C2B0623E8009236FD /* Assets.xcassets */; };
 		DE6DCD302B0623E8009236FD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE6DCD2E2B0623E8009236FD /* LaunchScreen.storyboard */; };
 		DE6DCD3B2B0623E8009236FD /* WhipItTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6DCD3A2B0623E8009236FD /* WhipItTests.swift */; };
@@ -54,10 +58,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		DE3832302B091BAF002C6960 /* SUIT-Variable.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SUIT-Variable.ttf"; sourceTree = "<group>"; };
+		DE3832332B091CBD002C6960 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
+		DE3832352B0932E5002C6960 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
+		DE3832382B093694002C6960 /* ViewModelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelType.swift; sourceTree = "<group>"; };
+		DE38323A2B0936D0002C6960 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		DE6DCD202B0623E6009236FD /* WhipIt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WhipIt.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE6DCD232B0623E6009236FD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DE6DCD252B0623E6009236FD /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		DE6DCD272B0623E6009236FD /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		DE6DCD2C2B0623E8009236FD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DE6DCD2F2B0623E8009236FD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DE6DCD312B0623E8009236FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -112,6 +120,37 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DE38322C2B09178E002C6960 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		DE38322F2B091B8F002C6960 /* Font */ = {
+			isa = PBXGroup;
+			children = (
+				DE3832302B091BAF002C6960 /* SUIT-Variable.ttf */,
+			);
+			path = Font;
+			sourceTree = "<group>";
+		};
+		DE3832322B091CAF002C6960 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				DE3832332B091CBD002C6960 /* Font.swift */,
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
+		DE3832372B093686002C6960 /* Protocol */ = {
+			isa = PBXGroup;
+			children = (
+				DE3832382B093694002C6960 /* ViewModelType.swift */,
+			);
+			path = Protocol;
+			sourceTree = "<group>";
+		};
 		DE6DCD172B0623E6009236FD = {
 			isa = PBXGroup;
 			children = (
@@ -138,7 +177,6 @@
 				DE6DCD532B062996009236FD /* Application */,
 				DE6DCD552B0629B3009236FD /* Resource */,
 				DE6DCD542B0629AA009236FD /* Source */,
-				DE6DCD272B0623E6009236FD /* ViewController.swift */,
 				DE6DCD312B0623E8009236FD /* Info.plist */,
 				DE6DCD842B0645C9009236FD /* .gitignore */,
 			);
@@ -174,6 +212,9 @@
 		DE6DCD542B0629AA009236FD /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				DE3832322B091CAF002C6960 /* Utility */,
+				DE38322C2B09178E002C6960 /* Extension */,
+				DE3832372B093686002C6960 /* Protocol */,
 				DE6DCD562B062A31009236FD /* Network */,
 				DE6DCD572B062A3C009236FD /* Base */,
 				DE6DCD592B062AE4009236FD /* Builder */,
@@ -186,6 +227,7 @@
 		DE6DCD552B0629B3009236FD /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				DE38322F2B091B8F002C6960 /* Font */,
 				DE6DCD2E2B0623E8009236FD /* LaunchScreen.storyboard */,
 				DE6DCD2C2B0623E8009236FD /* Assets.xcassets */,
 			);
@@ -233,6 +275,7 @@
 			isa = PBXGroup;
 			children = (
 				DE6DCD6B2B062D51009236FD /* LoginViewController.swift */,
+				DE38323A2B0936D0002C6960 /* LoginViewModel.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -240,6 +283,7 @@
 		DE6DCD6A2B062D1B009236FD /* SignUp */ = {
 			isa = PBXGroup;
 			children = (
+				DE3832352B0932E5002C6960 /* SignUpViewController.swift */,
 			);
 			path = SignUp;
 			sourceTree = "<group>";
@@ -389,6 +433,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DE6DCD302B0623E8009236FD /* LaunchScreen.storyboard in Resources */,
+				DE3832312B091BAF002C6960 /* SUIT-Variable.ttf in Resources */,
 				DE6DCD852B0645C9009236FD /* .gitignore in Resources */,
 				DE6DCD2D2B0623E8009236FD /* Assets.xcassets in Resources */,
 			);
@@ -416,20 +461,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				DE6DCD8F2B064C54009236FD /* APIManager.swift in Sources */,
-				DE6DCD282B0623E6009236FD /* ViewController.swift in Sources */,
 				DE6DCD7F2B064228009236FD /* JoinAPI.swift in Sources */,
 				DE6DCD712B062EFE009236FD /* TextFieldBuilder.swift in Sources */,
 				DE6DCD5B2B062B0B009236FD /* BaseViewController.swift in Sources */,
 				DE6DCD6F2B062E0D009236FD /* UnderlineTextField.swift in Sources */,
+				DE3832362B0932E5002C6960 /* SignUpViewController.swift in Sources */,
 				DE6DCD752B06359B009236FD /* ButtonBuilder.swift in Sources */,
 				DE6DCD732B062F70009236FD /* LabelBuilder.swift in Sources */,
+				DE3832392B093694002C6960 /* ViewModelType.swift in Sources */,
 				DE6DCD8B2B06482B009236FD /* Login.swift in Sources */,
 				DE6DCD242B0623E6009236FD /* AppDelegate.swift in Sources */,
 				DE6DCD6C2B062D51009236FD /* LoginViewController.swift in Sources */,
 				DE6DCD892B064826009236FD /* EmailValidation.swift in Sources */,
 				DE6DCD8D2B064834009236FD /* Withdraw.swift in Sources */,
+				DE3832342B091CBD002C6960 /* Font.swift in Sources */,
 				DE6DCD262B0623E6009236FD /* SceneDelegate.swift in Sources */,
 				DE6DCD872B0645F0009236FD /* APIKey.swift in Sources */,
+				DE38323B2B0936D0002C6960 /* LoginViewModel.swift in Sources */,
 				DE6DCD7A2B0640C6009236FD /* SignUp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

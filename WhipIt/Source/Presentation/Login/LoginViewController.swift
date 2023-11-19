@@ -7,6 +7,7 @@
 
 import UIKit
 import RxSwift
+import RxCocoa
 
 class LoginViewController: BaseViewController {
     
@@ -37,9 +38,15 @@ class LoginViewController: BaseViewController {
         return view
     }()
     
-    let sample = SignUpRequest(email: "djs@apple.com", password: "12345", nick: "Danna")
+//    let sample = SignUpRequest(email: "djs@apple.com", password: "12345", nick: "Danna")
     
     let disposeBag = DisposeBag()
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        segmentedControl.selectedSegmentIndex = -1
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,8 +55,24 @@ class LoginViewController: BaseViewController {
 //            print("single result", $0)
 //        }
 //        .disposed(by: disposeBag)
+        bind()
         
     }
+
+    func bind() {
+        segmentedControl.rx.selectedSegmentIndex
+            .bind(with: self) { owner, index in
+                switch index {
+                case 0:
+                    owner.navigationController?.pushViewController(SignUpViewController(), animated: true)
+                default:
+                    print("default")
+                }
+            }
+            .disposed(by: disposeBag)
+        
+    }
+    
     
     override func setHierarchy() {
         super.setHierarchy()
