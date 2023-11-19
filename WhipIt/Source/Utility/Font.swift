@@ -12,6 +12,7 @@ enum Font {
     static let light14 = UIFont(name: "SUITVariable-Light", size: 14)!
     static let bold14 = UIFont(name: "SUITVariable-Bold", size: 14)!
     static let bold16 = UIFont(name: "SUITVariable-Bold", size: 16)!
+    static let extraBold34 = UIFont(name: "SUITVariable-ExtraBold", size: 34)!
 }
 
 /*
