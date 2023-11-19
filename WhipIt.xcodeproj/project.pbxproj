@@ -38,6 +38,8 @@
 		DE6DCD8B2B06482B009236FD /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6DCD8A2B06482B009236FD /* Login.swift */; };
 		DE6DCD8D2B064834009236FD /* Withdraw.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6DCD8C2B064834009236FD /* Withdraw.swift */; };
 		DE6DCD8F2B064C54009236FD /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6DCD8E2B064C54009236FD /* APIManager.swift */; };
+		DEA03B6C2B0A0669009473D4 /* JoinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA03B6B2B0A0669009473D4 /* JoinView.swift */; };
+		DEA03B722B0A2378009473D4 /* IQKeyboardManagerSwift in Frameworks */ = {isa = PBXBuildFile; productRef = DEA03B712B0A2378009473D4 /* IQKeyboardManagerSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -88,6 +90,7 @@
 		DE6DCD8A2B06482B009236FD /* Login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
 		DE6DCD8C2B064834009236FD /* Withdraw.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Withdraw.swift; sourceTree = "<group>"; };
 		DE6DCD8E2B064C54009236FD /* APIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
+		DEA03B6B2B0A0669009473D4 /* JoinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +103,7 @@
 				DE6DCD612B062B3F009236FD /* RxCocoa in Frameworks */,
 				DE6DCD662B062B56009236FD /* Moya in Frameworks */,
 				DE6DCD5E2B062B26009236FD /* SnapKit in Frameworks */,
+				DEA03B722B0A2378009473D4 /* IQKeyboardManagerSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -292,6 +296,7 @@
 			isa = PBXGroup;
 			children = (
 				DE6DCD6E2B062E0D009236FD /* UnderlineTextField.swift */,
+				DEA03B6B2B0A0669009473D4 /* JoinView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -338,6 +343,7 @@
 				DE6DCD622B062B3F009236FD /* RxSwift */,
 				DE6DCD652B062B56009236FD /* Moya */,
 				DE6DCD672B062B56009236FD /* RxMoya */,
+				DEA03B712B0A2378009473D4 /* IQKeyboardManagerSwift */,
 			);
 			productName = WhipIt;
 			productReference = DE6DCD202B0623E6009236FD /* WhipIt.app */;
@@ -415,6 +421,7 @@
 				DE6DCD5C2B062B26009236FD /* XCRemoteSwiftPackageReference "SnapKit" */,
 				DE6DCD5F2B062B3F009236FD /* XCRemoteSwiftPackageReference "RxSwift" */,
 				DE6DCD642B062B56009236FD /* XCRemoteSwiftPackageReference "Moya" */,
+				DEA03B702B0A2378009473D4 /* XCRemoteSwiftPackageReference "IQKeyboardManager" */,
 			);
 			productRefGroup = DE6DCD212B0623E6009236FD /* Products */;
 			projectDirPath = "";
@@ -468,6 +475,7 @@
 				DE3832362B0932E5002C6960 /* SignUpViewController.swift in Sources */,
 				DE6DCD752B06359B009236FD /* ButtonBuilder.swift in Sources */,
 				DE6DCD732B062F70009236FD /* LabelBuilder.swift in Sources */,
+				DEA03B6C2B0A0669009473D4 /* JoinView.swift in Sources */,
 				DE3832392B093694002C6960 /* ViewModelType.swift in Sources */,
 				DE6DCD8B2B06482B009236FD /* Login.swift in Sources */,
 				DE6DCD242B0623E6009236FD /* AppDelegate.swift in Sources */,
@@ -841,6 +849,14 @@
 				minimumVersion = 15.0.3;
 			};
 		};
+		DEA03B702B0A2378009473D4 /* XCRemoteSwiftPackageReference "IQKeyboardManager" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hackiftekhar/IQKeyboardManager.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.5.16;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -868,6 +884,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = DE6DCD642B062B56009236FD /* XCRemoteSwiftPackageReference "Moya" */;
 			productName = RxMoya;
+		};
+		DEA03B712B0A2378009473D4 /* IQKeyboardManagerSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DEA03B702B0A2378009473D4 /* XCRemoteSwiftPackageReference "IQKeyboardManager" */;
+			productName = IQKeyboardManagerSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
