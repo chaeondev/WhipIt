@@ -13,7 +13,7 @@ class UnderlineTextField: UITextField {
     lazy var placeholderColor: UIColor = self.tintColor
     lazy var placeholderString: String = ""
     
-    private lazy var underlineView = {
+    lazy var underlineView = {
         let view = UIView()
         view.backgroundColor = .systemGray4
         return view

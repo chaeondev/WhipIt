@@ -6,12 +6,12 @@
 //
 
 import UIKit
-
-
+import RxSwift
+import RxCocoa
 
 class SignUpViewController: BaseViewController {
     
-    private lazy var emailView = JoinView(type: .email(validation: false))
+    private lazy var emailView = JoinView(type: .email)
     private lazy var passwordView = JoinView(type: .password)
     private lazy var repasswordView = JoinView(type: .repassword)
     private lazy var phoneNumView = JoinView(type: .phoneNum)
@@ -23,14 +23,53 @@ class SignUpViewController: BaseViewController {
         return view
     }()
     
+    let disposeBag = DisposeBag()
+    
+    let viewModel = SignUpViewModel()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        setNavigationBar()
+
+        bind()
+    }
+    
+    func bind() {
+        let input = SignUpViewModel.Input(
+            emailText: emailView.textField.rx.text.orEmpty,
+            pwText: passwordView.textField.rx.text.orEmpty,
+            repwText: repasswordView.textField.rx.text.orEmpty,
+            phoneText: phoneNumView.textField.rx.text.orEmpty,
+            tap: signupButton.rx.tap
+        )
+        let output = viewModel.transform(input: input)
+        
+        
+        Observable.combineLatest(emailView.textField.rx.controlEvent(.editingDidBegin), output.checkEmailRegex) { return $1 }
+            .bind(with: self) { owner, value in
+                owner.emailView.descriptionLabel.isHidden = false
+                
+                let color: UIColor = value ? .blue : .red
+                owner.emailView.descriptionLabel.textColor = color
+                owner.emailView.textField.underlineView.backgroundColor = color
+            }
+            .disposed(by: disposeBag)
+        
+        output.emailDescription
+            .bind(to: emailView.descriptionLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        
+    }
+    
+    
+    private func setNavigationBar() {
         title = "회원가입"
         navigationController?.navigationBar.largeTitleTextAttributes = [
             NSAttributedString.Key.font : Font.extraBold34
         ]
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.largeTitleDisplayMode = .always
+        navigationItem.largeTitleDisplayMode = .automatic
     }
     
     override func setHierarchy() {
