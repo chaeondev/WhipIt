@@ -10,62 +10,44 @@ import Moya
 import RxMoya
 import RxSwift
 
-enum APIError: Error {
-    case invalidKey
-    case overcall
-    case invalidURL
-    case serverError
-    case statusError
+enum NetworkResult<T: Decodable> {
+    case success(T)
+    case failure(APIError)
 }
 
-enum SignUpError: Error {
-    case insufficientInfo
-    case alreadyJoin
-}
-    
-
-class APIManager {
+final class APIManager {
     
     static let shared = APIManager()
     private init() { }
     
     private let provider = MoyaProvider<JoinAPI>()
     
-    func signUp(model: SignUpRequest) -> Single<SignUpResponse> {
-        return Single<SignUpResponse>.create { single in
-            self.provider.request(.signUp(model: model)) { result in
+    func request<T: Decodable>(target: JoinAPI) -> Single<NetworkResult<T>> {
+        return Single<NetworkResult<T>>.create { single in
+            self.provider.request(target) { result in
                 print(result)
                 switch result {
                 case .success(let response):
-                    print(response.statusCode)
-                    guard let decodedData = try? JSONDecoder().decode(SignUpResponse.self, from: response.data) else { return }
-                    print(decodedData)
-                    switch response.statusCode {
-                    case 200..<300:
-                        return single(.success(decodedData))
-                    case 420:
-                        return single(.failure(APIError.invalidKey))
-                    case 429:
-                        return single(.failure(APIError.overcall))
-                    case 444:
-                        return single(.failure(APIError.invalidURL))
-                    case 500:
-                        return single(.failure(APIError.serverError))
-                    case 400:
-                        return single(.failure(SignUpError.insufficientInfo))
-                    case 409:
-                        return single(.failure(SignUpError.alreadyJoin))
-                    default:
-                        return single(.failure(APIError.statusError))
+                    dump(response)
+                    guard let decodedData = try? JSONDecoder().decode(T.self, from: response.data) else {
+                        single(.success(.failure(.invalidData)))
+                        return
                     }
-                            
-                            
+                    switch response.statusCode {
+                    case 200:
+                        return single(.success(.success(decodedData)))
+                    default:
+                        return single(.success(.failure(.statusError)))
+                    }
                 case .failure(let error):
-                    single(.failure(error))
+                    dump(error)
+                    guard let statusCode = error.response?.statusCode, let networkError = APIError(rawValue: statusCode) else {
+                        single(.success(.failure(.serverError)))
+                    }
+                    single(.success(.failure(networkError)))
                 }
             }
             return Disposables.create()
         }
     }
-
 }
