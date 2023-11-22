@@ -21,18 +21,18 @@ final class APIManager {
     private init() { }
     
     private let provider = MoyaProvider<JoinAPI>()
-    
+  
     func request<T: Decodable>(target: JoinAPI) -> Single<NetworkResult<T>> {
         return Single<NetworkResult<T>>.create { single in
             self.provider.request(target) { result in
-                print(result)
                 switch result {
                 case .success(let response):
-                    dump(response)
+//                    dump(response)
                     guard let decodedData = try? JSONDecoder().decode(T.self, from: response.data) else {
                         single(.success(.failure(.invalidData)))
                         return
                     }
+                    print("==DecodedData==", decodedData)
                     switch response.statusCode {
                     case 200:
                         return single(.success(.success(decodedData)))
@@ -43,6 +43,7 @@ final class APIManager {
                     dump(error)
                     guard let statusCode = error.response?.statusCode, let networkError = APIError(rawValue: statusCode) else {
                         single(.success(.failure(.serverError)))
+                        return
                     }
                     single(.success(.failure(networkError)))
                 }
@@ -50,4 +51,14 @@ final class APIManager {
             return Disposables.create()
         }
     }
+}
+
+// MARK: 회원가입 API Method
+extension APIManager {
+    
+    func fetchEmailValidation(email: String) -> Single<NetworkResult<EmailValidationResponse>> {
+        let model = EmailValidationRequest(email: email)
+        return request(target: .emailValidation(model: model))
+    }
+    
 }
