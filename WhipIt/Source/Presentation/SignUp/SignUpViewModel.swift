@@ -27,27 +27,67 @@ class SignUpViewModel: ViewModelType {
     }
     
     struct Output {
-        let tap: ControlEvent<Void>
-        let checkEmailRegex: Observable<Bool>
+        let emailValidation: BehaviorSubject<Bool>
         let emailDescription: BehaviorSubject<String>
     }
     
     func transform(input: Input) -> Output {
         
-        let emailDescription = BehaviorSubject(value: JoinViewType.email.description)
-        
-        let checkEmailRegex = input.emailText
+        let emailDescription: BehaviorSubject<String> = BehaviorSubject(value: JoinViewType.email.description)
+        let checkEmailRegex: BehaviorSubject<Bool> = BehaviorSubject(value: false)
+        let emailValidation: BehaviorSubject<Bool> = BehaviorSubject(value: false)
+
+        // MARK: 이메일 정규표현식 검증
+        input.emailText
+            .asObservable()
             .map { $0.range(of: self.emailRegEx, options: .regularExpression) != nil }
+            .subscribe(with: self) { owner, bool in
+                checkEmailRegex.onNext(bool)
+            }
+            .disposed(by: disposeBag)
         
         checkEmailRegex
+            .filter { $0 == false }
             .subscribe(with: self) { owner, value in
-                let text = value ? "사용 가능한 이메일입니다" : "올바른 이메일을 입력해주세요"
+                let text = "올바른 이메일을 입력해주세요"
                 emailDescription.onNext(text)
             }
             .disposed(by: disposeBag)
         
+        // MARK: 이메일 중복 검증
+        /// 이메일 정규표현식 검증이 끝난 후에 중복 검증
         
-        return Output(tap: input.tap, checkEmailRegex: checkEmailRegex, emailDescription: emailDescription)
+        input.emailText
+            .asObservable()
+            .debounce(.seconds(1), scheduler: MainScheduler.instance)
+            .withLatestFrom(checkEmailRegex, resultSelector: { text, bool in
+                if bool {
+                    return text
+                } else {
+                    return ""
+                }
+            })
+            .filter { !$0.isEmpty }
+            .flatMapLatest {
+                APIManager.shared.fetchEmailValidation(email: $0)
+            }
+            .subscribe(with: self) { owner, result in
+                switch result {
+                case .success:
+                    emailValidation.onNext(true)
+                    emailDescription.onNext("사용 가능한 이메일입니다.")
+                case .failure(let error):
+                    // TODO: 예외처리하기
+                    emailValidation.onNext(false)
+                    emailDescription.onNext("이미 가입한 이메일입니다.")
+                    print(error)
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        // MARK: 비밀번호 정규식 검증
+
+        return Output(emailValidation: emailValidation, emailDescription: emailDescription)
         
     }
     

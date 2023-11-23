@@ -45,7 +45,8 @@ class SignUpViewController: BaseViewController {
         let output = viewModel.transform(input: input)
         
         
-        Observable.combineLatest(emailView.textField.rx.controlEvent(.editingDidBegin), output.checkEmailRegex) { return $1 }
+        // MARK: 이메일
+        Observable.combineLatest(emailView.textField.rx.controlEvent(.editingDidBegin), output.emailValidation) { return $1 }
             .bind(with: self) { owner, value in
                 owner.emailView.descriptionLabel.isHidden = false
                 
@@ -58,6 +59,8 @@ class SignUpViewController: BaseViewController {
         output.emailDescription
             .bind(to: emailView.descriptionLabel.rx.text)
             .disposed(by: disposeBag)
+        
+        // MARK: 비밀번호
         
         
     }
