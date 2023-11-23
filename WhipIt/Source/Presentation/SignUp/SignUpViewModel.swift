@@ -29,6 +29,8 @@ class SignUpViewModel: ViewModelType {
     struct Output {
         let emailValidation: BehaviorSubject<Bool>
         let emailDescription: BehaviorSubject<String>
+        let checkPWRegex: BehaviorSubject<Bool>
+        let pwDescription: BehaviorSubject<String>
     }
     
     func transform(input: Input) -> Output {
@@ -36,6 +38,9 @@ class SignUpViewModel: ViewModelType {
         let emailDescription: BehaviorSubject<String> = BehaviorSubject(value: JoinViewType.email.description)
         let checkEmailRegex: BehaviorSubject<Bool> = BehaviorSubject(value: false)
         let emailValidation: BehaviorSubject<Bool> = BehaviorSubject(value: false)
+        
+        let pwDescription: BehaviorSubject<String> = BehaviorSubject(value: JoinViewType.password.description)
+        let checkPWRegex: BehaviorSubject<Bool> = BehaviorSubject(value: false)
 
         // MARK: 이메일 정규표현식 검증
         input.emailText
@@ -86,8 +91,21 @@ class SignUpViewModel: ViewModelType {
             .disposed(by: disposeBag)
         
         // MARK: 비밀번호 정규식 검증
+        input.pwText
+            .asObservable()
+            .map { $0.range(of: self.pwRegEx, options: .regularExpression) != nil }
+            .bind(to: checkPWRegex)
+            .disposed(by: disposeBag)
+        
+        checkPWRegex
+            .bind(with: self) { owner, value in
+                let text = value ? "" : JoinViewType.password.description
+                pwDescription.onNext(text)
+            }
+            .disposed(by: disposeBag)
 
-        return Output(emailValidation: emailValidation, emailDescription: emailDescription)
+
+        return Output(emailValidation: emailValidation, emailDescription: emailDescription, checkPWRegex: checkPWRegex, pwDescription: pwDescription)
         
     }
     

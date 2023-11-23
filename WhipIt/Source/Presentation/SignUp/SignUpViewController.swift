@@ -61,6 +61,21 @@ class SignUpViewController: BaseViewController {
             .disposed(by: disposeBag)
         
         // MARK: 비밀번호
+        passwordView.textField.isSecureTextEntry = true
+        
+        Observable.combineLatest(passwordView.textField.rx.controlEvent(.editingDidBegin), output.checkPWRegex) { return $1 }
+            .bind(with: self) { owner, value in
+                owner.passwordView.descriptionLabel.isHidden = false
+                
+                let color: UIColor = value ? .blue : .red
+                owner.passwordView.descriptionLabel.textColor = color
+                owner.passwordView.textField.underlineView.backgroundColor = color
+            }
+            .disposed(by: disposeBag)
+        
+        output.pwDescription
+            .bind(to: passwordView.descriptionLabel.rx.text)
+            .disposed(by: disposeBag)
         
         
     }
