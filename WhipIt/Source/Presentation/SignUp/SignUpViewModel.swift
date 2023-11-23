@@ -33,6 +33,9 @@ class SignUpViewModel: ViewModelType {
         let pwDescription: BehaviorSubject<String>
         let checkSamePW: BehaviorSubject<Bool>
         let repwDescription: BehaviorSubject<String>
+        let phoneNum: BehaviorSubject<String>
+        let checkPhone: BehaviorSubject<Bool>
+        let phoneDescription: BehaviorSubject<String>
     }
     
     func transform(input: Input) -> Output {
@@ -44,8 +47,14 @@ class SignUpViewModel: ViewModelType {
         let pwDescription: BehaviorSubject<String> = BehaviorSubject(value: "")
         let checkPWRegex: BehaviorSubject<Bool> = BehaviorSubject(value: false)
         
-        let checkSamePW: BehaviorSubject<Bool> = BehaviorSubject(value: false)
         let repwDescription: BehaviorSubject<String> = BehaviorSubject(value: "")
+        let checkSamePW: BehaviorSubject<Bool> = BehaviorSubject(value: false)
+        
+        let phoneNum: BehaviorSubject<String> = BehaviorSubject(value: "")
+        let phoneDescription: BehaviorSubject<String> = BehaviorSubject(value: "")
+        let checkPhone: BehaviorSubject<Bool> = BehaviorSubject(value: false)
+       
+        
 
         // MARK: 이메일 정규표현식 검증
         input.emailText
@@ -112,6 +121,9 @@ class SignUpViewModel: ViewModelType {
 
         // MARK: 비밀번호 재입력 비교검증
         Observable.combineLatest(input.pwText, input.repwText)
+            .filter { component in
+                !component.0.isEmpty
+            }
             .map { $0 == $1 }
             .bind(to: checkSamePW)
             .disposed(by: disposeBag)
@@ -123,8 +135,31 @@ class SignUpViewModel: ViewModelType {
             }
             .disposed(by: disposeBag)
         
+        // MARK: 핸드폰 번호
+        input.phoneText
+            .asObservable()
+            .bind(with: self) { owner, value in
+                let result = value.formated(by: "###-####-####")
+                phoneNum.onNext(result)
+            }
+            .disposed(by: disposeBag)
 
-        return Output(emailValidation: emailValidation, emailDescription: emailDescription, checkPWRegex: checkPWRegex, pwDescription: pwDescription, checkSamePW: checkSamePW, repwDescription: repwDescription)
+        phoneNum
+            .map { $0.count >= 13 || $0.count == 0 }
+            .bind(to: checkPhone)
+            .disposed(by: disposeBag)
+        
+        checkPhone
+            .bind(with: self) { owner, value in
+                let text = value ? "" : "올바른 핸드폰 번호를 입력해주세요"
+                phoneDescription.onNext(text)
+            }
+            .disposed(by: disposeBag)
+        
+        
+        
+
+        return Output(emailValidation: emailValidation, emailDescription: emailDescription, checkPWRegex: checkPWRegex, pwDescription: pwDescription, checkSamePW: checkSamePW, repwDescription: repwDescription, phoneNum: phoneNum, checkPhone: checkPhone, phoneDescription: phoneDescription)
         
     }
     

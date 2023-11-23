@@ -58,6 +58,13 @@ class SignUpViewController: BaseViewController {
         checkTextFieldValidation(joinView: repasswordView, check: output.checkSamePW, descript: output.repwDescription)
         
         // 핸드폰 번호
+
+        phoneNumView.descriptionLabel.isHidden = false
+        output.phoneNum
+            .bind(to: phoneNumView.textField.rx.text)
+            .disposed(by: disposeBag)
+        checkTextFieldValidation(joinView: phoneNumView, check: output.checkPhone, descript: output.phoneDescription)
+        
         
         
     }
