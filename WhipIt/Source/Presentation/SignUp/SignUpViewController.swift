@@ -45,25 +45,25 @@ class SignUpViewController: BaseViewController {
         let output = viewModel.transform(input: input)
         
         
-        // MARK: 이메일
-        Observable.combineLatest(emailView.textField.rx.controlEvent(.editingDidBegin), output.emailValidation) { return $1 }
-            .bind(with: self) { owner, value in
-                owner.emailView.descriptionLabel.isHidden = false
-                
-                let color: UIColor = value ? .blue : .red
-                owner.emailView.descriptionLabel.textColor = color
-                owner.emailView.textField.underlineView.backgroundColor = color
-            }
-            .disposed(by: disposeBag)
+        // 이메일
+        checkTextFieldValidation(joinView: emailView, check: output.emailValidation, descript: output.emailDescription)
+  
         
-        output.emailDescription
-            .bind(to: emailView.descriptionLabel.rx.text)
-            .disposed(by: disposeBag)
-        
-        // MARK: 비밀번호
+        // 비밀번호
         passwordView.textField.isSecureTextEntry = true
+        checkTextFieldValidation(joinView: passwordView, check: output.checkPWRegex, descript: output.pwDescription)
         
-        Observable.combineLatest(passwordView.textField.rx.controlEvent(.editingDidBegin), output.checkPWRegex) { return $1 }
+        // 비밀번호 재입력
+        repasswordView.textField.isSecureTextEntry = true
+        checkTextFieldValidation(joinView: repasswordView, check: output.checkSamePW, descript: output.repwDescription)
+        
+        // 핸드폰 번호
+        
+        
+    }
+    
+    private func checkTextFieldValidation(joinView: JoinView, check: BehaviorSubject<Bool>, descript: BehaviorSubject<String>) {
+        Observable.combineLatest(joinView.textField.rx.controlEvent(.editingDidBegin), check) { return $1 }
             .bind(with: self) { owner, value in
                 joinView.descriptionLabel.isHidden = false
                 
