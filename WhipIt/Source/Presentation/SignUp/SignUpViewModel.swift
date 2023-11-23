@@ -31,16 +31,21 @@ class SignUpViewModel: ViewModelType {
         let emailDescription: BehaviorSubject<String>
         let checkPWRegex: BehaviorSubject<Bool>
         let pwDescription: BehaviorSubject<String>
+        let checkSamePW: BehaviorSubject<Bool>
+        let repwDescription: BehaviorSubject<String>
     }
     
     func transform(input: Input) -> Output {
         
-        let emailDescription: BehaviorSubject<String> = BehaviorSubject(value: JoinViewType.email.description)
+        let emailDescription: BehaviorSubject<String> = BehaviorSubject(value: "")
         let checkEmailRegex: BehaviorSubject<Bool> = BehaviorSubject(value: false)
         let emailValidation: BehaviorSubject<Bool> = BehaviorSubject(value: false)
         
-        let pwDescription: BehaviorSubject<String> = BehaviorSubject(value: JoinViewType.password.description)
+        let pwDescription: BehaviorSubject<String> = BehaviorSubject(value: "")
         let checkPWRegex: BehaviorSubject<Bool> = BehaviorSubject(value: false)
+        
+        let checkSamePW: BehaviorSubject<Bool> = BehaviorSubject(value: false)
+        let repwDescription: BehaviorSubject<String> = BehaviorSubject(value: "")
 
         // MARK: 이메일 정규표현식 검증
         input.emailText
@@ -55,6 +60,7 @@ class SignUpViewModel: ViewModelType {
             .filter { $0 == false }
             .subscribe(with: self) { owner, value in
                 let text = "올바른 이메일을 입력해주세요"
+                emailValidation.onNext(false)
                 emailDescription.onNext(text)
             }
             .disposed(by: disposeBag)
@@ -104,8 +110,21 @@ class SignUpViewModel: ViewModelType {
             }
             .disposed(by: disposeBag)
 
+        // MARK: 비밀번호 재입력 비교검증
+        Observable.combineLatest(input.pwText, input.repwText)
+            .map { $0 == $1 }
+            .bind(to: checkSamePW)
+            .disposed(by: disposeBag)
+        
+        checkSamePW
+            .bind(with: self) { owner, value in
+                let text = value ? "비밀번호가 일치합니다." : JoinViewType.repassword.description
+                repwDescription.onNext(text)
+            }
+            .disposed(by: disposeBag)
+        
 
-        return Output(emailValidation: emailValidation, emailDescription: emailDescription, checkPWRegex: checkPWRegex, pwDescription: pwDescription)
+        return Output(emailValidation: emailValidation, emailDescription: emailDescription, checkPWRegex: checkPWRegex, pwDescription: pwDescription, checkSamePW: checkSamePW, repwDescription: repwDescription)
         
     }
     

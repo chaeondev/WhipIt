@@ -65,19 +65,17 @@ class SignUpViewController: BaseViewController {
         
         Observable.combineLatest(passwordView.textField.rx.controlEvent(.editingDidBegin), output.checkPWRegex) { return $1 }
             .bind(with: self) { owner, value in
-                owner.passwordView.descriptionLabel.isHidden = false
+                joinView.descriptionLabel.isHidden = false
                 
                 let color: UIColor = value ? .blue : .red
-                owner.passwordView.descriptionLabel.textColor = color
-                owner.passwordView.textField.underlineView.backgroundColor = color
+                joinView.descriptionLabel.textColor = color
+                joinView.textField.underlineView.backgroundColor = color
             }
             .disposed(by: disposeBag)
         
-        output.pwDescription
-            .bind(to: passwordView.descriptionLabel.rx.text)
+        descript
+            .bind(to: joinView.descriptionLabel.rx.text)
             .disposed(by: disposeBag)
-        
-        
     }
     
     
