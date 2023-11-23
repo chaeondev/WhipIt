@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 enum JoinViewType {
-    case email(validation: Bool)
+    case email
     case password
     case repassword
     case phoneNum
@@ -42,8 +42,8 @@ enum JoinViewType {
     
     var description: String {
         switch self {
-        case .email(let validation):
-            validation ? "사용 가능한 이메일입니다" : "올바른 이메일을 입력해주세요"
+        case .email:
+            "올바른 이메일을 입력해주세요"
         case .password:
             "영문, 숫자를 포함하여 입력해주세요. (6-16자)"
         case .repassword:
@@ -68,6 +68,8 @@ class JoinView: UIView {
         titleLabel.text = type.title
         textField.setPlaceholder(placeholder: type.placeholder)
         descriptionLabel.text = type.description
+        
+        descriptionLabel.isHidden = true
         
         configureView()
     }
