@@ -36,6 +36,7 @@ class SignUpViewModel: ViewModelType {
         let phoneNum: BehaviorSubject<String>
         let checkPhone: BehaviorSubject<Bool>
         let phoneDescription: BehaviorSubject<String>
+        let buttonValidation: BehaviorSubject<Bool>
     }
     
     func transform(input: Input) -> Output {
@@ -53,6 +54,8 @@ class SignUpViewModel: ViewModelType {
         let phoneNum: BehaviorSubject<String> = BehaviorSubject(value: "")
         let phoneDescription: BehaviorSubject<String> = BehaviorSubject(value: "")
         let checkPhone: BehaviorSubject<Bool> = BehaviorSubject(value: false)
+        
+        let buttonValidation: BehaviorSubject<Bool> = BehaviorSubject(value: false)
        
         
 
@@ -156,10 +159,23 @@ class SignUpViewModel: ViewModelType {
             }
             .disposed(by: disposeBag)
         
+        // MARK: 회원가입 버튼 enable 여부
+        Observable.combineLatest(
+            emailValidation,
+            checkPWRegex,
+            checkSamePW,
+            checkPhone
+        )
+        .map { $0 && $1 && $2 && $3 }
+        .bind(to: buttonValidation)
+        .disposed(by: disposeBag)
+        
+        
+        
         
         
 
-        return Output(emailValidation: emailValidation, emailDescription: emailDescription, checkPWRegex: checkPWRegex, pwDescription: pwDescription, checkSamePW: checkSamePW, repwDescription: repwDescription, phoneNum: phoneNum, checkPhone: checkPhone, phoneDescription: phoneDescription)
+        return Output(emailValidation: emailValidation, emailDescription: emailDescription, checkPWRegex: checkPWRegex, pwDescription: pwDescription, checkSamePW: checkSamePW, repwDescription: repwDescription, phoneNum: phoneNum, checkPhone: checkPhone, phoneDescription: phoneDescription, buttonValidation: buttonValidation)
         
     }
     

@@ -65,7 +65,16 @@ class SignUpViewController: BaseViewController {
             .disposed(by: disposeBag)
         checkTextFieldValidation(joinView: phoneNumView, check: output.checkPhone, descript: output.phoneDescription)
         
+        // 회원가입 버튼 enable 여부
+        output.buttonValidation
+            .bind(to: signupButton.rx.isEnabled)
+            .disposed(by: disposeBag)
         
+        output.buttonValidation
+            .bind(with: self) { owner, bool in
+                owner.signupButton.backgroundColor = bool ? .black : .gray
+            }
+            .disposed(by: disposeBag)
         
     }
     
