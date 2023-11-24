@@ -23,7 +23,7 @@ class SignUpViewModel: ViewModelType {
         let pwText: ControlProperty<String>
         let repwText: ControlProperty<String>
         let phoneText: ControlProperty<String>
-        let tap: ControlEvent<Void>
+        let signUpButtontap: ControlEvent<Void>
     }
     
     struct Output {
@@ -37,6 +37,7 @@ class SignUpViewModel: ViewModelType {
         let checkPhone: BehaviorSubject<Bool>
         let phoneDescription: BehaviorSubject<String>
         let buttonValidation: BehaviorSubject<Bool>
+        let signUpResponse: PublishSubject<SignUpResponse>
     }
     
     func transform(input: Input) -> Output {
@@ -56,7 +57,7 @@ class SignUpViewModel: ViewModelType {
         let checkPhone: BehaviorSubject<Bool> = BehaviorSubject(value: false)
         
         let buttonValidation: BehaviorSubject<Bool> = BehaviorSubject(value: false)
-       
+        let signUpResponse = PublishSubject<SignUpResponse>()
         
 
         // MARK: 이메일 정규표현식 검증
@@ -170,12 +171,51 @@ class SignUpViewModel: ViewModelType {
         .bind(to: buttonValidation)
         .disposed(by: disposeBag)
         
+        // MARK: 회원가입 네트워크
         
+        // signup request struct 만들기
+        let signUpRequest = Observable.combineLatest(
+            input.emailText,
+            input.pwText,
+            input.phoneText,
+            buttonValidation
+        )
+        .filter { $0.3 } //buttonValidation이 true인 값만 filter
+        .map { email, password, phoneNum, validation in
+            let nick = "위핏이\(Int.random(in: 1...1000))"
+            return SignUpRequest(
+                email: email,
+                password: password,
+                nick: nick,
+                phoneNum: phoneNum.isEmpty ? nil : phoneNum
+            )
+        }
+        
+        input.signUpButtontap
+            .throttle(.seconds(1), scheduler: MainScheduler.instance)
+            .withLatestFrom(signUpRequest) { _, request in
+                return request
+            }
+            .flatMapLatest {
+                APIManager.shared.fetchSignUpRequest(model: $0)
+            }
+            .subscribe(with: self) { owner, result in
+                switch result {
+                case .success(let response):
+                    print("==signupresponse==",response)
+                    signUpResponse.onNext(response)
+                case .failure(let error):
+                    print(error)
+                    // TODO: error 예외 처리, alert
+                }
+            }
+            .disposed(by: disposeBag)
+    
         
         
         
 
-        return Output(emailValidation: emailValidation, emailDescription: emailDescription, checkPWRegex: checkPWRegex, pwDescription: pwDescription, checkSamePW: checkSamePW, repwDescription: repwDescription, phoneNum: phoneNum, checkPhone: checkPhone, phoneDescription: phoneDescription, buttonValidation: buttonValidation)
+        return Output(emailValidation: emailValidation, emailDescription: emailDescription, checkPWRegex: checkPWRegex, pwDescription: pwDescription, checkSamePW: checkSamePW, repwDescription: repwDescription, phoneNum: phoneNum, checkPhone: checkPhone, phoneDescription: phoneDescription, buttonValidation: buttonValidation, signUpResponse: signUpResponse)
         
     }
     

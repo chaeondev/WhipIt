@@ -40,7 +40,7 @@ class SignUpViewController: BaseViewController {
             pwText: passwordView.textField.rx.text.orEmpty,
             repwText: repasswordView.textField.rx.text.orEmpty,
             phoneText: phoneNumView.textField.rx.text.orEmpty,
-            tap: signupButton.rx.tap
+            signUpButtontap: signupButton.rx.tap
         )
         let output = viewModel.transform(input: input)
         

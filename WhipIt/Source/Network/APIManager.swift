@@ -61,4 +61,7 @@ extension APIManager {
         return request(target: .emailValidation(model: model))
     }
     
+    func fetchSignUpRequest(model: SignUpRequest) -> Single<NetworkResult<SignUpResponse>> {
+        return request(target: .signUp(model: model))
+    }
 }
