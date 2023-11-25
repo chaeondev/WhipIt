@@ -12,6 +12,7 @@ enum JoinAPI {
     case signUp(model: SignUpRequest)
     case emailValidation(model: EmailValidationRequest)
     case login(model: LoginRequest)
+    case accessToken
 }
 
 extension JoinAPI: TargetType {
@@ -31,11 +32,18 @@ extension JoinAPI: TargetType {
             "validation/email"
         case .login: 
             "login"
+        case .accessToken:
+            "refresh"
         }
     }
     
     var method: Moya.Method {
-        .post
+        switch self {
+        case .signUp, .emailValidation, .login:
+            return .post
+        case .accessToken:
+            return .get
+        }
     }
     
     var task: Moya.Task {
@@ -46,12 +54,20 @@ extension JoinAPI: TargetType {
             return .requestJSONEncodable(model)
         case .login(let model):
             return .requestJSONEncodable(model)
+        case .accessToken:
+            return .requestPlain
         }
     }
     
     var headers: [String : String]? {
-        ["Content-Type": "application/json",
-         "SesacKey" : APIKey.sesacKey]
+        switch self {
+        case .signUp, .emailValidation, .login:
+            return ["Content-Type": "application/json",
+                    "SesacKey" : APIKey.sesacKey]
+        case .accessToken:
+            return ["SesacKey" : APIKey.sesacKey]
+        }
+        
     }
     
     var validationType: ValidationType {
