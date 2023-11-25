@@ -28,6 +28,7 @@ class LoginViewModel: ViewModelType {
         let checkPWRegex: BehaviorSubject<Bool>
         let pwDescription: BehaviorSubject<String>
         let buttonValidation: BehaviorSubject<Bool>
+        let loginResponse: PublishSubject<NetworkResult<String>>
     }
     
     func transform(input: Input) -> Output {
@@ -37,6 +38,7 @@ class LoginViewModel: ViewModelType {
         let pwDescription: BehaviorSubject<String> = BehaviorSubject(value: "")
         let checkPWRegex: BehaviorSubject<Bool> = BehaviorSubject(value: false)
         let buttonValidation: BehaviorSubject<Bool> = BehaviorSubject(value: false)
+        let loginResponse = PublishSubject<NetworkResult<String>>()
         
         // MARK: 이메일 정규식 검증
         input.emailText
@@ -72,7 +74,40 @@ class LoginViewModel: ViewModelType {
             .bind(to: buttonValidation)
             .disposed(by: disposeBag)
         
+        // MARK: 로그인 네트워크
         
-        return Output(checkEmailRegex: checkEmailRegex, emailDescription: emailDescription, checkPWRegex: checkPWRegex, pwDescription: pwDescription, buttonValidation: buttonValidation)
+        let loginRequest = Observable.combineLatest(
+            input.emailText,
+            input.pwText,
+            buttonValidation
+        )
+            .share()
+            .filter { $0.2 }
+            .map { email, password, validation in
+                return LoginRequest(email: email, password: password)
+            }
+        
+        input.loginButtonTap
+            .throttle(.seconds(1), scheduler: MainScheduler.instance)
+            .withLatestFrom(loginRequest) { _, request in
+                return request
+            }
+            .flatMapLatest {
+                APIManager.shared.requestLogin(model: $0)
+            }
+            .subscribe(with: self) { owner, result in
+                switch result {
+                case .success(let response):
+                    print(response)
+                    KeyChainManager.shared.create(account: .accessToken, value: response.token)
+                    KeyChainManager.shared.create(account: .refreshToken, value: response.refreshToken)
+                    loginResponse.onNext(.success("Login Success"))
+                case .failure(let error):
+                    loginResponse.onNext(.failure(error))
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        return Output(checkEmailRegex: checkEmailRegex, emailDescription: emailDescription, checkPWRegex: checkPWRegex, pwDescription: pwDescription, buttonValidation: buttonValidation, loginResponse: loginResponse)
     }
 }

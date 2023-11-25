@@ -56,12 +56,16 @@ final class APIManager {
 // MARK: 회원가입 API Method
 extension APIManager {
     
-    func fetchEmailValidation(email: String) -> Single<NetworkResult<EmailValidationResponse>> {
+    func validateEmail(email: String) -> Single<NetworkResult<EmailValidationResponse>> {
         let model = EmailValidationRequest(email: email)
         return request(target: .emailValidation(model: model))
     }
     
-    func fetchSignUpRequest(model: SignUpRequest) -> Single<NetworkResult<SignUpResponse>> {
+    func requestSignUp(model: SignUpRequest) -> Single<NetworkResult<SignUpResponse>> {
         return request(target: .signUp(model: model))
+    }
+    
+    func requestLogin(model: LoginRequest) -> Single<NetworkResult<LoginResponse>> {
+        return request(target: .login(model: model))
     }
 }
