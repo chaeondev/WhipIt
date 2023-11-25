@@ -34,7 +34,7 @@ class SignUpViewController: BaseViewController {
         bind()
     }
     
-    func bind() {
+    private func bind() {
         let input = SignUpViewModel.Input(
             emailText: emailView.textField.rx.text.orEmpty,
             pwText: passwordView.textField.rx.text.orEmpty,
@@ -46,20 +46,26 @@ class SignUpViewController: BaseViewController {
         
         
         // 이메일
+        emailView.textField.textContentType = .emailAddress
+        emailView.textField.keyboardType = .emailAddress
         checkTextFieldValidation(joinView: emailView, check: output.emailValidation, descript: output.emailDescription)
   
         
         // 비밀번호
+        passwordView.textField.textContentType = .newPassword
         passwordView.textField.isSecureTextEntry = true
         checkTextFieldValidation(joinView: passwordView, check: output.checkPWRegex, descript: output.pwDescription)
         
         // 비밀번호 재입력
+        passwordView.textField.textContentType = .newPassword
         repasswordView.textField.isSecureTextEntry = true
         checkTextFieldValidation(joinView: repasswordView, check: output.checkSamePW, descript: output.repwDescription)
         
         // 핸드폰 번호
-
+        phoneNumView.textField.textContentType = .telephoneNumber
+        phoneNumView.textField.keyboardType = .phonePad
         phoneNumView.descriptionLabel.isHidden = false
+        
         output.phoneNum
             .bind(to: phoneNumView.textField.rx.text)
             .disposed(by: disposeBag)
