@@ -82,6 +82,32 @@ class SignUpViewController: BaseViewController {
             }
             .disposed(by: disposeBag)
         
+        // 회원가입 네트워크 통신결과에 따른 처리
+        output.signUpResponse
+            .bind(with: self) { owner, result in
+                switch result {
+                case .success:
+                    
+                    let vc = SignUpSuccessViewController()
+                    owner.navigationController?.pushViewController(vc, animated: true)
+                    
+                case .failure(let error):
+                    var message: String {
+                        switch error {
+                        case .wrongRequest:
+                            return "필수값들을 입력해주세요!"
+                        case .serverConflict:
+                            return "이미 가입되어있어요! 로그인을 진행해주세요"
+                        default:
+                            return "네트워크 오류로 회원가입이 진행되지 않았습니다. 다시 한번 시도해주세요"
+                        }
+                    }
+                    
+                    owner.showAlertMessage(title: "회원가입 오류", message: message)
+                }
+            }
+            .disposed(by: disposeBag)
+        
     }
     
     private func checkTextFieldValidation(joinView: JoinView, check: BehaviorSubject<Bool>, descript: BehaviorSubject<String>) {
