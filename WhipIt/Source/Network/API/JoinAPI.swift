@@ -54,5 +54,8 @@ extension JoinAPI: TargetType {
          "SesacKey" : APIKey.sesacKey]
     }
     
+    var validationType: ValidationType {
+        return .successAndRedirectCodes
+    }
     
 }
