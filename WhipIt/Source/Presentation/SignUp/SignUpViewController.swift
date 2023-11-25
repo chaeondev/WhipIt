@@ -15,13 +15,7 @@ class SignUpViewController: BaseViewController {
     private lazy var passwordView = JoinView(type: .password)
     private lazy var repasswordView = JoinView(type: .repassword)
     private lazy var phoneNumView = JoinView(type: .phoneNum)
-    private lazy var signupButton = {
-        let view = UIButton.buttonBuilder(title: "회원가입", font: Font.bold16)
-        view.backgroundColor = .black
-        view.setTitleColor(.white, for: .normal)
-        view.layer.cornerRadius = 10
-        return view
-    }()
+    private lazy var signupButton: UIButton = BlackBackgroundRoundedButton(title: "회원가입")
     
     let disposeBag = DisposeBag()
     
@@ -111,7 +105,7 @@ class SignUpViewController: BaseViewController {
     }
     
     private func checkTextFieldValidation(joinView: JoinView, check: BehaviorSubject<Bool>, descript: BehaviorSubject<String>) {
-        Observable.combineLatest(joinView.textField.rx.controlEvent(.editingDidBegin), check) { return $1 }
+        Observable.combineLatest(joinView.textField.rx.controlEvent(.editingDidEnd), check) { return $1 }
             .bind(with: self) { owner, value in
                 joinView.descriptionLabel.isHidden = false
                 
