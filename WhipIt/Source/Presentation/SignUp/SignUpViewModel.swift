@@ -37,7 +37,7 @@ class SignUpViewModel: ViewModelType {
         let checkPhone: BehaviorSubject<Bool>
         let phoneDescription: BehaviorSubject<String>
         let buttonValidation: BehaviorSubject<Bool>
-        let signUpResponse: PublishSubject<SignUpResponse>
+        let signUpResponse: PublishSubject<NetworkResult<SignUpResponse>>
     }
     
     func transform(input: Input) -> Output {
@@ -57,7 +57,7 @@ class SignUpViewModel: ViewModelType {
         let checkPhone: BehaviorSubject<Bool> = BehaviorSubject(value: false)
         
         let buttonValidation: BehaviorSubject<Bool> = BehaviorSubject(value: false)
-        let signUpResponse = PublishSubject<SignUpResponse>()
+        let signUpResponse = PublishSubject<NetworkResult<SignUpResponse>>()
         
 
         // MARK: 이메일 정규표현식 검증
@@ -200,14 +200,7 @@ class SignUpViewModel: ViewModelType {
                 APIManager.shared.fetchSignUpRequest(model: $0)
             }
             .subscribe(with: self) { owner, result in
-                switch result {
-                case .success(let response):
-                    print("==signupresponse==",response)
-                    signUpResponse.onNext(response)
-                case .failure(let error):
-                    print(error)
-                    // TODO: error 예외 처리, alert
-                }
+                signUpResponse.onNext(result) // NetworkResult 자체를 넘겨서 VC에서 처리
             }
             .disposed(by: disposeBag)
     
