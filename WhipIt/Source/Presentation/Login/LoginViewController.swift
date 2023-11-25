@@ -32,6 +32,8 @@ class LoginViewController: BaseViewController {
     
     let disposeBag = DisposeBag()
     
+    let viewModel = LoginViewModel()
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -45,6 +47,15 @@ class LoginViewController: BaseViewController {
     }
 
     func bind() {
+        
+        let input = LoginViewModel.Input(
+            emailText: emailView.textField.rx.text.orEmpty,
+            pwText: passwordView.textField.rx.text.orEmpty,
+            loginButtonTap: loginButton.rx.tap
+        )
+        
+        let output = viewModel.transform(input: input)
+        
         segmentedControl.rx.selectedSegmentIndex
             .bind(with: self) { owner, index in
                 switch index {
@@ -56,6 +67,45 @@ class LoginViewController: BaseViewController {
             }
             .disposed(by: disposeBag)
         
+        // 이메일
+        emailView.textField.textContentType = .emailAddress
+        emailView.textField.keyboardType = .emailAddress
+        checkTextFieldValidation(joinView: emailView, check: output.checkEmailRegex, descript: output.emailDescription)
+  
+        
+        // 비밀번호
+        passwordView.textField.textContentType = .newPassword
+        passwordView.textField.isSecureTextEntry = true
+        checkTextFieldValidation(joinView: passwordView, check: output.checkPWRegex, descript: output.pwDescription)
+        
+        // 회원가입 버튼 enable 여부
+        output.buttonValidation
+            .bind(to: loginButton.rx.isEnabled)
+            .disposed(by: disposeBag)
+        
+        output.buttonValidation
+            .bind(with: self) { owner, bool in
+                owner.loginButton.backgroundColor = bool ? .black : .gray
+            }
+            .disposed(by: disposeBag)
+
+        
+    }
+    
+    private func checkTextFieldValidation(joinView: JoinView, check: BehaviorSubject<Bool>, descript: BehaviorSubject<String>) {
+        Observable.combineLatest(joinView.textField.rx.controlEvent(.editingDidEnd), check) { return $1 }
+            .bind(with: self) { owner, value in
+                joinView.descriptionLabel.isHidden = false
+                
+                let color: UIColor = value ? .blue : .red
+                joinView.descriptionLabel.textColor = color
+                joinView.textField.underlineView.backgroundColor = color
+            }
+            .disposed(by: disposeBag)
+        
+        descript
+            .bind(to: joinView.descriptionLabel.rx.text)
+            .disposed(by: disposeBag)
     }
     
     
@@ -81,16 +131,16 @@ class LoginViewController: BaseViewController {
         
         emailView.titleLabel.text = "이메일 주소"
         emailView.snp.makeConstraints { make in
-            make.top.equalTo(logoImageView.snp.bottom).offset(60)
+            make.top.equalTo(logoImageView.snp.bottom).offset(50)
             make.horizontalEdges.equalToSuperview()
-            make.height.equalTo(65)
+            make.height.equalTo(70)
         }
         
         passwordView.titleLabel.text = "비밀번호"
         passwordView.snp.makeConstraints { make in
             make.top.equalTo(emailView.snp.bottom).offset(20)
             make.horizontalEdges.equalToSuperview()
-            make.height.equalTo(65)
+            make.height.equalTo(70)
         }
 
         loginButton.snp.makeConstraints { make in
