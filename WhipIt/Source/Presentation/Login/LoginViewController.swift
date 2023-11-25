@@ -38,8 +38,6 @@ class LoginViewController: BaseViewController {
         return view
     }()
     
-//    let sample = SignUpRequest(email: "djs@apple.com", password: "12345", nick: "Danna")
-    
     let disposeBag = DisposeBag()
     
     override func viewWillAppear(_ animated: Bool) {
@@ -50,11 +48,6 @@ class LoginViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        let a = APIManager.shared.signUp(model: sample)
-//        a.subscribe {
-//            print("single result", $0)
-//        }
-//        .disposed(by: disposeBag)
         bind()
         
     }
