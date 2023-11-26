@@ -8,14 +8,14 @@
 import Foundation
 import Moya
 
-enum JoinAPI {
+enum LSLPAPI {
     case signUp(model: SignUpRequest)
     case emailValidation(model: EmailValidationRequest)
     case login(model: LoginRequest)
-    case accessToken
+    case refreshToken
 }
 
-extension JoinAPI: TargetType {
+extension LSLPAPI: TargetType {
     var baseURL: URL {
         guard let url = URL(string: APIKey.baseURL) else {
             print("URL is something wrong")
@@ -32,7 +32,7 @@ extension JoinAPI: TargetType {
             "validation/email"
         case .login: 
             "login"
-        case .accessToken:
+        case .refreshToken:
             "refresh"
         }
     }
@@ -41,7 +41,7 @@ extension JoinAPI: TargetType {
         switch self {
         case .signUp, .emailValidation, .login:
             return .post
-        case .accessToken:
+        case .refreshToken:
             return .get
         }
     }
@@ -54,7 +54,7 @@ extension JoinAPI: TargetType {
             return .requestJSONEncodable(model)
         case .login(let model):
             return .requestJSONEncodable(model)
-        case .accessToken:
+        case .refreshToken:
             return .requestPlain
         }
     }
@@ -64,7 +64,7 @@ extension JoinAPI: TargetType {
         case .signUp, .emailValidation, .login:
             return ["Content-Type": "application/json",
                     "SesacKey" : APIKey.sesacKey]
-        case .accessToken:
+        case .refreshToken:
             return ["SesacKey" : APIKey.sesacKey]
         }
         
