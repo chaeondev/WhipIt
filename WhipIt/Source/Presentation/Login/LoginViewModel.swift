@@ -101,6 +101,7 @@ class LoginViewModel: ViewModelType {
                     print(response)
                     KeyChainManager.shared.create(account: .accessToken, value: response.token)
                     KeyChainManager.shared.create(account: .refreshToken, value: response.refreshToken)
+                    UserDefaultsManager.isLogin = true
                     loginResponse.onNext(.success("Login Success"))
                 case .failure(let error):
                     loginResponse.onNext(.failure(error))
