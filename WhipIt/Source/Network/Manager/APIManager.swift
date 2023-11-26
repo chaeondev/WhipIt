@@ -20,9 +20,9 @@ final class APIManager {
     static let shared = APIManager()
     private init() { }
     
-    private let provider = MoyaProvider<JoinAPI>()
+    private let provider = MoyaProvider<LSLPAPI>(session: Session(interceptor: AuthInterceptor.shared))
   
-    func request<T: Decodable>(target: JoinAPI) -> Single<NetworkResult<T>> {
+    func request<T: Decodable>(target: LSLPAPI) -> Single<NetworkResult<T>> {
         return Single<NetworkResult<T>>.create { single in
             self.provider.request(target) { result in
                 switch result {
@@ -67,5 +67,9 @@ extension APIManager {
     
     func requestLogin(model: LoginRequest) -> Single<NetworkResult<LoginResponse>> {
         return request(target: .login(model: model))
+    }
+    
+    func refreshToken() -> Single<NetworkResult<RefreshResponse>> {
+        return request(target: .refreshToken)
     }
 }
