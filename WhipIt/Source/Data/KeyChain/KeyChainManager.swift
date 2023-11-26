@@ -20,6 +20,18 @@ final class KeyChainManager {
     static let shared = KeyChainManager()
     static let bundleID = Bundle.main.bundleIdentifier ?? "service"
     
+    var accessToken: String? {
+        get {
+            return read(account: .accessToken)
+        }
+    }
+    
+    var refreshToken: String? {
+        get {
+            return read(account: .refreshToken)
+        }
+    }
+    
     private init() { }
     
     func create(service: String = bundleID, account: accountItem, value: String) {
