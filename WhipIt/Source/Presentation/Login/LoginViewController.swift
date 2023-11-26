@@ -43,6 +43,7 @@ class LoginViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         bind()
+        UserDefaultsManager.isLaunched = true
         
     }
 
@@ -88,8 +89,46 @@ class LoginViewController: BaseViewController {
                 owner.loginButton.backgroundColor = bool ? .black : .gray
             }
             .disposed(by: disposeBag)
+        
+        //로그인 네트워크 분기처리
+        output.loginResponse
+            .bind(with: self) { owner, result in
+                switch result {
+                case .success:
+                    (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootViewController(owner.setTabBarController())
+                case .failure(let error):
+                    var message: String {
+                        switch error {
+                        case .wrongRequest:
+                            return "이메일 또는 비밀번호를 입력해주세요"
+                        case .unAuthorized:
+                            return "가입되지 않은 계정입니다. 이메일 또는 비밀번호를 다시 확인해주세요"
+                        default:
+                            return "네트워크 오류로 로그인이 진행되지 않았습니다. 다시 한 번 시도해주세요"
+                        }
+                    }
+                    
+                    owner.showAlertMessage(title: "로그인 오류", message: message)
+                }
+            }
+            .disposed(by: disposeBag)
 
         
+    }
+    
+    func setTabBarController() -> UITabBarController {
+        let tabBar = UITabBarController()
+        
+        let styleVC = UINavigationController(rootViewController: StyleListViewController())
+        styleVC.tabBarItem = UITabBarItem(title: "STYLE", image: UIImage(systemName: "heart.text.square"), selectedImage: UIImage(systemName: "heart.text.square.fill"))
+        let bookmarkVC = UINavigationController(rootViewController: BookMarkViewController())
+        bookmarkVC.tabBarItem = UITabBarItem(title: "SAVED", image: UIImage(systemName: "bookmark"), selectedImage: UIImage(systemName: "bookmark.fill"))
+        let accountVC = UINavigationController(rootViewController: MyAccountViewController())
+        accountVC.tabBarItem = UITabBarItem(title: "MY", image: UIImage(systemName: "person"), selectedImage: UIImage(systemName: "person.fill"))
+        
+        tabBar.viewControllers = [styleVC, bookmarkVC, accountVC]
+        
+        return tabBar
     }
     
     private func checkTextFieldValidation(joinView: JoinView, check: BehaviorSubject<Bool>, descript: BehaviorSubject<String>) {
