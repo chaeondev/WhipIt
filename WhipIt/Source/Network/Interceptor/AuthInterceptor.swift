@@ -20,13 +20,9 @@ final class AuthInterceptor: RequestInterceptor {
     //adapt: request 전 특정 작업을 하고싶은 경우 사용 -> token이 필요한 url api에 header 삽입
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
     
-        let path = urlRequest.url?.lastPathComponent
-        
-        print(path ?? "can't find lastPathComponent")
-        
         guard urlRequest.url?.absoluteString.hasPrefix(APIKey.baseURL) == true,
-              ["join", "email", "login"].contains(path) == false,
-              let accessToken = KeyChainManager.shared.accessToken
+            let accessToken = KeyChainManager.shared.accessToken,
+            let refreshToken = KeyChainManager.shared.refreshToken
         else {
             completion(.success(urlRequest))
             return
@@ -34,12 +30,8 @@ final class AuthInterceptor: RequestInterceptor {
         
         var urlRequest = urlRequest
         urlRequest.setValue(accessToken, forHTTPHeaderField: "Authorization")
-        
-        if ["refresh"].contains(path) {
-            let refreshToken = KeyChainManager.shared.refreshToken
-            urlRequest.setValue(refreshToken, forHTTPHeaderField: "Refresh")
-        }
-        
+        urlRequest.setValue(refreshToken, forHTTPHeaderField: "Refresh")
+   
         print("adaptor 적용 \(urlRequest.headers)")
         completion(.success(urlRequest))
     }
@@ -47,7 +39,7 @@ final class AuthInterceptor: RequestInterceptor {
     //retry: request가 전송되고 받은 response에 따라 수행할 작업 지정 -> 통신 실패했을때 retry하는 기능
     func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
         print("retry 진입")
-        guard let response = request.task?.response as? HTTPURLResponse, response.statusCode == 401 else {
+        guard let response = request.task?.response as? HTTPURLResponse, response.statusCode == 419 else {
             completion(.doNotRetryWithError(error))
             return
         }
