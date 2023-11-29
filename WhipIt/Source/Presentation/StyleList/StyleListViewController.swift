@@ -9,32 +9,38 @@ import UIKit
 import RxSwift
 import RxCocoa
 import Kingfisher
+import YPImagePicker
+import Photos
 
 class StyleListViewController: BaseViewController {
     
-    var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+    private lazy var searchBar = UISearchBar()
+    
     
     var dataSource: UICollectionViewDiffableDataSource<Int, PhotoResult>!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setNavigationBar()
+        
+        
         configureDataSource()
         
         Network.shared.requestConvertible(type: Photo.self, api: .search(query: "cat")) { response in
             switch response {
             case .success(let success):
                 //데이터 + UI스냅샷
-                dump(success)
+                //dump(success)
                 let ratios = success.results.map { Ratio(ratio: $0.width * 0.75 / $0.height) }
                 
                 let layout = PinterestLayout(columnsCount: 2, itemRatios: ratios, spacing: 10, contentWidth: self.view.frame.width)
                 
                 self.collectionView.collectionViewLayout = UICollectionViewCompositionalLayout(section: layout.section)
-//                self.collectionView.collectionViewLayout = self.configureStyleCellLayout()
                 
                 self.configureSnapshot(success) // 순서에 따라서 스크롤이 최상단이 아니게 될 수 있으니 순서 주의하기!
                 
-                dump(success)
+                //dump(success)
             case .failure(let failure):
                 print(failure.localizedDescription)
             }
@@ -51,6 +57,15 @@ class StyleListViewController: BaseViewController {
         collectionView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
+    }
+    
+    func setNavigationBar() {
+        navigationItem.titleView = searchBar
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "camera.fill"), style: .plain, target: self, action: #selector(postButtonClicked))
+    }
+    
+    @objc func postButtonClicked() {
+        navigationController?.pushViewController(CreatePostViewController(), animated: true)
     }
   
 }
