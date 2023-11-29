@@ -15,7 +15,6 @@ class CreatePostViewController: BaseViewController {
     
     private lazy var photoImageView: UIImageView = {
         let view = UIImageView()
-        view.backgroundColor = .blue
         view.contentMode = .scaleToFill
         view.layer.borderWidth = 0.5
         view.layer.borderColor = UIColor.gray.cgColor
@@ -39,9 +38,13 @@ class CreatePostViewController: BaseViewController {
         view.font = UIFont(name: Suit.light, size: 15)
         view.text = textPlaceholder
         view.textColor = .lightGray
-        view.delegate = self
         return view
     }()
+    
+    var originalPhoto: UIImage = UIImage()
+    
+    var disposeBag = DisposeBag()
+    let viewModel = CreatePostViewModel()
     
     
     var selectedItems = [YPMediaItem]()
@@ -50,6 +53,46 @@ class CreatePostViewController: BaseViewController {
         super.viewDidLoad()
         presentImagePicker()
         setNavigationBar()
+        bind()
+    }
+    
+    private func bind() {
+        
+        let input = CreatePostViewModel.Input(
+            registerBarButtonTap: navigationItem.rightBarButtonItem?.rx.tap,
+            contentText: contentTextView.rx.text.orEmpty,
+            imageData: originalPhoto.jpegData(compressionQuality: 0.8) ?? Data()
+        )
+        let output = viewModel.transform(input: input)
+        
+        // textView Placeholder
+        contentTextView.rx.didBeginEditing
+            .bind(with: self) { owner, _ in
+                if owner.contentTextView.text == owner.textPlaceholder {
+                    owner.contentTextView.text = nil
+                }
+                owner.contentTextView.textColor = .black
+            }
+            .disposed(by: disposeBag)
+        
+        contentTextView.rx.didEndEditing
+            .bind(with: self) { owner, _ in
+                if owner.contentTextView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    owner.contentTextView.text = owner.textPlaceholder
+                    owner.contentTextView.textColor = .lightGray
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        
+        // 등록버튼 enable 처리
+        output.registerValidation
+            .bind(with: self) { owner, bool in
+                owner.navigationItem.rightBarButtonItem?.isEnabled = bool
+                owner.navigationItem.rightBarButtonItem?.tintColor = bool ? .black : .gray
+            }
+            .disposed(by: disposeBag)
+        
     }
     
     private func setNavigationBar() {
@@ -61,7 +104,7 @@ class CreatePostViewController: BaseViewController {
         style.buttonAppearance.normal.titleTextAttributes = [.font: UIFont(name: Suit.bold, size: 15)!]
         navigationController?.navigationBar.standardAppearance = style
         
-        let registerButton = UIBarButtonItem(title: "등록", style: .plain, target: self, action: #selector(registerButtonClicked))
+        let registerButton = UIBarButtonItem(title: "등록", style: .plain, target: self, action: nil)
         registerButton.tintColor = .black
         navigationItem.rightBarButtonItem = registerButton
         
@@ -131,6 +174,9 @@ extension CreatePostViewController: YPImagePickerDelegate {
         imagePicker.didFinishPicking { [weak imagePicker] items, cancelled in
             if cancelled {
                 imagePicker?.dismiss(animated: true)
+                if self.photoImageView.image == nil {
+                    self.navigationController?.popViewController(animated: false)
+                }
             }
             
             self.selectedItems = items
@@ -138,6 +184,7 @@ extension CreatePostViewController: YPImagePickerDelegate {
                 switch singlePhoto {
                 case .photo(let photo):
                     self.photoImageView.image = photo.image
+                    self.originalPhoto = photo.originalImage
                     imagePicker?.dismiss(animated: true)
                 default:
                     imagePicker?.dismiss(animated: true)
@@ -165,19 +212,3 @@ extension CreatePostViewController: YPImagePickerDelegate {
     
 }
 
-extension CreatePostViewController: UITextViewDelegate {
-    
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        if contentTextView.text == textPlaceholder {
-            textView.text = nil
-            textView.textColor = .black
-        }
-    }
-    
-    func textViewDidEndEditing(_ textView: UITextView) {
-        if contentTextView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            contentTextView.text = textPlaceholder
-            contentTextView.textColor = .lightGray
-        }
-    }
-}
