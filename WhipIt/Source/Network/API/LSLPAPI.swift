@@ -9,15 +9,21 @@ import Foundation
 import Moya
 
 enum LSLPAPI {
+    //회원가입, 로그인
     case signUp(model: SignUpRequest)
     case emailValidation(model: EmailValidationRequest)
     case login(model: LoginRequest)
+    
+    //토큰 refresh
     case refreshToken
+    
+    //Post
+    case createPost(model: CreatePostRequest)
 }
 
 extension LSLPAPI: TargetType {
     var baseURL: URL {
-        guard let url = URL(string: APIKey.baseURL) else {
+        guard let url = URL(string: APIKey.testURL) else {
             print("URL is something wrong")
             return URL(fileURLWithPath: "")
         }
@@ -34,12 +40,14 @@ extension LSLPAPI: TargetType {
             "login"
         case .refreshToken:
             "refresh"
+        case .createPost:
+            "post"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .signUp, .emailValidation, .login:
+        case .signUp, .emailValidation, .login, .createPost:
             return .post
         case .refreshToken:
             return .get
@@ -56,6 +64,13 @@ extension LSLPAPI: TargetType {
             return .requestJSONEncodable(model)
         case .refreshToken:
             return .requestPlain
+        case .createPost(let model):
+            let imageData = MultipartFormData(provider: .data(model.file), name: "post_photo", fileName: "\(model.file).jpg", mimeType: "image/jpeg")
+            let productidData = MultipartFormData(provider: .data(model.product_id.data(using: .utf8)!), name: "product_id")
+            let contentData = MultipartFormData(provider: .data(model.content.data(using: .utf8)!), name: "content")
+            let multipartData: [MultipartFormData] = [imageData, productidData, contentData]
+            
+            return .uploadMultipart(multipartData)
         }
     }
     
@@ -66,6 +81,9 @@ extension LSLPAPI: TargetType {
                     "SesacKey" : APIKey.sesacKey]
         case .refreshToken:
             return ["SesacKey" : APIKey.sesacKey]
+        case .createPost:
+            return ["Content-Type": "multipart/form-data",
+                    "SesacKey": APIKey.sesacKey]
         }
         
     }

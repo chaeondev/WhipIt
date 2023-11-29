@@ -69,7 +69,18 @@ extension APIManager {
         return request(target: .login(model: model))
     }
     
+}
+
+// MARK: 토큰 refresh API Method
+extension APIManager {
     func refreshToken() -> Single<NetworkResult<RefreshResponse>> {
         return request(target: .refreshToken)
+    }
+}
+
+// MARK: POST 관련 API Method
+extension APIManager {
+    func requestCreatePost(model: CreatePostRequest) -> Single<NetworkResult<CreatePostResponse>> {
+        return request(target: .createPost(model: model))
     }
 }
