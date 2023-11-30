@@ -65,7 +65,7 @@ extension LSLPAPI: TargetType {
         case .refreshToken:
             return .requestPlain
         case .createPost(let model):
-            let imageData = MultipartFormData(provider: .data(model.file), name: "post_photo", fileName: "\(model.file).jpg", mimeType: "image/jpeg")
+            let imageData = MultipartFormData(provider: .data(model.file), name: "file", fileName: "\(model.file).jpeg", mimeType: "image/jpeg")
             let productidData = MultipartFormData(provider: .data(model.product_id.data(using: .utf8)!), name: "product_id")
             let contentData = MultipartFormData(provider: .data(model.content.data(using: .utf8)!), name: "content")
             let multipartData: [MultipartFormData] = [imageData, productidData, contentData]
