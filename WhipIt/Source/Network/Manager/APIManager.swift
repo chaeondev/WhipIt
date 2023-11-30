@@ -28,6 +28,7 @@ final class APIManager {
                 switch result {
                 case .success(let response):
 //                    dump(response)
+//                    print(String(data: response.data, encoding: .utf8))
                     guard let decodedData = try? JSONDecoder().decode(T.self, from: response.data) else {
                         single(.success(.failure(.invalidData)))
                         return
@@ -75,6 +76,17 @@ extension APIManager {
 extension APIManager {
     func refreshToken() -> Single<NetworkResult<RefreshResponse>> {
         return request(target: .refreshToken)
+    }
+    
+    func refreshTokenWithoutRx() {
+        provider.request(.refreshToken) { result in
+            switch result {
+            case .success(let response):
+                print(response)
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
 }
 
