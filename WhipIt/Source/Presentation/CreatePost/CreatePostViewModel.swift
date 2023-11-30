@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 
 enum ProductID {
-    static let basic = "whipit/style"
+    static let basic = "whipit_style"
 }
 
 class CreatePostViewModel: ViewModelType {
@@ -18,7 +18,7 @@ class CreatePostViewModel: ViewModelType {
     var disposeBag = DisposeBag()
     
     struct Input {
-        let registerBarButtonTap: ControlEvent<Void>?
+        let registerBarButtonTap: ControlEvent<Void>
         let contentText: ControlProperty<String>
         let imageData: Data
     }
@@ -41,6 +41,33 @@ class CreatePostViewModel: ViewModelType {
             .map { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
             .bind(to: registerValidation)
             .disposed(by: disposeBag)
+        
+        // MARK: post 등록 네트워크 통신
+        let postRequest = Observable.combineLatest(
+            input.contentText,
+            imageRxData,
+            registerValidation
+        )
+            .share()
+            .filter { $0.2 }
+            .map { text, image, validation in
+                return CreatePostRequest(product_id: ProductID.basic, content: text, file: image)
+            }
+        
+        input.registerBarButtonTap
+            .throttle(.seconds(1), scheduler: MainScheduler.instance)
+            .withLatestFrom(postRequest) { _, request in
+                return request
+            }
+            .flatMapLatest {
+                APIManager.shared.requestCreatePost(model: $0)
+            }
+            .subscribe(with: self) { owner, result in
+                postResponse.onNext(result)
+            }
+            .disposed(by: disposeBag)
+        
+        
         
         return Output(registerValidation: registerValidation, postResponse: postResponse)
     }

@@ -59,7 +59,7 @@ class CreatePostViewController: BaseViewController {
     private func bind() {
         
         let input = CreatePostViewModel.Input(
-            registerBarButtonTap: navigationItem.rightBarButtonItem?.rx.tap,
+            registerBarButtonTap: navigationItem.rightBarButtonItem!.rx.tap,
             contentText: contentTextView.rx.text.orEmpty,
             imageData: originalPhoto.jpegData(compressionQuality: 0.8) ?? Data()
         )
@@ -90,6 +90,18 @@ class CreatePostViewController: BaseViewController {
             .bind(with: self) { owner, bool in
                 owner.navigationItem.rightBarButtonItem?.isEnabled = bool
                 owner.navigationItem.rightBarButtonItem?.tintColor = bool ? .black : .gray
+            }
+            .disposed(by: disposeBag)
+        
+        // post등록 네트워크 통신결과 처리
+        output.postResponse
+            .subscribe(with: self) { owner, result in
+                switch result {
+                case .success(let response):
+                    print(response)
+                case .failure(let error):
+                    print(error)
+                }
             }
             .disposed(by: disposeBag)
         
