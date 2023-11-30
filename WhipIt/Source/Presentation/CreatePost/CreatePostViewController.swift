@@ -97,10 +97,20 @@ class CreatePostViewController: BaseViewController {
         output.postResponse
             .subscribe(with: self) { owner, result in
                 switch result {
-                case .success(let response):
-                    print(response)
+                case .success:
+                    owner.navigationController?.popViewController(animated: true)
                 case .failure(let error):
-                    print(error)
+                    var message: String {
+                        switch error {
+                        case .wrongRequest: 
+                            return "사진 용량은 최대 10MB이하로 선택해주세요!"
+                        case .forbidden:
+                            return "접근권한이 없습니다"
+                        default:
+                            return "네트워크 서버 장애로 게시글이 저장되지 않았습니다. 다시시도해주세요"
+                        }
+                    }
+                    owner.showAlertMessage(title: "게시글 등록 오류", message: message)
                 }
             }
             .disposed(by: disposeBag)
