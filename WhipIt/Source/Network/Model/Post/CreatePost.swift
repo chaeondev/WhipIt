@@ -14,17 +14,27 @@ struct CreatePostRequest: Encodable {
 }
 
 struct CreatePostResponse: Decodable {
-    let creator: Creator
-    let hashTags: [String]
     let likes: [String]
     let image: [String]
-    let comments: [String]
+    let hashTags: [String]
+    let comments: [Comment]
+    let _id: String
+    let creator: Creator
+    let time: String
     let content: String
     let product_id: String
-    let time: String
+
 }
 
-struct Creator: Decodable {
+struct Creator: Decodable, Hashable {
+    let _id: String
     let nick: String
-    let profile: String
+    let profile: String?
+}
+
+struct Comment: Decodable, Hashable {
+    let _id: String
+    let content: String
+    let time: String
+    let creator: Creator
 }
