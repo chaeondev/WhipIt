@@ -20,7 +20,7 @@ class CreatePostViewModel: ViewModelType {
     struct Input {
         let registerBarButtonTap: ControlEvent<Void>
         let contentText: ControlProperty<String>
-        let imageData: Data
+        let imageData: Observable<Data?>
     }
     
     struct Output {
@@ -31,7 +31,6 @@ class CreatePostViewModel: ViewModelType {
     func transform(input: Input) -> Output {
         
         let registerValidation = BehaviorSubject(value: false)
-        let imageRxData = BehaviorSubject(value: input.imageData)
         let postResponse = PublishSubject<NetworkResult<CreatePostResponse>>()
         
         // MARK: 등록 버튼 validation
@@ -43,15 +42,17 @@ class CreatePostViewModel: ViewModelType {
             .disposed(by: disposeBag)
         
         // MARK: post 등록 네트워크 통신
+        
         let postRequest = Observable.combineLatest(
             input.contentText,
-            imageRxData,
+            input.imageData,
             registerValidation
         )
             .share()
-            .filter { $0.2 }
+            .filter { $0.2 && ($0.1 != nil) }
             .map { text, image, validation in
-                return CreatePostRequest(product_id: ProductID.basic, content: text, file: image)
+                
+                return CreatePostRequest(product_id: ProductID.basic, content: text, file: image!)
             }
         
         input.registerBarButtonTap

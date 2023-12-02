@@ -40,8 +40,8 @@ class CreatePostViewController: BaseViewController {
         view.textColor = .lightGray
         return view
     }()
-    
-    var originalPhoto: UIImage = UIImage()
+
+    private let selectedPhotoSubject = PublishSubject<UIImage>()
     
     var disposeBag = DisposeBag()
     let viewModel = CreatePostViewModel()
@@ -61,8 +61,9 @@ class CreatePostViewController: BaseViewController {
         let input = CreatePostViewModel.Input(
             registerBarButtonTap: navigationItem.rightBarButtonItem!.rx.tap,
             contentText: contentTextView.rx.text.orEmpty,
-            imageData: originalPhoto.jpegData(compressionQuality: 0.8) ?? Data()
+            imageData: selectedPhotoSubject.asObservable().map { $0.jpegData(compressionQuality: 0.8)}
         )
+        
         let output = viewModel.transform(input: input)
         
         // textView Placeholder
@@ -206,7 +207,9 @@ extension CreatePostViewController: YPImagePickerDelegate {
                 switch singlePhoto {
                 case .photo(let photo):
                     self.photoImageView.image = photo.image
-                    self.originalPhoto = photo.originalImage
+                    self.selectedPhotoSubject.onNext(photo.originalImage)
+                    //self.originalPhoto = photo.originalImage
+                    print("=====111111=======")
                     imagePicker?.dismiss(animated: true)
                 default:
                     imagePicker?.dismiss(animated: true)
