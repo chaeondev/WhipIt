@@ -19,11 +19,12 @@ enum LSLPAPI {
     
     //Post
     case createPost(model: CreatePostRequest)
+    case getPost(limit: String?)
 }
 
 extension LSLPAPI: TargetType {
     var baseURL: URL {
-        guard let url = URL(string: APIKey.testURL) else {
+        guard let url = URL(string: APIKey.baseURL) else {
             print("URL is something wrong")
             return URL(fileURLWithPath: "")
         }
@@ -42,6 +43,8 @@ extension LSLPAPI: TargetType {
             "refresh"
         case .createPost:
             "post"
+        case .getPost:
+            "post"
         }
     }
     
@@ -49,7 +52,7 @@ extension LSLPAPI: TargetType {
         switch self {
         case .signUp, .emailValidation, .login, .createPost:
             return .post
-        case .refreshToken:
+        case .refreshToken, .getPost:
             return .get
         }
     }
@@ -71,6 +74,18 @@ extension LSLPAPI: TargetType {
             let multipartData: [MultipartFormData] = [imageData, productidData, contentData]
             
             return .uploadMultipart(multipartData)
+        case .getPost(let limit):
+            if let limit {
+                return .requestParameters(
+                    parameters: ["limit": limit, "product_id": ProductID.basic],
+                    encoding: URLEncoding.queryString
+                    )
+            } else {
+                return .requestParameters(
+                    parameters: ["product_id": ProductID.basic],
+                    encoding: URLEncoding.queryString
+                    )
+            }
         }
     }
     
@@ -78,12 +93,14 @@ extension LSLPAPI: TargetType {
         switch self {
         case .signUp, .emailValidation, .login:
             return ["Content-Type": "application/json",
-                    "SesacKey" : APIKey.sesacKey]
+                    "SesacKey": APIKey.sesacKey]
         case .refreshToken:
-            return ["SesacKey" : APIKey.sesacKey]
+            return ["SesacKey": APIKey.sesacKey]
         case .createPost:
             return ["Content-Type": "multipart/form-data",
                     "SesacKey": APIKey.sesacKey]
+        case .getPost:
+            return ["SesacKey": APIKey.sesacKey]
         }
         
     }
