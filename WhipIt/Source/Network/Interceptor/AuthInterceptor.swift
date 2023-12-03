@@ -20,7 +20,7 @@ final class AuthInterceptor: RequestInterceptor {
     //adapt: request 전 특정 작업을 하고싶은 경우 사용 -> token이 필요한 url api에 header 삽입
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
     
-        guard urlRequest.url?.absoluteString.hasPrefix(APIKey.testURL) == true,
+        guard urlRequest.url?.absoluteString.hasPrefix(APIKey.baseURL) == true,
             let accessToken = KeyChainManager.shared.accessToken,
             let refreshToken = KeyChainManager.shared.refreshToken
         else {
