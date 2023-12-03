@@ -9,8 +9,6 @@ import UIKit
 import RxSwift
 import RxCocoa
 import Kingfisher
-import YPImagePicker
-import Photos
 
 class StyleListViewController: BaseViewController {
     
@@ -18,33 +16,65 @@ class StyleListViewController: BaseViewController {
     private lazy var searchBar = UISearchBar()
     
     
-    var dataSource: UICollectionViewDiffableDataSource<Int, PhotoResult>!
+    var dataSource: UICollectionViewDiffableDataSource<Int, Post>!
+    
+    private let viewModel = StyleListViewModel()
+    private lazy var disposeBag = DisposeBag()
+    
+    let imageListSubject = PublishSubject<[UIImage]>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setNavigationBar()
-        
-        
         configureDataSource()
         
-        Network.shared.requestConvertible(type: Photo.self, api: .search(query: "cat")) { response in
-            switch response {
-            case .success(let success):
-                //데이터 + UI스냅샷
-                //dump(success)
-                let ratios = success.results.map { Ratio(ratio: $0.width * 0.75 / $0.height) }
-                
-                let layout = PinterestLayout(columnsCount: 2, itemRatios: ratios, spacing: 10, contentWidth: self.view.frame.width)
-                
-                self.collectionView.collectionViewLayout = UICollectionViewCompositionalLayout(section: layout.section)
-                
-                self.configureSnapshot(success) // 순서에 따라서 스크롤이 최상단이 아니게 될 수 있으니 순서 주의하기!
-                
-                //dump(success)
-            case .failure(let failure):
-                print(failure.localizedDescription)
+        bind()
+        
+//        Network.shared.requestConvertible(type: Photo.self, api: .search(query: "cat")) { response in
+//            switch response {
+//            case .success(let success):
+//                //데이터 + UI스냅샷
+//                //dump(success)
+//                let ratios = success.results.map { Ratio(ratio: $0.width * 0.75 / $0.height) }
+//                
+//                let layout = PinterestLayout(columnsCount: 2, itemRatios: ratios, spacing: 10, contentWidth: self.view.frame.width)
+//                
+//                self.collectionView.collectionViewLayout = UICollectionViewCompositionalLayout(section: layout.section)
+//                
+////                self.configureSnapshot(success) // 순서에 따라서 스크롤이 최상단이 아니게 될 수 있으니 순서 주의하기!
+//                
+//                //dump(success)
+//            case .failure(let failure):
+//                print(failure.localizedDescription)
+//            }
+//        }
+    }
+    
+    private func bind() {
+        let input = StyleListViewModel.Input(searchButtonTap: searchBar.rx.searchButtonClicked)
+        let output = viewModel.transform(input: input)
+        
+        output.imageRelayList
+            .bind(with: self) { owner, imageList in
+                let list = imageList.map { $0.image }
+                let ratios = list.map {
+                    return Ratio(ratio: $0.size.width * 0.75 / $0.size.height)
+                }
+                let layout = PinterestLayout(columnsCount: 2, itemRatios: ratios, spacing: 10, contentWidth: owner.view.frame.width)
+                owner.collectionView.collectionViewLayout = UICollectionViewCompositionalLayout(section: layout.section)
             }
-        }
+            .disposed(by: disposeBag)
+        
+        output.getPostResponse
+            .subscribe(with: self) { owner, result in
+                switch result {
+                case .success(let response):
+                    owner.configureSnapshot(response)
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+            .disposed(by: disposeBag)
     }
     
     override func setHierarchy() {
@@ -59,7 +89,7 @@ class StyleListViewController: BaseViewController {
         }
     }
     
-    func setNavigationBar() {
+    private func setNavigationBar() {
         navigationItem.titleView = searchBar
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "camera.fill"), style: .plain, target: self, action: #selector(postButtonClicked))
     }
@@ -72,17 +102,17 @@ class StyleListViewController: BaseViewController {
 
 extension StyleListViewController {
     
-    func configureSnapshot(_ item: Photo) {
-        var snapshot = NSDiffableDataSourceSnapshot<Int, PhotoResult>()
+    func configureSnapshot(_ item: GetPostResponse) {
+        var snapshot = NSDiffableDataSourceSnapshot<Int, Post>()
         snapshot.appendSections([0])
-        snapshot.appendItems(item.results)
+        snapshot.appendItems(item.data)
         dataSource.apply(snapshot)
     }
     
     func configureDataSource() {
         
-        let cellRegistration = UICollectionView.CellRegistration<StyleCollectionViewCell, PhotoResult> { cell, indexPath, itemIdentifier in
-            cell.photoImageView.kf.setImage(with: URL(string: itemIdentifier.urls.thumb)!)
+        let cellRegistration = UICollectionView.CellRegistration<StyleCollectionViewCell, Post> { cell, indexPath, itemIdentifier in
+            cell.configureCell(stylePost: itemIdentifier)
             
         }
         
