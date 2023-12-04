@@ -95,4 +95,8 @@ extension APIManager {
     func requestCreatePost(model: CreatePostRequest) -> Single<NetworkResult<CreatePostResponse>> {
         return request(target: .createPost(model: model))
     }
+    
+    func requestGetPost(limit: Int) -> Single<NetworkResult<GetPostResponse>> {
+        return request(target: .getPost(limit: "\(limit)"))
+    }
 }
