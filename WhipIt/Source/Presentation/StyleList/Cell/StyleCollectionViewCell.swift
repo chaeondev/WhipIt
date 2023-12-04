@@ -6,10 +6,11 @@
 //
 
 import UIKit
+import Kingfisher
 
-class StyleCollectionViewCell: BaseCollectionViewCell {
+final class StyleCollectionViewCell: BaseCollectionViewCell {
     
-    lazy var photoImageView: UIImageView = {
+    private lazy var photoImageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFill
         view.backgroundColor = .blue
@@ -18,7 +19,7 @@ class StyleCollectionViewCell: BaseCollectionViewCell {
         return view
     }()
     
-    lazy var userImageView: UIImageView = {
+    private lazy var userImageView: UIImageView = {
         let view = RoundImageView(frame: .zero)
         view.image = UIImage(systemName: "star")
         view.contentMode = .scaleAspectFill
@@ -26,21 +27,46 @@ class StyleCollectionViewCell: BaseCollectionViewCell {
         return view
     }()
     
-    lazy var userNickLabel: UILabel = UILabel.labelBuilder(text: "위핏이620", font: Font.light10, textColor: .darkGray)
+    private lazy var userNickLabel: UILabel = UILabel.labelBuilder(text: "위핏이620", font: Font.light10, textColor: .darkGray)
     
-    lazy var userStackView: UIStackView = UIStackView.stackViewBuilder(axis: .horizontal, distribution: .equalSpacing, spacing: 4)
+    private lazy var userStackView: UIStackView = UIStackView.stackViewBuilder(axis: .horizontal, distribution: .equalSpacing, spacing: 4)
 
-    lazy var bookMarkButton: UIButton = {
+    private lazy var bookMarkButton: UIButton = {
         let view = UIButton.buttonBuilder(image: UIImage(systemName: "bookmark")!)
         view.tintColor = .gray
         return view
     }()
     
-    lazy var bookMarkCntLabel: UILabel = UILabel.labelBuilder(text: "168", font: Font.light10, textColor: .gray)
+    private lazy var bookMarkCntLabel: UILabel = UILabel.labelBuilder(text: "168", font: Font.light10, textColor: .gray)
     
-    lazy var bookMarkStackView: UIStackView = UIStackView.stackViewBuilder(axis: .horizontal, distribution: .equalSpacing, spacing: 4)
+    private lazy var bookMarkStackView: UIStackView = UIStackView.stackViewBuilder(axis: .horizontal, distribution: .equalSpacing, spacing: 4)
     
-    lazy var contentLabel: UILabel = UILabel.labelBuilder(text: "#코지챌린지 \n 궂은 날씨에도 포근하게 감싸줄 아우터!", font: Font.light12, textColor: .black, numberOfLines: 2)
+    private lazy var contentLabel: UILabel = {
+        let view = UILabel.labelBuilder(text: "#코지챌린지 \n 궂은 날씨에도 포근하게 감싸줄 아우터!", font: Font.light12, textColor: .black, numberOfLines: 2)
+        view.lineBreakMode = .byWordWrapping //말줄임표 X
+        view.sizeToFit()
+        return view
+    }()
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        
+        photoImageView.kf.cancelDownloadTask()
+        photoImageView.image = nil
+        
+        userImageView.kf.cancelDownloadTask()
+        userImageView.image = nil
+    }
+    
+    func configureCell(stylePost: Post) {
+        let imageUrl = stylePost.image[0]
+        photoImageView.setKFImage(imageUrl: imageUrl)
+//        userImageView.setKFImage(imageUrl: profileUrl)
+        userNickLabel.text = stylePost.creator.nick
+        bookMarkCntLabel.text = "\(stylePost.likes.count)"
+        contentLabel.text = stylePost.content
+    }
     
     override func setHierarchy() {
         [userImageView, userNickLabel].forEach { userStackView.addArrangedSubview($0) }
