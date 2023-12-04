@@ -71,18 +71,19 @@ extension LSLPAPI: TargetType {
             let imageData = MultipartFormData(provider: .data(model.file), name: "file", fileName: "\(model.file).jpeg", mimeType: "image/jpeg")
             let productidData = MultipartFormData(provider: .data(model.product_id.data(using: .utf8)!), name: "product_id")
             let contentData = MultipartFormData(provider: .data(model.content.data(using: .utf8)!), name: "content")
-            let multipartData: [MultipartFormData] = [imageData, productidData, contentData]
+            let ratioData = MultipartFormData(provider: .data(model.content1.data(using: .utf8)!), name: "content1")
+            let multipartData: [MultipartFormData] = [imageData, productidData, contentData, ratioData]
             
             return .uploadMultipart(multipartData)
         case .getPost(let limit):
             if let limit {
                 return .requestParameters(
-                    parameters: ["limit": limit, "product_id": ProductID.basic],
+                    parameters: ["limit": limit, "product_id": ProductID.test],
                     encoding: URLEncoding.queryString
                     )
             } else {
                 return .requestParameters(
-                    parameters: ["product_id": ProductID.basic],
+                    parameters: ["product_id": ProductID.test],
                     encoding: URLEncoding.queryString
                     )
             }
