@@ -61,7 +61,10 @@ class CreatePostViewController: BaseViewController {
         let input = CreatePostViewModel.Input(
             registerBarButtonTap: navigationItem.rightBarButtonItem!.rx.tap,
             contentText: contentTextView.rx.text.orEmpty,
-            imageData: selectedPhotoSubject.asObservable().map { $0.jpegData(compressionQuality: 0.8)}
+            imageData: selectedPhotoSubject.asObservable().map { $0.jpegData(compressionQuality: 0.8)},
+            imageRatio: selectedPhotoSubject.asObservable().map {
+                $0.size.width / $0.size.height
+            }
         )
         
         let output = viewModel.transform(input: input)

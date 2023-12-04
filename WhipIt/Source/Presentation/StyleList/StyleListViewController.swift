@@ -23,12 +23,18 @@ class StyleListViewController: BaseViewController {
     
     let imageListSubject = PublishSubject<[UIImage]>()
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        bind()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setNavigationBar()
         configureDataSource()
         
-        bind()
+        //bind()
         
 //        Network.shared.requestConvertible(type: Photo.self, api: .search(query: "cat")) { response in
 //            switch response {
@@ -54,21 +60,18 @@ class StyleListViewController: BaseViewController {
         let input = StyleListViewModel.Input(searchButtonTap: searchBar.rx.searchButtonClicked)
         let output = viewModel.transform(input: input)
         
-        output.imageRelayList
-            .bind(with: self) { owner, imageList in
-                let list = imageList.map { $0.image }
-                let ratios = list.map {
-                    return Ratio(ratio: $0.size.width * 0.75 / $0.size.height)
-                }
-                let layout = PinterestLayout(columnsCount: 2, itemRatios: ratios, spacing: 10, contentWidth: owner.view.frame.width)
-                owner.collectionView.collectionViewLayout = UICollectionViewCompositionalLayout(section: layout.section)
-            }
-            .disposed(by: disposeBag)
-        
         output.getPostResponse
             .subscribe(with: self) { owner, result in
                 switch result {
                 case .success(let response):
+                    let ratios = response.data.map {
+                        let floatRatio: CGFloat = CGFloat(NSString(string: $0.content1).floatValue)
+                        return Ratio(ratio: floatRatio * 0.75)
+                    }
+                    let layout = PinterestLayout(columnsCount: 2, itemRatios: ratios, spacing: 10, contentWidth: owner.view.frame.width)
+                    
+                    owner.collectionView.collectionViewLayout = UICollectionViewCompositionalLayout(section: layout.section)
+                    
                     owner.configureSnapshot(response)
                 case .failure(let error):
                     print(error.localizedDescription)
