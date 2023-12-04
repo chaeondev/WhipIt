@@ -21,6 +21,7 @@ struct Post: Decodable, Hashable {
     let creator: Creator
     let time: String
     let content: String
+    let content1: String
     let product_id: String
 }
 

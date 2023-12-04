@@ -10,6 +10,7 @@ import Foundation
 struct CreatePostRequest: Encodable {
     let product_id: String
     let content: String
+    let content1: String
     let file: Data
 }
 
@@ -22,6 +23,7 @@ struct CreatePostResponse: Decodable {
     let creator: Creator
     let time: String
     let content: String
+    let content1: String
     let product_id: String
 
 }
