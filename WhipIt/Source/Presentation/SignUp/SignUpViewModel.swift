@@ -93,7 +93,7 @@ class SignUpViewModel: ViewModelType {
             })
             .filter { !$0.isEmpty }
             .flatMapLatest {
-                APIManager.shared.fetchEmailValidation(email: $0)
+                APIManager.shared.validateEmail(email: $0)
             }
             .subscribe(with: self) { owner, result in
                 switch result {
@@ -180,6 +180,7 @@ class SignUpViewModel: ViewModelType {
             input.phoneText,
             buttonValidation
         )
+        .share()
         .filter { $0.3 } //buttonValidation이 true인 값만 filter
         .map { email, password, phoneNum, validation in
             let nick = "위핏이\(Int.random(in: 1...1000))"
@@ -191,13 +192,14 @@ class SignUpViewModel: ViewModelType {
             )
         }
         
+        //네트워크 통신
         input.signUpButtontap
-            .throttle(.seconds(1), scheduler: MainScheduler.instance)
+            .throttle(.seconds(1), scheduler: MainScheduler.instance) //중복탭 방지
             .withLatestFrom(signUpRequest) { _, request in
                 return request
             }
             .flatMapLatest {
-                APIManager.shared.fetchSignUpRequest(model: $0)
+                APIManager.shared.requestSignUp(model: $0)
             }
             .subscribe(with: self) { owner, result in
                 signUpResponse.onNext(result) // NetworkResult 자체를 넘겨서 VC에서 처리

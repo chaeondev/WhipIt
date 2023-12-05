@@ -105,7 +105,7 @@ class SignUpViewController: BaseViewController {
     }
     
     private func checkTextFieldValidation(joinView: JoinView, check: BehaviorSubject<Bool>, descript: BehaviorSubject<String>) {
-        Observable.combineLatest(joinView.textField.rx.controlEvent(.editingDidEnd), check) { return $1 }
+        Observable.combineLatest(joinView.textField.rx.controlEvent(.editingDidBegin), check) { return $1 }
             .bind(with: self) { owner, value in
                 joinView.descriptionLabel.isHidden = false
                 
