@@ -16,17 +16,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         guard let scene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: scene)
-        let tabBar = setTabBarController()
-        
-        let loginVC = UINavigationController(rootViewController: LoginViewController())
-        
-        if !UserDefaultsManager.isLaunched {
-            window?.rootViewController = loginVC
-        } else {
-            window?.rootViewController = UserDefaultsManager.isLogin ? tabBar : loginVC
-        }
-        
-//        window?.rootViewController = tabBar
+
+        window?.rootViewController = SplashViewController()
+
         window?.makeKeyAndVisible()
         
     }
@@ -38,21 +30,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.rootViewController = vc
         
         UIView.transition(with: window, duration: 0.5, options: [.transitionFlipFromLeft], animations: nil, completion: nil)
-    }
-    
-    func setTabBarController() -> UITabBarController {
-        let tabBar = UITabBarController()
-        
-        let styleVC = UINavigationController(rootViewController: StyleListViewController())
-        styleVC.tabBarItem = UITabBarItem(title: "STYLE", image: UIImage(systemName: "heart.text.square"), selectedImage: UIImage(systemName: "heart.text.square.fill"))
-        let bookmarkVC = UINavigationController(rootViewController: BookMarkViewController())
-        bookmarkVC.tabBarItem = UITabBarItem(title: "SAVED", image: UIImage(systemName: "bookmark"), selectedImage: UIImage(systemName: "bookmark.fill"))
-        let accountVC = UINavigationController(rootViewController: MyAccountViewController())
-        accountVC.tabBarItem = UITabBarItem(title: "MY", image: UIImage(systemName: "person"), selectedImage: UIImage(systemName: "person.fill"))
-        
-        tabBar.viewControllers = [styleVC, bookmarkVC, accountVC]
-        
-        return tabBar
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
