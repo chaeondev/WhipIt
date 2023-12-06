@@ -16,24 +16,26 @@ class StyleListViewModel: ViewModelType {
     
     struct Input {
         let searchButtonTap: ControlEvent<Void>
+        let prefetchItems: ControlEvent<[IndexPath]>
     }
     
     struct Output {
-        let getPostResponse: PublishSubject<NetworkResult<GetPostResponse>>
+        let feedResult: PublishSubject<NetworkResult<GetPostResponse>>
     }
     
     func transform(input: Input) -> Output {
         
-        let getPostResponse = PublishSubject<NetworkResult<GetPostResponse>>()
+        let feedResult = PublishSubject<NetworkResult<GetPostResponse>>()
  
-        APIManager.shared.requestGetPost(limit: 10)
+        APIManager.shared.requestGetPost(limit: 10, next: nil)
             .asObservable()
             .subscribe(with: self) { owner, result in
-                getPostResponse.onNext(result)
+                feedResult.onNext(result)
             }
             .disposed(by: disposeBag)
     
-        return Output(getPostResponse: getPostResponse)
+        return Output(feedResult: feedResult)
     }
+    
 }
 

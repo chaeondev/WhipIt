@@ -12,7 +12,11 @@ import Kingfisher
 
 class StyleListViewController: BaseViewController {
     
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+    private lazy var collectionView = {
+        let view = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        return view
+    }()
+    
     private lazy var searchBar = UISearchBar()
     
     
@@ -21,11 +25,13 @@ class StyleListViewController: BaseViewController {
     private let viewModel = StyleListViewModel()
     private lazy var disposeBag = DisposeBag()
     
-    let imageListSubject = PublishSubject<[UIImage]>()
+    //feed post list
+    var postList: [Post] = []
+    var nextCursor: String = ""
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        postList = []
         bind()
     }
     
@@ -33,19 +39,23 @@ class StyleListViewController: BaseViewController {
         super.viewDidLoad()
         setNavigationBar()
         configureDataSource()
-        
+        collectionView.prefetchDataSource = self
         //bind()
         
     }
     
     private func bind() {
-        let input = StyleListViewModel.Input(searchButtonTap: searchBar.rx.searchButtonClicked)
+        let input = StyleListViewModel.Input(
+            searchButtonTap: searchBar.rx.searchButtonClicked,
+            prefetchItems: collectionView.rx.prefetchItems
+        )
         let output = viewModel.transform(input: input)
-        
-        output.getPostResponse
+        output.feedResult
             .subscribe(with: self) { owner, result in
                 switch result {
                 case .success(let response):
+                    owner.postList.append(contentsOf: response.data)
+                    owner.nextCursor = response.next_cursor
                     let ratios = response.data.map {
                         let floatRatio: CGFloat = CGFloat(NSString(string: $0.content1).floatValue)
                         return Ratio(ratio: floatRatio * 0.75)
@@ -85,12 +95,19 @@ class StyleListViewController: BaseViewController {
   
 }
 
+// MARK: diffable datasource collectionview
 extension StyleListViewController {
     
     func configureSnapshot(_ item: GetPostResponse) {
         var snapshot = NSDiffableDataSourceSnapshot<Int, Post>()
         snapshot.appendSections([0])
         snapshot.appendItems(item.data)
+        dataSource.apply(snapshot)
+    }
+    
+    func updateSnapshot(items: [Post]) {
+        var snapshot = dataSource.snapshot()
+        snapshot.appendItems(items, toSection: 0)
         dataSource.apply(snapshot)
     }
     
@@ -111,3 +128,42 @@ extension StyleListViewController {
     }
     
 }
+
+// MARK: collectionview pagination
+extension StyleListViewController: UICollectionViewDataSourcePrefetching {
+    
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        
+        print("==prefetching row of \(indexPaths)==")
+        for indexPath in indexPaths {
+            print("==postList.count==", postList.count, nextCursor)
+            if postList.count - 1 == indexPath.item && nextCursor != "0" {
+                APIManager.shared.requestGetPost(limit: 10, next: nextCursor)
+                    .asObservable()
+                    .subscribe(with: self) { owner, result in
+                        switch result {
+                        case .success(let response):
+                            print("====pagination api network====")
+                            owner.postList.append(contentsOf: response.data)
+                            owner.nextCursor = response.next_cursor
+                            
+                            let ratios = owner.postList.map {
+                                let floatRatio: CGFloat = CGFloat(NSString(string: $0.content1).floatValue)
+                                return Ratio(ratio: floatRatio * 0.75)
+                            }
+                            let layout = PinterestLayout(columnsCount: 2, itemRatios: ratios, spacing: 10, contentWidth: owner.view.frame.width)
+                            
+                            owner.collectionView.collectionViewLayout = UICollectionViewCompositionalLayout(section: layout.section)
+                            
+                            owner.updateSnapshot(items: response.data)
+                        case .failure(let error):
+                            // TODO: error message
+                            print(error)
+                        }
+                    }
+                    .disposed(by: disposeBag)
+            }
+        }
+    }
+}
+
