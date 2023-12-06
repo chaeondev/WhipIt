@@ -19,7 +19,7 @@ enum LSLPAPI {
     
     //Post
     case createPost(model: CreatePostRequest)
-    case getPost(limit: String?)
+    case getPost(limit: String?, next: String?)
 }
 
 extension LSLPAPI: TargetType {
@@ -75,10 +75,10 @@ extension LSLPAPI: TargetType {
             let multipartData: [MultipartFormData] = [imageData, productidData, contentData, ratioData]
             
             return .uploadMultipart(multipartData)
-        case .getPost(let limit):
+        case .getPost(let limit, let next):
             if let limit {
                 return .requestParameters(
-                    parameters: ["limit": limit, "product_id": ProductID.test],
+                    parameters: ["limit": limit, "product_id": ProductID.test, "next": next ?? "0"],
                     encoding: URLEncoding.queryString
                     )
             } else {
