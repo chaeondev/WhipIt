@@ -33,10 +33,12 @@ final class ContentCell: BaseCollectionViewCell {
         return view
     }()
     
+    let separatorView = UIView.barViewBuilder(color: .lightGray)
+    
     override func setHierarchy() {
         super.setHierarchy()
         [profileImageView, userNameLabel, dateLabel].forEach { headerView.addSubview($0) }
-        [headerView, headerButton, followButton, menuButton, styleImageView].forEach { contentView.addSubview($0) }
+        [headerView, headerButton, followButton, menuButton, styleImageView, separatorView].forEach { contentView.addSubview($0) }
     }
     
     override func setConstraints() {
@@ -88,6 +90,12 @@ final class ContentCell: BaseCollectionViewCell {
             make.top.equalTo(headerView.snp.bottom)
             make.horizontalEdges.equalToSuperview()
             make.height.greaterThanOrEqualTo(100)
+        }
+        
+        separatorView.snp.makeConstraints { make in
+            make.bottom.equalToSuperview()
+            make.horizontalEdges.equalToSuperview()
+            make.height.equalTo(1)
         }
     }
 }
