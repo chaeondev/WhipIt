@@ -14,6 +14,8 @@ class StyleListViewController: BaseViewController {
     
     private lazy var collectionView = {
         let view = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        view.delegate = self
+        view.prefetchDataSource = self
         return view
     }()
     
@@ -39,7 +41,6 @@ class StyleListViewController: BaseViewController {
         super.viewDidLoad()
         setNavigationBar()
         configureDataSource()
-        collectionView.prefetchDataSource = self
         //bind()
         
     }
@@ -129,15 +130,26 @@ extension StyleListViewController {
     
 }
 
+// MARK: cell 선택시 DetailView로 전환
+extension StyleListViewController: UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let vc = StyleDetailViewController()
+        vc.postData = postList[indexPath.item]
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+}
+
+// TODO: 페이지네이션 뭔가이상한데..아직 원인을 모르겠음
 // MARK: collectionview pagination
 extension StyleListViewController: UICollectionViewDataSourcePrefetching {
     
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-        
-        print("==prefetching row of \(indexPaths)==")
+
         for indexPath in indexPaths {
             print("==postList.count==", postList.count, nextCursor)
-            if postList.count - 1 == indexPath.item && nextCursor != "0" {
+            if postList.count - 2 == indexPath.item && nextCursor != "0" {
                 APIManager.shared.requestGetPost(limit: 10, next: nextCursor)
                     .asObservable()
                     .subscribe(with: self) { owner, result in
