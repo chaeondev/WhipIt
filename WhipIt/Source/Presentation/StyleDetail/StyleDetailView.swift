@@ -7,8 +7,14 @@
 
 import UIKit
 
+enum Section: Int, CaseIterable {
+    case content
+    case info
+    case comment
+}
+
 final class StyleDetailView: UIView {
-    var dataSource: UICollectionViewDiffableDataSource<Section, ItemIdentifiable>!
+    var dataSource: UICollectionViewDiffableDataSource<Section, AnyHashable>!
     lazy var collectionView = {
         let view = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         return view
@@ -21,8 +27,7 @@ final class StyleDetailView: UIView {
         collectionView.snp.makeConstraints { make in
             make.edges.equalTo(safeAreaLayoutGuide)
         }
-        
-        configureDataSource()
+
     }
     
     required init?(coder: NSCoder) {
@@ -31,57 +36,45 @@ final class StyleDetailView: UIView {
     
 }
 
-private extension StyleDetailView {
+extension StyleDetailView {
     
     func configureDataSource() {
-        let contentCell = UICollectionView.CellRegistration<ContentCell, ItemIdentifiable> { cell, indexPath, itemIdentifier in
-            switch itemIdentifier {
-            case .image(let data):
-                cell.dateLabel.text = data.date
-                cell.userNameLabel.text = data.userName
-                cell.styleImageView.image = data.image
-            default:
-                break
-            }
+        let contentCell = UICollectionView.CellRegistration<ContentCell, ContentItem> { cell, indexPath, itemIdentifier in
+            cell.configureCell(itemIdentifier)
         }
         
-        let infoCell = UICollectionView.CellRegistration<InfoCell, ItemIdentifiable> { cell, indexPath, itemIdentifier in
-            switch itemIdentifier {
-            case .info(let data):
-                cell.contentLabel.text = data.content
-            default:
-                break
-            }
+        let infoCell = UICollectionView.CellRegistration<InfoCell, InfoItem> { cell, indexPath, itemIdentifier in
+            cell.configureCell(itemIdentifier)
         }
         
-        let commentCell = UICollectionView.CellRegistration<CommentCell, ItemIdentifiable> { cell, indexPath, itemIdentifier in
-            switch itemIdentifier {
-            case .comment(let data):
-                cell.nicknameLabel.text = data.nickname
-            default:
-                break
-            }
+        let commentCell = UICollectionView.CellRegistration<CommentCell, Comment> { cell, indexPath, itemIdentifier in
+            cell.configureCell(itemIdentifier)
         }
         
         dataSource = UICollectionViewDiffableDataSource(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             let section = Section.allCases[indexPath.section]
             switch section {
             case .content:
-                return collectionView.dequeueConfiguredReusableCell(using: contentCell, for: indexPath, item: itemIdentifier)
+                return collectionView.dequeueConfiguredReusableCell(using: contentCell, for: indexPath, item: itemIdentifier as? ContentItem)
             case .info:
-                return collectionView.dequeueConfiguredReusableCell(using: infoCell, for: indexPath, item: itemIdentifier)
+                return collectionView.dequeueConfiguredReusableCell(using: infoCell, for: indexPath, item: itemIdentifier as? InfoItem)
             case .comment:
-                return collectionView.dequeueConfiguredReusableCell(using: commentCell, for: indexPath, item: itemIdentifier)
+                return collectionView.dequeueConfiguredReusableCell(using: commentCell, for: indexPath, item: itemIdentifier as? Comment)
             }
         }
         
-        var snapshot = NSDiffableDataSourceSnapshot<Section, ItemIdentifiable>()
+    }
+    
+    func configureSnapshot(item: Post) {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>()
         snapshot.appendSections(Section.allCases)
         
-        snapshot.appendItems(
-            [
-                ItemIdentifiable.image(ImageItem(image: UIImage(systemName: "star.fill")!))
-            ], toSection: Section.content)
+        let contentItem = ContentItem(creator: item.creator, time: item.time, image: item.image, content1: item.content1)
+        let infoItem = InfoItem(likes: item.likes, content: item.content, comments: item.comments, hashTags: item.hashTags)
+        
+        snapshot.appendItems( [contentItem], toSection: Section.content)
+        snapshot.appendItems( [infoItem], toSection: Section.info)
+        snapshot.appendItems( item.comments, toSection: Section.comment)
         
         dataSource.apply(snapshot)
     }
@@ -93,6 +86,7 @@ private extension StyleDetailView {
 
 private extension StyleDetailView {
     func createLayout() -> UICollectionViewLayout {
+
         let layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, environment in
             guard let self else { return nil }
             let section = Section.allCases[sectionIndex]
@@ -138,7 +132,7 @@ private extension StyleDetailView {
         
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(60))
         
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         
         let section = NSCollectionLayoutSection(group: group)
         
