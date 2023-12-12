@@ -21,6 +21,6 @@ extension UIImageView {
         let url = URL(string: APIKey.baseURL + imageUrl)
         
         self.kf.indicatorType = .activity
-        self.kf.setImage(with: url, options: [.requestModifier(modifier)])
+        self.kf.setImage(with: url, placeholder: UIImage(resource: .user), options: [.requestModifier(modifier)])
     }
 }
