@@ -12,7 +12,6 @@ final class RoundImageView: UIImageView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        configureView()
     }
 
     @available(*, unavailable)
@@ -22,11 +21,10 @@ final class RoundImageView: UIImageView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        layer.cornerRadius = frame.width / 2
-    }
-    
-    func configureView() {
+
+        let radius = self.frame.width / 2.0
+        layer.cornerRadius = radius
         clipsToBounds = true
-        
     }
+
 }
