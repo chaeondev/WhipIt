@@ -25,7 +25,15 @@ final class InfoCell: BaseCollectionViewCell {
     let commentCntLabel = UILabel.labelBuilder(text: "댓글 2개", font: UIFont(name: Suit.semiBold, size: 14)!, textColor: .black)
     let bookmarkCntLabel = UILabel.labelBuilder(text: "북마크 27개", font: UIFont(name: Suit.semiBold, size: 14)!, textColor: .black)
     let contentLabel = UILabel.labelBuilder(text: "오늘의 OOTD \n#오오티디 #라이징슈즈 #요즘아우터 #오뭐압", font: UIFont(name: Suit.light, size: 15)!, textColor: .black, numberOfLines: 0)
-    let separatorView = UIView.barViewBuilder(color: .lightGray)
+    let separatorView = UIView.barViewBuilder(color: .systemGray5)
+    
+    func configureCell(_ item: InfoItem) {
+        let commentCnt = item.comments.count
+        let bookmarkCnt = item.likes.count
+        commentCntLabel.text = "댓글 \(commentCnt)개"
+        bookmarkCntLabel.text = "북마크 \(bookmarkCnt)개"
+        contentLabel.text = item.content
+    }
     
     override func setHierarchy() {
         super.setHierarchy()

@@ -19,6 +19,12 @@ final class CommentCell: BaseCollectionViewCell {
     let dateLabel = UILabel.labelBuilder(text: "3일 전", font: Font.light10, textColor: .gray)
     let commentLabel = UILabel.labelBuilder(text: "피드 자주 보고있어요! \n너무 예뻐요", font: Font.light12, textColor: .black)
     
+    func configureCell(_ comment: Comment) {
+        profileImageView.setKFImage(imageUrl: comment.creator.profile ?? "")
+        userLabel.text = comment.creator.nick
+        dateLabel.text = comment.time.changeFromTimeToRelativeDate()
+        commentLabel.text = comment.content
+    }
     
     override func setHierarchy() {
         super.setHierarchy()

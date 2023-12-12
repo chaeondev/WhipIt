@@ -12,7 +12,7 @@ final class ContentCell: BaseCollectionViewCell {
         let view = RoundImageView(frame: .zero)
         view.image = UIImage(systemName: "star")
         view.contentMode = .scaleAspectFit
-        view.backgroundColor = .blue
+        view.backgroundColor = .systemGray5
         return view
     }()
     let userNameLabel = UILabel.labelBuilder(text: "everywear", font: UIFont(name: Suit.bold, size: 12)!, textColor: .black, numberOfLines: 1)
@@ -29,11 +29,24 @@ final class ContentCell: BaseCollectionViewCell {
     let styleImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
-        view.backgroundColor = .cyan
         return view
     }()
     
-    let separatorView = UIView.barViewBuilder(color: .lightGray)
+    let separatorView = UIView.barViewBuilder(color: .systemGray5)
+    
+    func configureCell(_ item: ContentItem) {
+        profileImageView.setKFImage(imageUrl: item.creator.profile ?? "")
+        userNameLabel.text = item.creator.nick
+        dateLabel.text = item.time.changeFromTimeToRelativeDate()
+        styleImageView.setKFImage(imageUrl: item.image.first ?? "")
+        let ratio = CGFloat(NSString(string: item.content1).floatValue)
+        styleImageView.snp.remakeConstraints { make in
+            make.top.equalTo(headerView.snp.bottom)
+            make.width.equalToSuperview()
+            make.height.equalTo(styleImageView.snp.width).dividedBy(ratio)
+            make.bottom.equalToSuperview()
+        }
+    }
     
     override func setHierarchy() {
         super.setHierarchy()
@@ -90,6 +103,7 @@ final class ContentCell: BaseCollectionViewCell {
             make.top.equalTo(headerView.snp.bottom)
             make.horizontalEdges.equalToSuperview()
             make.height.greaterThanOrEqualTo(100)
+            make.bottom.equalToSuperview()
         }
         
         separatorView.snp.makeConstraints { make in
