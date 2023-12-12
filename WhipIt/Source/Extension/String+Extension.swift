@@ -45,4 +45,18 @@ extension String {
         // 3
         return String(formatted)
     }
+    
+    func changeFromTimeToRelativeDate() -> String {
+        let dateFormatter = ISO8601DateFormatter()
+        dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds, .withTimeZone]
+        let date = dateFormatter.date(from: self)
+        print("==date==", date!)
+        
+        let newFormatter = RelativeDateTimeFormatter()
+        newFormatter.locale = Locale(identifier: "ko-KR")
+        newFormatter.dateTimeStyle = .named
+        
+        return newFormatter.localizedString(for: date ?? Date(), relativeTo: Date())
+    }
+    
 }
