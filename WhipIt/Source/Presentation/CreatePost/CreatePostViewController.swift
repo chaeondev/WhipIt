@@ -16,6 +16,8 @@ class CreatePostViewController: BaseViewController {
     private lazy var photoImageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleToFill
+        view.layer.cornerRadius = 10
+        view.clipsToBounds = true
         view.layer.borderWidth = 0.5
         view.layer.borderColor = UIColor.gray.cgColor
         return view
@@ -40,7 +42,32 @@ class CreatePostViewController: BaseViewController {
         view.textColor = .lightGray
         return view
     }()
+    
+    private lazy var button1 = HashTagButton(title: "#윈터템챌린지")
+    private lazy var button2 = HashTagButton(title: "#오오티디")
+    private lazy var button3 = HashTagButton(title: "#요즘아우터")
+    private lazy var button4 = HashTagButton(title: "#연말코디")
+    private lazy var button5 = HashTagButton(title: "#오뭐입")
+    private lazy var button6 = HashTagButton(title: "#신발샷")
+    private lazy var button7 = HashTagButton(title: "#겨울준비")
+    private lazy var button8 = HashTagButton(title: "#라이징슈즈")
+    
+    private lazy var buttonStackView = {
+        let view = UIStackView.stackViewBuilder(axis: .horizontal, distribution: .equalSpacing, spacing: 12, alignment: .fill)
+        view.layoutMargins = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+        view.isLayoutMarginsRelativeArrangement = true
+        return view
+    }()
+    
+    private lazy var scrollView = {
+        let view = UIScrollView()
+        view.showsVerticalScrollIndicator = false
+        view.showsHorizontalScrollIndicator = false
+        return view
+    }()
 
+    private lazy var borderView = UIView.barViewBuilder(color: .systemGray5)
+    
     private let selectedPhotoSubject = PublishSubject<UIImage>()
     
     var disposeBag = DisposeBag()
@@ -51,6 +78,7 @@ class CreatePostViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tabBarController?.tabBar.isHidden = true
         presentImagePicker()
         setNavigationBar()
         bind()
@@ -142,19 +170,16 @@ class CreatePostViewController: BaseViewController {
     @objc func reselectButtonClicked() {
         presentImagePicker()
     }
-    
-    @objc func registerButtonClicked() {
-        
-    }
-    
+
     @objc func backButtonClicked() {
         navigationController?.popViewController(animated: true)
     }
     
     override func setHierarchy() {
         super.setHierarchy()
-        
-        [photoImageView, reselectButton, contentTextView].forEach { view.addSubview($0) }
+        [button1, button2, button3, button4, button5, button6, button7, button8].forEach { buttonStackView.addArrangedSubview($0) }
+        scrollView.addSubview(buttonStackView)
+        [photoImageView, reselectButton, contentTextView, scrollView, borderView].forEach { view.addSubview($0) }
     }
     
     override func setConstraints() {
@@ -162,7 +187,7 @@ class CreatePostViewController: BaseViewController {
         
         photoImageView.snp.makeConstraints { make in
             make.top.leading.equalTo(view.safeAreaLayoutGuide).offset(16)
-            make.size.equalTo(130)
+            make.size.equalTo(100)
         }
         
         reselectButton.snp.makeConstraints { make in
@@ -175,8 +200,26 @@ class CreatePostViewController: BaseViewController {
         contentTextView.snp.makeConstraints { make in
             make.top.equalTo(photoImageView.snp.bottom).offset(25)
             make.horizontalEdges.equalToSuperview().inset(16)
-            make.height.equalTo(250)
+            make.height.equalTo(200)
         }
+        
+        buttonStackView.snp.makeConstraints { make in
+            make.horizontalEdges.equalToSuperview()
+            make.height.equalToSuperview()
+        }
+        
+        scrollView.snp.makeConstraints { make in
+            make.top.equalTo(contentTextView.snp.bottom)
+            make.horizontalEdges.equalToSuperview()
+            make.height.equalTo(30)
+        }
+        
+        borderView.snp.makeConstraints { make in
+            make.top.equalTo(scrollView.snp.bottom).offset(12)
+            make.horizontalEdges.equalToSuperview()
+            make.height.equalTo(1)
+        }
+        
     }
     
 }
