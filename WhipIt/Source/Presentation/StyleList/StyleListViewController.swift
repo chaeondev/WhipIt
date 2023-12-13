@@ -33,6 +33,7 @@ class StyleListViewController: BaseViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        tabBarController?.tabBar.isHidden = false
         postList = []
         bind()
     }
@@ -148,7 +149,7 @@ extension StyleListViewController: UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
 
         for indexPath in indexPaths {
-            print("==postList.count==", postList.count, nextCursor)
+
             if postList.count - 2 == indexPath.item && nextCursor != "0" {
                 APIManager.shared.requestGetPost(limit: 10, next: nextCursor)
                     .asObservable()
