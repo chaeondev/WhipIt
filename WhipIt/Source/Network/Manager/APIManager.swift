@@ -100,3 +100,10 @@ extension APIManager {
         return request(target: .getPost(limit: "\(limit)", next: next))
     }
 }
+
+// MARK: Comment 관련 API Method
+extension APIManager {
+    func requestCreateComment(model: CreateCommentRequest, postID: String) -> Single<NetworkResult<Comment>> {
+        return request(target: .createComment(model: model, postID: postID))
+    }
+}

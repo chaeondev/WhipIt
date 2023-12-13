@@ -20,6 +20,9 @@ enum LSLPAPI {
     //Post
     case createPost(model: CreatePostRequest)
     case getPost(limit: String?, next: String?)
+    
+    //Comment
+    case createComment(model: CreateCommentRequest, postID: String)
 }
 
 extension LSLPAPI: TargetType {
@@ -45,12 +48,14 @@ extension LSLPAPI: TargetType {
             "post"
         case .getPost:
             "post"
+        case .createComment(_, let postID):
+            "post/\(postID)/comment"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .signUp, .emailValidation, .login, .createPost:
+        case .signUp, .emailValidation, .login, .createPost, .createComment:
             return .post
         case .refreshToken, .getPost:
             return .get
@@ -87,12 +92,14 @@ extension LSLPAPI: TargetType {
                     encoding: URLEncoding.queryString
                     )
             }
+        case .createComment(let model, _):
+            return .requestJSONEncodable(model)
         }
     }
     
     var headers: [String : String]? {
         switch self {
-        case .signUp, .emailValidation, .login:
+        case .signUp, .emailValidation, .login, .createComment:
             return ["Content-Type": "application/json",
                     "SesacKey": APIKey.sesacKey]
         case .refreshToken:
