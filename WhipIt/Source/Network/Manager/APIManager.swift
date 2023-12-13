@@ -106,4 +106,8 @@ extension APIManager {
     func requestCreateComment(model: CreateCommentRequest, postID: String) -> Single<NetworkResult<Comment>> {
         return request(target: .createComment(model: model, postID: postID))
     }
+    
+    func requestDeleteComment(postID: String, commentID: String) -> Single<NetworkResult<DeleteCommentResponse>> {
+        return request(target: .deleteComment(postID: postID, commentID: commentID))
+    }
 }

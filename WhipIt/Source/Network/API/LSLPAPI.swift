@@ -23,6 +23,7 @@ enum LSLPAPI {
     
     //Comment
     case createComment(model: CreateCommentRequest, postID: String)
+    case deleteComment(postID: String, commentID: String)
 }
 
 extension LSLPAPI: TargetType {
@@ -50,6 +51,8 @@ extension LSLPAPI: TargetType {
             "post"
         case .createComment(_, let postID):
             "post/\(postID)/comment"
+        case .deleteComment(let postID, let commentID):
+            "post/\(postID)/comment/\(commentID)"
         }
     }
     
@@ -59,6 +62,8 @@ extension LSLPAPI: TargetType {
             return .post
         case .refreshToken, .getPost:
             return .get
+        case .deleteComment:
+            return .delete
         }
     }
     
@@ -94,6 +99,8 @@ extension LSLPAPI: TargetType {
             }
         case .createComment(let model, _):
             return .requestJSONEncodable(model)
+        case .deleteComment:
+            return .requestPlain
         }
     }
     
@@ -102,13 +109,11 @@ extension LSLPAPI: TargetType {
         case .signUp, .emailValidation, .login, .createComment:
             return ["Content-Type": "application/json",
                     "SesacKey": APIKey.sesacKey]
-        case .refreshToken:
+        case .refreshToken, .getPost, .deleteComment:
             return ["SesacKey": APIKey.sesacKey]
         case .createPost:
             return ["Content-Type": "multipart/form-data",
                     "SesacKey": APIKey.sesacKey]
-        case .getPost:
-            return ["SesacKey": APIKey.sesacKey]
         }
         
     }
