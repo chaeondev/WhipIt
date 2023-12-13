@@ -27,22 +27,20 @@ final class StyleCollectionViewCell: BaseCollectionViewCell {
         return view
     }()
     
-    private lazy var userNickLabel: UILabel = UILabel.labelBuilder(text: "위핏이620", font: Font.light10, textColor: .darkGray)
+    private lazy var userNickLabel: UILabel = UILabel.labelBuilder(text: "위핏이620", font: Font.light12, textColor: .darkGray)
     
-    private lazy var userStackView: UIStackView = UIStackView.stackViewBuilder(axis: .horizontal, distribution: .equalSpacing, spacing: 4)
-
+    private lazy var userButton = UIButton()
+    
     private lazy var bookMarkButton: UIButton = {
-        let view = UIButton.buttonBuilder(image: UIImage(systemName: "bookmark")!)
+        let view = UIButton.buttonBuilder(image: UIImage(resource: .ribbon))
         view.tintColor = .gray
         return view
     }()
     
-    private lazy var bookMarkCntLabel: UILabel = UILabel.labelBuilder(text: "168", font: Font.light10, textColor: .gray)
-    
-    private lazy var bookMarkStackView: UIStackView = UIStackView.stackViewBuilder(axis: .horizontal, distribution: .equalSpacing, spacing: 4)
+    private lazy var bookMarkCntLabel: UILabel = UILabel.labelBuilder(text: "168", font: Font.light12, textColor: .gray)
     
     private lazy var contentLabel: UILabel = {
-        let view = UILabel.labelBuilder(text: "#코지챌린지 \n 궂은 날씨에도 포근하게 감싸줄 아우터!", font: Font.light12, textColor: .black, numberOfLines: 2)
+        let view = UILabel.labelBuilder(text: "#코지챌린지 \n 궂은 날씨에도 포근하게 감싸줄 아우터!", font: UIFont(name: Suit.medium, size: 12)!, textColor: .black, numberOfLines: 2)
         view.lineBreakMode = .byWordWrapping //말줄임표 X
         view.sizeToFit()
         return view
@@ -61,17 +59,16 @@ final class StyleCollectionViewCell: BaseCollectionViewCell {
     
     func configureCell(stylePost: Post) {
         let imageUrl = stylePost.image[0]
+        let profileUrl = stylePost.creator.profile
         photoImageView.setKFImage(imageUrl: imageUrl)
-//        userImageView.setKFImage(imageUrl: profileUrl)
+        userImageView.setKFImage(imageUrl: profileUrl ?? "")
         userNickLabel.text = stylePost.creator.nick
         bookMarkCntLabel.text = "\(stylePost.likes.count)"
         contentLabel.text = stylePost.content
     }
     
     override func setHierarchy() {
-        [userImageView, userNickLabel].forEach { userStackView.addArrangedSubview($0) }
-        [bookMarkButton, bookMarkCntLabel].forEach { bookMarkStackView.addArrangedSubview($0) }
-        [photoImageView, userStackView, bookMarkStackView, contentLabel].forEach { contentView.addSubview($0) }
+        [photoImageView, userImageView, userNickLabel, userButton, bookMarkCntLabel, bookMarkButton, contentLabel].forEach { contentView.addSubview($0) }
     }
     
     override func setConstraints() {
@@ -80,24 +77,39 @@ final class StyleCollectionViewCell: BaseCollectionViewCell {
         }
         
         userImageView.snp.makeConstraints { make in
-            make.size.equalTo(20)
-        }
-        
-        userStackView.snp.makeConstraints { make in
             make.top.equalTo(photoImageView.snp.bottom).offset(8)
             make.leading.equalTo(contentView).offset(4)
-            make.width.equalTo(photoImageView).multipliedBy(0.4)
+            make.size.equalTo(20)
+        }
+        //userNickLabel.backgroundColor = .blue
+        userNickLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(userImageView)
+            make.leading.equalTo(userImageView.snp.trailing).offset(8)
+            make.width.lessThanOrEqualTo(photoImageView).multipliedBy(0.5)
         }
         
-        bookMarkStackView.snp.makeConstraints { make in
-            make.top.equalTo(photoImageView.snp.bottom).offset(8)
-            make.trailing.equalTo(contentView).inset(4)
-            make.width.equalTo(photoImageView).multipliedBy(0.23)
+        userButton.snp.makeConstraints { make in
+            make.top.equalTo(photoImageView.snp.bottom).offset(4)
+            make.leading.equalToSuperview()
+            make.trailing.equalTo(userNickLabel)
+            make.height.equalTo(25)
         }
         
+        bookMarkCntLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(userImageView)
+            make.trailing.equalToSuperview().inset(8)
+        }
+        
+        bookMarkButton.snp.makeConstraints { make in
+            make.centerY.equalTo(userImageView)
+            make.trailing.equalTo(bookMarkCntLabel.snp.leading).offset(-4)
+            make.size.equalTo(20)
+        }
+      
         contentLabel.snp.makeConstraints { make in
-            make.top.equalTo(userStackView.snp.bottom).offset(8)
+            make.top.equalTo(userImageView.snp.bottom).offset(8)
             make.horizontalEdges.equalTo(contentView).inset(4)
+            make.height.greaterThanOrEqualTo(20)
             make.bottom.equalTo(contentView).inset(8)
         }
     }
