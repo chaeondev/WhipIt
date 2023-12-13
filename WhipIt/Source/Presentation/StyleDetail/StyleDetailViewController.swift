@@ -40,8 +40,9 @@ class StyleDetailViewController: BaseViewController {
         guard let postData else { return }
         
         let input = StyleDetailViewModel.Input(
+            //commentText: commentView.commentTextField.rx.observe(String.self, "text"),
             commentText: commentView.commentTextField.rx.text.orEmpty,
-            registerButtonTap: commentView.commentTextField.registerButton.rx.tap, 
+            registerButtonTap: commentView.commentTextField.registerButton.rx.tap,
             postID: postData._id
         )
         let output = viewModel.transform(input: input)
@@ -59,6 +60,7 @@ class StyleDetailViewController: BaseViewController {
                 case .success(let response):
                     owner.mainView.applySnapshot(items: [response])
                     owner.commentView.commentTextField.text = ""
+                    owner.commentView.commentTextField.sendActions(for: .valueChanged)
                 case .failure(let error):
                     var message: String {
                         switch error {

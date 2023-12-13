@@ -66,8 +66,10 @@ final class CommentView: UIView {
         guard let autoText = sender.titleLabel?.text else { return }
         if let originalText = commentTextField.text {
             commentTextField.text = originalText + autoText
+            commentTextField.sendActions(for: .valueChanged)
         } else {
             commentTextField.text = autoText
+            commentTextField.sendActions(for: .valueChanged)
         }
         
     }
