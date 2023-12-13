@@ -75,14 +75,18 @@ extension StyleDetailView {
         
         snapshot.appendItems( [contentItem], toSection: Section.content)
         snapshot.appendItems( [infoItem], toSection: Section.info)
-        snapshot.appendItems( item.comments.reversed(), toSection: Section.comment)
+        snapshot.appendItems( item.comments, toSection: Section.comment)
         
         dataSource.apply(snapshot)
     }
     
     func applySnapshot(items: [Comment]) {
         var snapshot = dataSource.snapshot()
-        snapshot.appendItems(items, toSection: Section.comment)
+        if let first = snapshot.itemIdentifiers(inSection: Section.comment).first {
+            snapshot.insertItems(items, beforeItem: first)
+        } else {
+            snapshot.appendItems(items, toSection: Section.comment)
+        }
         dataSource.apply(snapshot, animatingDifferences: true)
     }
     
