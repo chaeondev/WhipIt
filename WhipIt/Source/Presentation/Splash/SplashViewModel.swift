@@ -41,7 +41,7 @@ class SplashViewModel: ViewModelType {
                             autoLoginValidation.onNext(false)
                             KeyChainManager.shared.delete(account: .accessToken)
                             KeyChainManager.shared.delete(account: .refreshToken)
-                            
+                            KeyChainManager.shared.delete(account: .userID)
                         }
                     }
                 }
