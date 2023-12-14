@@ -14,7 +14,7 @@ enum Section: Int, CaseIterable {
 }
 
 final class StyleDetailView: UIView {
-    var dataSource: UICollectionViewDiffableDataSource<Section, AnyHashable>!
+    
     lazy var collectionView = {
         let view = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         return view
@@ -37,63 +37,6 @@ final class StyleDetailView: UIView {
     
 }
 
-extension StyleDetailView {
-    
-    func configureDataSource() {
-        let contentCell = UICollectionView.CellRegistration<ContentCell, ContentItem> { cell, indexPath, itemIdentifier in
-            cell.configureCell(itemIdentifier)
-        }
-        
-        let infoCell = UICollectionView.CellRegistration<InfoCell, InfoItem> { cell, indexPath, itemIdentifier in
-            cell.configureCell(itemIdentifier)
-        }
-        
-        let commentCell = UICollectionView.CellRegistration<CommentCell, Comment> { cell, indexPath, itemIdentifier in
-            cell.configureCell(itemIdentifier)
-        }
-        
-        dataSource = UICollectionViewDiffableDataSource(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
-            let section = Section.allCases[indexPath.section]
-            switch section {
-            case .content:
-                return collectionView.dequeueConfiguredReusableCell(using: contentCell, for: indexPath, item: itemIdentifier as? ContentItem)
-            case .info:
-                return collectionView.dequeueConfiguredReusableCell(using: infoCell, for: indexPath, item: itemIdentifier as? InfoItem)
-            case .comment:
-                return collectionView.dequeueConfiguredReusableCell(using: commentCell, for: indexPath, item: itemIdentifier as? Comment)
-            }
-        }
-        
-    }
-    
-    func configureSnapshot(item: Post) {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>()
-        snapshot.appendSections(Section.allCases)
-        
-        let contentItem = ContentItem(creator: item.creator, time: item.time, image: item.image, content1: item.content1)
-        let infoItem = InfoItem(likes: item.likes, content: item.content, comments: item.comments, hashTags: item.hashTags)
-        
-        snapshot.appendItems( [contentItem], toSection: Section.content)
-        snapshot.appendItems( [infoItem], toSection: Section.info)
-        snapshot.appendItems( item.comments, toSection: Section.comment)
-        
-        dataSource.apply(snapshot)
-    }
-    
-    func applySnapshot(items: [Comment]) {
-        var snapshot = dataSource.snapshot()
-        if let first = snapshot.itemIdentifiers(inSection: Section.comment).first {
-            snapshot.insertItems(items, beforeItem: first)
-        } else {
-            snapshot.appendItems(items, toSection: Section.comment)
-        }
-        dataSource.apply(snapshot, animatingDifferences: true)
-    }
-    
-   
-    
-    
-}
 
 private extension StyleDetailView {
     func createLayout() -> UICollectionViewLayout {
