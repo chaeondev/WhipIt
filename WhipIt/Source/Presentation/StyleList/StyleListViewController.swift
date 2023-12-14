@@ -48,8 +48,7 @@ class StyleListViewController: BaseViewController {
     
     private func bind() {
         let input = StyleListViewModel.Input(
-            searchButtonTap: searchBar.rx.searchButtonClicked,
-            prefetchItems: collectionView.rx.prefetchItems
+            searchButtonTap: searchBar.rx.searchButtonClicked
         )
         let output = viewModel.transform(input: input)
         output.feedResult
@@ -116,8 +115,9 @@ extension StyleListViewController {
     func configureDataSource() {
         
         let cellRegistration = UICollectionView.CellRegistration<StyleCollectionViewCell, Post> { cell, indexPath, itemIdentifier in
-            cell.configureCell(stylePost: itemIdentifier)
-            
+            cell.stylePost = itemIdentifier
+            cell.delegate = self
+            cell.configureCell()
         }
         
         dataSource = UICollectionViewDiffableDataSource(collectionView: collectionView, cellProvider: { collectionView, indexPath, itemIdentifier in
@@ -125,8 +125,6 @@ extension StyleListViewController {
             return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: itemIdentifier)
             
         })
-        
-        
     }
     
 }
@@ -180,3 +178,14 @@ extension StyleListViewController: UICollectionViewDataSourcePrefetching {
     }
 }
 
+// TODO: 전체를 refresh시키는게 말이안되긴 함.. post만 reload해서 cell update하는 방법 찾기
+// MARK: CellDelegate -> refreshData
+extension StyleListViewController: StyleCellDelegate {
+    
+    func updateCollectionView() {
+        postList = []
+        bind()
+    }
+    
+    
+}
