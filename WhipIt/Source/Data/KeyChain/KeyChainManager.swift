@@ -11,8 +11,7 @@ import Security
 final class KeyChainManager {
     
     enum accountItem: String {
-        case userEmail
-        case userPW
+        case userID
         case accessToken
         case refreshToken
     }
@@ -29,6 +28,12 @@ final class KeyChainManager {
     var refreshToken: String? {
         get {
             return read(account: .refreshToken)
+        }
+    }
+    
+    var userID: String? {
+        get {
+            return read(account: .userID)
         }
     }
     
