@@ -7,6 +7,12 @@
 
 import UIKit
 import Kingfisher
+import RxSwift
+import RxCocoa
+
+protocol StyleCellDelegate: AnyObject {
+    func updateCollectionView()
+}
 
 final class StyleCollectionViewCell: BaseCollectionViewCell {
     
@@ -31,11 +37,7 @@ final class StyleCollectionViewCell: BaseCollectionViewCell {
     
     private lazy var userButton = UIButton()
     
-    private lazy var bookMarkButton: UIButton = {
-        let view = UIButton.buttonBuilder(image: UIImage(resource: .ribbon))
-        view.tintColor = .gray
-        return view
-    }()
+    lazy var bookMarkButton: UIButton = BookmarkButton()
     
     private lazy var bookMarkCntLabel: UILabel = UILabel.labelBuilder(text: "168", font: Font.light12, textColor: .gray)
     
@@ -46,9 +48,16 @@ final class StyleCollectionViewCell: BaseCollectionViewCell {
         return view
     }()
     
+    var stylePost: Post!
+    
+    var delegate: StyleCellDelegate?
+    
+    var disposeBag = DisposeBag()
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         
+        disposeBag = DisposeBag()
         
         photoImageView.kf.cancelDownloadTask()
         photoImageView.image = nil
@@ -57,7 +66,7 @@ final class StyleCollectionViewCell: BaseCollectionViewCell {
         userImageView.image = nil
     }
     
-    func configureCell(stylePost: Post) {
+    func configureCell() {
         let imageUrl = stylePost.image[0]
         let profileUrl = stylePost.creator.profile
         photoImageView.setKFImage(imageUrl: imageUrl)
@@ -65,10 +74,32 @@ final class StyleCollectionViewCell: BaseCollectionViewCell {
         userNickLabel.text = stylePost.creator.nick
         bookMarkCntLabel.text = "\(stylePost.likes.count)"
         contentLabel.text = stylePost.content
+        
+        guard let userID = KeyChainManager.shared.userID else { return }
+        bookMarkButton.isSelected = stylePost.likes.contains(userID)
+    }
+    
+    @objc func bookmarkButtonClicked() {
+        APIManager.shared.requestLikePost(postID: stylePost._id)
+            .subscribe(with: self) { owner, result in
+                switch result {
+                case .success(let response):
+                    print("===북마크 실행===")
+                    owner.bookMarkButton.isSelected = response.like_status
+                    owner.delegate?.updateCollectionView()
+                case .failure(let error):
+                    print("=====북마크 에러======", error)
+                }
+            }
+            .disposed(by: disposeBag)
+            
+            
     }
     
     override func setHierarchy() {
         [photoImageView, userImageView, userNickLabel, userButton, bookMarkCntLabel, bookMarkButton, contentLabel].forEach { contentView.addSubview($0) }
+        
+        bookMarkButton.addTarget(self, action: #selector(bookmarkButtonClicked), for: .touchUpInside)
     }
     
     override func setConstraints() {
