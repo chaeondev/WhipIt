@@ -100,6 +100,10 @@ extension APIManager {
         return request(target: .getPost(limit: "\(limit)", next: next))
     }
     
+    func requestGetPostByID(postID: String) -> Single<NetworkResult<Post>> {
+        return request(target: .getPostByID(postID: postID))
+    }
+    
     func requestLikePost(postID: String) -> Single<NetworkResult<LikePostResponse>> {
         return request(target: .likePost(postID: postID))
     }

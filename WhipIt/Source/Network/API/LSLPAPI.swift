@@ -20,6 +20,7 @@ enum LSLPAPI {
     //Post
     case createPost(model: CreatePostRequest)
     case getPost(limit: String?, next: String?)
+    case getPostByID(postID: String)
     case likePost(postID: String)
     
     //Comment
@@ -50,6 +51,8 @@ extension LSLPAPI: TargetType {
             "post"
         case .getPost:
             "post"
+        case .getPostByID(let postID):
+            "post/\(postID)"
         case .likePost(let postID):
             "post/like/\(postID)"
         case .createComment(_, let postID):
@@ -63,7 +66,7 @@ extension LSLPAPI: TargetType {
         switch self {
         case .signUp, .emailValidation, .login, .createPost, .likePost, .createComment:
             return .post
-        case .refreshToken, .getPost:
+        case .refreshToken, .getPost, .getPostByID:
             return .get
         case .deleteComment:
             return .delete
@@ -100,6 +103,8 @@ extension LSLPAPI: TargetType {
                     encoding: URLEncoding.queryString
                     )
             }
+        case .getPostByID:
+            return .requestPlain
         case .likePost:
             return .requestPlain
         case .createComment(let model, _):
@@ -114,7 +119,7 @@ extension LSLPAPI: TargetType {
         case .signUp, .emailValidation, .login, .createComment:
             return ["Content-Type": "application/json",
                     "SesacKey": APIKey.sesacKey]
-        case .refreshToken, .getPost, .likePost, .deleteComment:
+        case .refreshToken, .getPost, .getPostByID, .likePost, .deleteComment:
             return ["SesacKey": APIKey.sesacKey]
         case .createPost:
             return ["Content-Type": "multipart/form-data",
