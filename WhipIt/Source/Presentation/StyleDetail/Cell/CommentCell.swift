@@ -18,6 +18,12 @@ final class CommentCell: BaseCollectionViewCell {
     let userLabel = UILabel.labelBuilder(text: "위핏이8888", font: UIFont(name: Suit.extraBold, size: 12)!, textColor: .black, numberOfLines: 1)
     let dateLabel = UILabel.labelBuilder(text: "3일 전", font: Font.light10, textColor: .gray)
     let commentLabel = UILabel.labelBuilder(text: "피드 자주 보고있어요! \n너무 예뻐요", font: Font.light12, textColor: .black)
+    lazy var menuButton = {
+        let view = UIButton()
+        view.setImage(UIImage(systemName: "ellipsis"), for: .normal)
+        view.tintColor = .lightGray
+        return view
+    }()
     
     func configureCell(_ comment: Comment) {
         profileImageView.setKFImage(imageUrl: comment.creator.profile ?? "")
@@ -28,7 +34,7 @@ final class CommentCell: BaseCollectionViewCell {
     
     override func setHierarchy() {
         super.setHierarchy()
-        [profileImageView, userLabel, dateLabel, commentLabel].forEach { contentView.addSubview($0) }
+        [profileImageView, userLabel, dateLabel, commentLabel, menuButton].forEach { contentView.addSubview($0) }
     }
     
     override func setConstraints() {
@@ -49,6 +55,12 @@ final class CommentCell: BaseCollectionViewCell {
             make.bottom.equalTo(userLabel)
             make.leading.equalTo(userLabel.snp.trailing).offset(8)
             make.trailing.lessThanOrEqualToSuperview().inset(8)
+        }
+        
+        menuButton.snp.makeConstraints { make in
+            make.centerY.equalTo(userLabel)
+            make.trailing.equalToSuperview().offset(-16)
+            make.width.equalTo(20)
         }
         
         commentLabel.snp.makeConstraints { make in
