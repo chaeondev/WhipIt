@@ -99,6 +99,10 @@ extension APIManager {
     func requestGetPost(limit: Int, next: String?) -> Single<NetworkResult<GetPostResponse>> {
         return request(target: .getPost(limit: "\(limit)", next: next))
     }
+    
+    func requestLikePost(postID: String) -> Single<NetworkResult<LikePostResponse>> {
+        return request(target: .likePost(postID: postID))
+    }
 }
 
 // MARK: Comment 관련 API Method

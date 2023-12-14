@@ -20,6 +20,7 @@ enum LSLPAPI {
     //Post
     case createPost(model: CreatePostRequest)
     case getPost(limit: String?, next: String?)
+    case likePost(postID: String)
     
     //Comment
     case createComment(model: CreateCommentRequest, postID: String)
@@ -49,6 +50,8 @@ extension LSLPAPI: TargetType {
             "post"
         case .getPost:
             "post"
+        case .likePost(let postID):
+            "post/like/\(postID)"
         case .createComment(_, let postID):
             "post/\(postID)/comment"
         case .deleteComment(let postID, let commentID):
@@ -58,7 +61,7 @@ extension LSLPAPI: TargetType {
     
     var method: Moya.Method {
         switch self {
-        case .signUp, .emailValidation, .login, .createPost, .createComment:
+        case .signUp, .emailValidation, .login, .createPost, .likePost, .createComment:
             return .post
         case .refreshToken, .getPost:
             return .get
@@ -97,6 +100,8 @@ extension LSLPAPI: TargetType {
                     encoding: URLEncoding.queryString
                     )
             }
+        case .likePost:
+            return .requestPlain
         case .createComment(let model, _):
             return .requestJSONEncodable(model)
         case .deleteComment:
@@ -109,7 +114,7 @@ extension LSLPAPI: TargetType {
         case .signUp, .emailValidation, .login, .createComment:
             return ["Content-Type": "application/json",
                     "SesacKey": APIKey.sesacKey]
-        case .refreshToken, .getPost, .deleteComment:
+        case .refreshToken, .getPost, .likePost, .deleteComment:
             return ["SesacKey": APIKey.sesacKey]
         case .createPost:
             return ["Content-Type": "multipart/form-data",
