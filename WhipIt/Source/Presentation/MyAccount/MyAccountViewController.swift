@@ -20,10 +20,57 @@ class MyAccountViewController: BaseViewController {
     
     var dataSource: UICollectionViewDiffableDataSource<ProfileSection, AnyHashable>!
     
+    var postList: [Post] = []
+    var nextCursor: String = ""
+    
+    var disposeBag = DisposeBag()
+    
+    private let viewModel = MyAccountViewModel()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureDataSource()
         configureSnapshot()
+        
+        bind()
+    }
+    
+    private func bind() {
+        let input = MyAccountViewModel.Input()
+        let output = viewModel.transform(input: input)
+
+        output.profileResult
+            .subscribe(with: self) { owner, result in
+                switch result {
+                case .success(let response):
+                    owner.configureSnapshotForProfile(profile: response)
+                case .failure(let error):
+                    print("=====profile error======", error)
+                }
+            }
+            .disposed(by: self.disposeBag)
+
+        
+        output.postResult
+            .subscribe(with: self) { owner, result in
+                switch result {
+                case .success(let response):
+                    owner.postList.append(contentsOf: response.data)
+                    owner.nextCursor = response.next_cursor
+                    let ratios = response.data.map {
+                        let floatRatio: CGFloat = CGFloat(NSString(string: $0.content1).floatValue)
+                        return Ratio(ratio: floatRatio * 0.75)
+                    }
+                    let layout = PinterestLayout(columnsCount: 2, itemRatios: ratios, spacing: 10, contentWidth: owner.view.frame.width)
+                    owner.collectionView.collectionViewLayout = owner.updateLayout(section: layout.section)
+                    owner.configureSnapshotForPosts(posts: response.data)
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+            .disposed(by: disposeBag)
+
+
     }
     
     override func setHierarchy() {
@@ -40,22 +87,16 @@ class MyAccountViewController: BaseViewController {
 }
 
 private extension MyAccountViewController {
-    
-    struct ProfileItem: Hashable {
-        let username: String
-    }
-    
-    struct PostItem: Hashable {
-        let username: String
-    }
-    
+
     func configureDataSource() {
-        let profileCell = UICollectionView.CellRegistration<ProfileCollectionCell, ProfileItem> { cell, indexPath, itemIdentifier in
-            cell.userNameLabel.text = itemIdentifier.username
+        let profileCell = UICollectionView.CellRegistration<ProfileCollectionCell, GetMyProfileResponse> { cell, indexPath, itemIdentifier in
+            
+            cell.configureCell(profile: itemIdentifier)
         }
         
-        let postCell = UICollectionView.CellRegistration<StyleCollectionViewCell, PostItem> { cell, indexPath, itemIdentifier in
-            
+        let postCell = UICollectionView.CellRegistration<StyleCollectionViewCell, Post> { cell, indexPath, itemIdentifier in
+            cell.stylePost = itemIdentifier
+            cell.configureCell()
         }
         
         collectionView.register(AccountHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
@@ -65,9 +106,9 @@ private extension MyAccountViewController {
             let section = ProfileSection.allCases[indexPath.section]
             switch section {
             case .profile:
-                return collectionView.dequeueConfiguredReusableCell(using: profileCell, for: indexPath, item: itemIdentifier as? ProfileItem)
+                return collectionView.dequeueConfiguredReusableCell(using: profileCell, for: indexPath, item: itemIdentifier as? GetMyProfileResponse)
             case .post:
-                return collectionView.dequeueConfiguredReusableCell(using: postCell, for: indexPath, item: itemIdentifier as? PostItem)
+                return collectionView.dequeueConfiguredReusableCell(using: postCell, for: indexPath, item: itemIdentifier as? Post)
             }
         })
         
@@ -75,24 +116,32 @@ private extension MyAccountViewController {
             guard kind == UICollectionView.elementKindSectionHeader else { return nil }
 
             let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as? AccountHeaderView
-//            let view = collectionView.dequeueConfiguredReusableSupplementary(using: headerView, for: indexPath)
 
             return view
         }
     }
     
-    
     func configureSnapshot() {
         var snapshot = NSDiffableDataSourceSnapshot<ProfileSection, AnyHashable>()
         snapshot.appendSections(ProfileSection.allCases)
+        dataSource.apply(snapshot)
+    }
+    
+    
+    func configureSnapshotForProfile(profile: GetMyProfileResponse) {
+        var snapshot = dataSource.snapshot()
         
-        let profileItem = ProfileItem(username: "dnltldl888")
-        let postItem1 = PostItem(username: "fjashajhdsh")
-        snapshot.appendItems([profileItem], toSection: ProfileSection.profile)
-        snapshot.appendItems([postItem1], toSection: ProfileSection.post)
+        snapshot.appendItems([profile], toSection: ProfileSection.profile)
         
         dataSource.apply(snapshot)
     }
+    
+    func configureSnapshotForPosts(posts: [Post]) {
+        var snapshot = dataSource.snapshot()
+        snapshot.appendItems(posts, toSection: ProfileSection.post)
+        dataSource.apply(snapshot)
+    }
+
 }
 
 private extension MyAccountViewController {
@@ -104,6 +153,27 @@ private extension MyAccountViewController {
             switch section {
             case .profile: return self.profileSectionLayout()
             case .post: return self.postSectionLayout()
+            }
+        }
+        
+        return layout
+    }
+    
+    func updateLayout(section: NSCollectionLayoutSection) -> UICollectionViewLayout {
+        let postSection = section
+        
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(70))
+        let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+        sectionHeader.pinToVisibleBounds = true
+        
+        postSection.boundarySupplementaryItems = [sectionHeader]
+        
+        let layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, environment in
+            guard let self else { return nil }
+            let section = ProfileSection.allCases[sectionIndex]
+            switch section {
+            case .profile: return self.profileSectionLayout()
+            case .post: return postSection
             }
         }
         
