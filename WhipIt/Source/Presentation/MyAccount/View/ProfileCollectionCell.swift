@@ -49,6 +49,15 @@ final class ProfileCollectionCell: BaseCollectionViewCell {
     
     let separatorView = UIView.barViewBuilder(color: .systemGray6)
     
+    func configureCell(profile: GetMyProfileResponse) {
+        let followerCnt = profile.followers.count
+        let followingCnt = profile.following.count
+        profileImageView.setKFImage(imageUrl: profile.profile ?? "")
+        userNameLabel.text = profile.nick
+        followerButton.setTitle("팔로워 \(followerCnt)", for: .normal)
+        followingButton.setTitle("팔로잉 \(followingCnt)", for: .normal)
+    }
+    
     override func setHierarchy() {
         [profileImageView, userNameLabel, followerButton, borderView, followingButton, profileSettingButton, followButton, profileShareButton, separatorView].forEach { self.addSubview($0) }
     }
