@@ -20,7 +20,7 @@ struct CreatePostResponse: Decodable {
     let hashTags: [String]
     let comments: [Comment]
     let _id: String
-    let creator: Creator
+    let creator: User
     let time: String
     let content: String
     let content1: String
@@ -28,7 +28,7 @@ struct CreatePostResponse: Decodable {
 
 }
 
-struct Creator: Decodable, Hashable {
+struct User: Decodable, Hashable {
     let _id: String
     let nick: String
     let profile: String?
@@ -38,5 +38,5 @@ struct Comment: Decodable, Hashable {
     let _id: String
     let content: String
     let time: String
-    let creator: Creator
+    let creator: User
 }

@@ -18,7 +18,7 @@ struct Post: Decodable, Hashable {
     let hashTags: [String]
     let comments: [Comment]
     let _id: String
-    let creator: Creator
+    let creator: User
     let time: String
     let content: String
     let content1: String

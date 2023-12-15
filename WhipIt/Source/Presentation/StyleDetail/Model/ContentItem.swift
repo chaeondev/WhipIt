@@ -8,7 +8,7 @@
 import Foundation
 
 struct ContentItem: Hashable {
-    let creator: Creator
+    let creator: User
     let time: String
     let image: [String]
     let content1: String

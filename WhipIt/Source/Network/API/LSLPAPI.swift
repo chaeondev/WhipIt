@@ -21,11 +21,15 @@ enum LSLPAPI {
     case createPost(model: CreatePostRequest)
     case getPost(limit: String?, next: String?)
     case getPostByID(postID: String)
+    case getPostListByUserID(limit: String?, next: String?, userID: String)
     case likePost(postID: String)
     
     //Comment
     case createComment(model: CreateCommentRequest, postID: String)
     case deleteComment(postID: String, commentID: String)
+    
+    //Profile
+    case getMyProfile
 }
 
 extension LSLPAPI: TargetType {
@@ -53,12 +57,16 @@ extension LSLPAPI: TargetType {
             "post"
         case .getPostByID(let postID):
             "post/\(postID)"
+        case .getPostListByUserID(_,_,let userID):
+            "post/user/\(userID)"
         case .likePost(let postID):
             "post/like/\(postID)"
         case .createComment(_, let postID):
             "post/\(postID)/comment"
         case .deleteComment(let postID, let commentID):
             "post/\(postID)/comment/\(commentID)"
+        case .getMyProfile:
+            "profile/me"
         }
     }
     
@@ -66,7 +74,7 @@ extension LSLPAPI: TargetType {
         switch self {
         case .signUp, .emailValidation, .login, .createPost, .likePost, .createComment:
             return .post
-        case .refreshToken, .getPost, .getPostByID:
+        case .refreshToken, .getPost, .getPostByID, .getPostListByUserID, .getMyProfile:
             return .get
         case .deleteComment:
             return .delete
@@ -103,6 +111,18 @@ extension LSLPAPI: TargetType {
                     encoding: URLEncoding.queryString
                     )
             }
+        case .getPostListByUserID(let limit, let next, _):
+            if let limit {
+                return .requestParameters(
+                    parameters: ["limit": limit, "product_id": ProductID.test, "next": next ?? "0"],
+                    encoding: URLEncoding.queryString
+                    )
+            } else {
+                return .requestParameters(
+                    parameters: ["product_id": ProductID.test],
+                    encoding: URLEncoding.queryString
+                    )
+            }
         case .getPostByID:
             return .requestPlain
         case .likePost:
@@ -110,6 +130,8 @@ extension LSLPAPI: TargetType {
         case .createComment(let model, _):
             return .requestJSONEncodable(model)
         case .deleteComment:
+            return .requestPlain
+        case .getMyProfile:
             return .requestPlain
         }
     }
@@ -119,7 +141,7 @@ extension LSLPAPI: TargetType {
         case .signUp, .emailValidation, .login, .createComment:
             return ["Content-Type": "application/json",
                     "SesacKey": APIKey.sesacKey]
-        case .refreshToken, .getPost, .getPostByID, .likePost, .deleteComment:
+        case .refreshToken, .getPost, .getPostByID, .getPostListByUserID, .likePost, .deleteComment, .getMyProfile:
             return ["SesacKey": APIKey.sesacKey]
         case .createPost:
             return ["Content-Type": "multipart/form-data",

@@ -77,17 +77,6 @@ extension APIManager {
     func refreshToken() -> Single<NetworkResult<RefreshResponse>> {
         return request(target: .refreshToken)
     }
-    
-    func refreshTokenWithoutRx() {
-        provider.request(.refreshToken) { result in
-            switch result {
-            case .success(let response):
-                print(response)
-            case .failure(let error):
-                print(error)
-            }
-        }
-    }
 }
 
 // MARK: POST 관련 API Method
@@ -104,6 +93,10 @@ extension APIManager {
         return request(target: .getPostByID(postID: postID))
     }
     
+    func requestGetPostListByUserID(limit: Int, next: String?, userID: String) -> Single<NetworkResult<GetPostResponse>> {
+        return request(target: .getPostListByUserID(limit: "\(limit)", next: next, userID: userID))
+    }
+    
     func requestLikePost(postID: String) -> Single<NetworkResult<LikePostResponse>> {
         return request(target: .likePost(postID: postID))
     }
@@ -117,5 +110,12 @@ extension APIManager {
     
     func requestDeleteComment(postID: String, commentID: String) -> Single<NetworkResult<DeleteCommentResponse>> {
         return request(target: .deleteComment(postID: postID, commentID: commentID))
+    }
+}
+
+// MARK: Profile 관련 API Method
+extension APIManager {
+    func requestGetMyProfile() -> Single<NetworkResult<GetMyProfileResponse>> {
+        return request(target: .getMyProfile)
     }
 }
