@@ -100,6 +100,10 @@ extension APIManager {
     func requestLikePost(postID: String) -> Single<NetworkResult<LikePostResponse>> {
         return request(target: .likePost(postID: postID))
     }
+    
+    func requestLikedPostList(limit: Int, next: String?) -> Single<NetworkResult<GetPostResponse>> {
+        return request(target: .getLikedPostList(limit: "\(limit)", next: next))
+    }
 }
 
 // MARK: Comment 관련 API Method

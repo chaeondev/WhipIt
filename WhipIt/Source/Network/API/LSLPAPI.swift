@@ -23,6 +23,7 @@ enum LSLPAPI {
     case getPostByID(postID: String)
     case getPostListByUserID(limit: String?, next: String?, userID: String)
     case likePost(postID: String)
+    case getLikedPostList(limit: String, next: String?)
     
     //Comment
     case createComment(model: CreateCommentRequest, postID: String)
@@ -61,6 +62,8 @@ extension LSLPAPI: TargetType {
             "post/user/\(userID)"
         case .likePost(let postID):
             "post/like/\(postID)"
+        case .getLikedPostList:
+            "post/like/me"
         case .createComment(_, let postID):
             "post/\(postID)/comment"
         case .deleteComment(let postID, let commentID):
@@ -74,7 +77,7 @@ extension LSLPAPI: TargetType {
         switch self {
         case .signUp, .emailValidation, .login, .createPost, .likePost, .createComment:
             return .post
-        case .refreshToken, .getPost, .getPostByID, .getPostListByUserID, .getMyProfile:
+        case .refreshToken, .getPost, .getPostByID, .getPostListByUserID, .getLikedPostList, .getMyProfile:
             return .get
         case .deleteComment:
             return .delete
@@ -127,6 +130,11 @@ extension LSLPAPI: TargetType {
             return .requestPlain
         case .likePost:
             return .requestPlain
+        case .getLikedPostList(let limit, let next):
+            return .requestParameters(
+                parameters: ["limit": limit, "next": next ?? "0"],
+                encoding: URLEncoding.queryString
+            )
         case .createComment(let model, _):
             return .requestJSONEncodable(model)
         case .deleteComment:
@@ -141,7 +149,7 @@ extension LSLPAPI: TargetType {
         case .signUp, .emailValidation, .login, .createComment:
             return ["Content-Type": "application/json",
                     "SesacKey": APIKey.sesacKey]
-        case .refreshToken, .getPost, .getPostByID, .getPostListByUserID, .likePost, .deleteComment, .getMyProfile:
+        case .refreshToken, .getPost, .getPostByID, .getPostListByUserID, .likePost, .getLikedPostList, .deleteComment, .getMyProfile:
             return ["SesacKey": APIKey.sesacKey]
         case .createPost:
             return ["Content-Type": "multipart/form-data",
