@@ -16,4 +16,13 @@ extension UITextField {
         view.textAlignment = textAlignment
         return view
     }
+    
+    static func textFieldBuilder(placeholder: String, textColor: UIColor, font: UIFont = Font.light14) -> UITextField {
+        let view = UITextField()
+        view.placeholder = placeholder
+        view.textColor = textColor
+        view.font = font
+        view.borderStyle = .none
+        return view
+    }
 }
