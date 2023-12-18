@@ -23,10 +23,6 @@
 		DE3A00662B287D4400624BF6 /* StyleDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3A00652B287D4400624BF6 /* StyleDetailViewModel.swift */; };
 		DE6137BB2B207D7B0011E6A5 /* StyleDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6137BA2B207D7B0011E6A5 /* StyleDetailViewController.swift */; };
 		DE6137BD2B2084A30011E6A5 /* ViewBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6137BC2B2084A30011E6A5 /* ViewBuilder.swift */; };
-		DE6137BF2B2092C50011E6A5 /* TestMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6137BE2B2092C50011E6A5 /* TestMainView.swift */; };
-		DE6137C22B20956A0011E6A5 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6137C12B20956A0011E6A5 /* TestViewController.swift */; };
-		DE6137C42B2095A00011E6A5 /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6137C32B2095A00011E6A5 /* ImageCell.swift */; };
-		DE6137C62B2098B20011E6A5 /* TestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6137C52B2098B20011E6A5 /* TestModel.swift */; };
 		DE6137C82B21A0940011E6A5 /* StyleDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6137C72B21A0940011E6A5 /* StyleDetailView.swift */; };
 		DE6137CB2B21AFA30011E6A5 /* ContentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6137CA2B21AFA30011E6A5 /* ContentCell.swift */; };
 		DE6137CD2B21AFAF0011E6A5 /* InfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6137CC2B21AFAF0011E6A5 /* InfoCell.swift */; };
@@ -134,10 +130,6 @@
 		DE3A00652B287D4400624BF6 /* StyleDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleDetailViewModel.swift; sourceTree = "<group>"; };
 		DE6137BA2B207D7B0011E6A5 /* StyleDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleDetailViewController.swift; sourceTree = "<group>"; };
 		DE6137BC2B2084A30011E6A5 /* ViewBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewBuilder.swift; sourceTree = "<group>"; };
-		DE6137BE2B2092C50011E6A5 /* TestMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestMainView.swift; sourceTree = "<group>"; };
-		DE6137C12B20956A0011E6A5 /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
-		DE6137C32B2095A00011E6A5 /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
-		DE6137C52B2098B20011E6A5 /* TestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestModel.swift; sourceTree = "<group>"; };
 		DE6137C72B21A0940011E6A5 /* StyleDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleDetailView.swift; sourceTree = "<group>"; };
 		DE6137CA2B21AFA30011E6A5 /* ContentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentCell.swift; sourceTree = "<group>"; };
 		DE6137CC2B21AFAF0011E6A5 /* InfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoCell.swift; sourceTree = "<group>"; };
@@ -320,17 +312,6 @@
 			path = StyleDetail;
 			sourceTree = "<group>";
 		};
-		DE6137C02B2095480011E6A5 /* Test */ = {
-			isa = PBXGroup;
-			children = (
-				DE6137BE2B2092C50011E6A5 /* TestMainView.swift */,
-				DE6137C12B20956A0011E6A5 /* TestViewController.swift */,
-				DE6137C32B2095A00011E6A5 /* ImageCell.swift */,
-				DE6137C52B2098B20011E6A5 /* TestModel.swift */,
-			);
-			path = Test;
-			sourceTree = "<group>";
-		};
 		DE6137C92B21AF900011E6A5 /* Cell */ = {
 			isa = PBXGroup;
 			children = (
@@ -419,7 +400,6 @@
 				DE6DCD592B062AE4009236FD /* Builder */,
 				DE6DCD6D2B062DD4009236FD /* View */,
 				DE6DCD582B062A43009236FD /* Presentation */,
-				DE6137C02B2095480011E6A5 /* Test */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -868,14 +848,12 @@
 				DEEB8DE52B18AB82003D53FE /* StyleListViewModel.swift in Sources */,
 				DEA03B6C2B0A0669009473D4 /* JoinView.swift in Sources */,
 				DE3A00642B28792700624BF6 /* CreateComment.swift in Sources */,
-				DE6137C22B20956A0011E6A5 /* TestViewController.swift in Sources */,
 				DE6137BD2B2084A30011E6A5 /* ViewBuilder.swift in Sources */,
 				DECB97682B2AB8350020F4B1 /* BookMarkCell.swift in Sources */,
 				DE3832392B093694002C6960 /* ViewModelType.swift in Sources */,
 				DEC1F4342B2DFE2A00E085FF /* SettingView.swift in Sources */,
 				DEAC3D0C2B130C6A0062E336 /* BookMarkViewController.swift in Sources */,
 				DE6137CF2B21AFBB0011E6A5 /* CommentCell.swift in Sources */,
-				DE6137BF2B2092C50011E6A5 /* TestMainView.swift in Sources */,
 				DE6DCD8B2B06482B009236FD /* Login.swift in Sources */,
 				DEAC3D4A2B15D9030062E336 /* CreatePost.swift in Sources */,
 				DECB97612B29A0800020F4B1 /* DeleteComment.swift in Sources */,
@@ -894,13 +872,11 @@
 				DEC1F4322B2DFCD500E085FF /* ProfileSettingViewController.swift in Sources */,
 				DE6DCD8D2B064834009236FD /* Withdraw.swift in Sources */,
 				DE3832342B091CBD002C6960 /* Font.swift in Sources */,
-				DE6137C42B2095A00011E6A5 /* ImageCell.swift in Sources */,
 				DE3A00582B2826F900624BF6 /* CommentView.swift in Sources */,
 				DEAC3D0A2B1305F80062E336 /* UserDefaultsWrapper.swift in Sources */,
 				DEAC3D042B1300A10062E336 /* StyleListViewController.swift in Sources */,
 				DE32BCAB2B279E36004AEB8B /* ContentItem.swift in Sources */,
 				DE6DCD262B0623E6009236FD /* SceneDelegate.swift in Sources */,
-				DE6137C62B2098B20011E6A5 /* TestModel.swift in Sources */,
 				DEAC3D132B13291E0062E336 /* Refresh.swift in Sources */,
 				DE6DCD872B0645F0009236FD /* APIKey.swift in Sources */,
 				DEAC3D162B133BC50062E336 /* BaseCollectionViewCell.swift in Sources */,

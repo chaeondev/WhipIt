@@ -28,6 +28,11 @@ final class AccountHeaderView: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func configureView(postCnt: Int, bookCnt: Int) {
+        postCntLabel.text = "\(postCnt)"
+        bookmarkCntLabel.text = "\(bookCnt)"
+    }
+    
     func setHierarchy() {
         [postCntLabel, postLabel, bookmarkCntLabel, bookmarkLabel, bookmarkButton, borderView].forEach { self.addSubview($0) }
     }

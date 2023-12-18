@@ -20,6 +20,19 @@ class MyAccountViewController: BaseViewController {
     
     var dataSource: UICollectionViewDiffableDataSource<ProfileSection, AnyHashable>!
     
+    //headerView Data
+    var postCnt: Int! = 0 {
+        didSet {
+            self.applyNewSnapshot()
+        }
+    }
+    var bookCnt: Int! = 0 {
+        didSet {
+            self.applyNewSnapshot()
+        }
+    }
+    
+    
     var postList: [Post] = []
     var nextCursor: String = ""
     
@@ -43,6 +56,7 @@ class MyAccountViewController: BaseViewController {
             .subscribe(with: self) { owner, result in
                 switch result {
                 case .success(let response):
+                    owner.postCnt = response.posts.count
                     owner.configureSnapshotForProfile(profile: response)
                 case .failure(let error):
                     print("=====profile error======", error)
@@ -116,6 +130,7 @@ private extension MyAccountViewController {
             guard kind == UICollectionView.elementKindSectionHeader else { return nil }
 
             let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as? AccountHeaderView
+            view?.configureView(postCnt: self.postCnt, bookCnt: self.bookCnt)
 
             return view
         }
@@ -140,6 +155,11 @@ private extension MyAccountViewController {
         var snapshot = dataSource.snapshot()
         snapshot.appendItems(posts, toSection: ProfileSection.post)
         dataSource.apply(snapshot)
+    }
+    
+    func applyNewSnapshot() {
+        let snapshot = dataSource.snapshot()
+        dataSource.applySnapshotUsingReloadData(snapshot)
     }
 
 }
