@@ -76,6 +76,7 @@
 		DEC1F4342B2DFE2A00E085FF /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC1F4332B2DFE2A00E085FF /* SettingView.swift */; };
 		DEC1F43E2B30BE4B00E085FF /* EditMyProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC1F43D2B30BE4B00E085FF /* EditMyProfile.swift */; };
 		DEC1F4432B30F04300E085FF /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC1F4422B30F04300E085FF /* EditProfileViewController.swift */; };
+		DEC1F4452B30F91D00E085FF /* EditProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC1F4442B30F91D00E085FF /* EditProfileViewModel.swift */; };
 		DEC518242B2C63D20007F92C /* BookMarkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC518232B2C63D20007F92C /* BookMarkViewModel.swift */; };
 		DECB97612B29A0800020F4B1 /* DeleteComment.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECB97602B29A0800020F4B1 /* DeleteComment.swift */; };
 		DECB97632B29D2AA0020F4B1 /* BookmarkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECB97622B29D2AA0020F4B1 /* BookmarkButton.swift */; };
@@ -189,6 +190,7 @@
 		DEC1F4332B2DFE2A00E085FF /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
 		DEC1F43D2B30BE4B00E085FF /* EditMyProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditMyProfile.swift; sourceTree = "<group>"; };
 		DEC1F4422B30F04300E085FF /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
+		DEC1F4442B30F91D00E085FF /* EditProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewModel.swift; sourceTree = "<group>"; };
 		DEC518232B2C63D20007F92C /* BookMarkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookMarkViewModel.swift; sourceTree = "<group>"; };
 		DECB97602B29A0800020F4B1 /* DeleteComment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteComment.swift; sourceTree = "<group>"; };
 		DECB97622B29D2AA0020F4B1 /* BookmarkButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkButton.swift; sourceTree = "<group>"; };
@@ -657,6 +659,7 @@
 			isa = PBXGroup;
 			children = (
 				DEC1F4422B30F04300E085FF /* EditProfileViewController.swift */,
+				DEC1F4442B30F91D00E085FF /* EditProfileViewModel.swift */,
 			);
 			path = EditProfile;
 			sourceTree = "<group>";
@@ -894,6 +897,7 @@
 				DE32BCAB2B279E36004AEB8B /* ContentItem.swift in Sources */,
 				DE6DCD262B0623E6009236FD /* SceneDelegate.swift in Sources */,
 				DEAC3D132B13291E0062E336 /* Refresh.swift in Sources */,
+				DEC1F4452B30F91D00E085FF /* EditProfileViewModel.swift in Sources */,
 				DE6DCD872B0645F0009236FD /* APIKey.swift in Sources */,
 				DEAC3D162B133BC50062E336 /* BaseCollectionViewCell.swift in Sources */,
 				DEAC3CFA2B121D140062E336 /* BlackBackgroundRoundedButton.swift in Sources */,

@@ -13,6 +13,10 @@ enum EditProfileType {
     case nickname, phone
 }
 
+protocol EditDelegate: AnyObject {
+    func updateProfile(info: GetMyProfileResponse)
+}
+
 final class EditProfileViewController: BaseViewController {
     
     private lazy var titleLabel = UILabel.labelBuilder(text: "닉네임", font: Font.bold14, textColor: .black)
@@ -24,24 +28,68 @@ final class EditProfileViewController: BaseViewController {
     var editType: EditProfileType = .nickname
     var profileInfo: GetMyProfileResponse!
     
+    var delegate: EditDelegate?
+    
+    private let viewModel = EditProfileViewModel()
+    
+    private var disposeBag = DisposeBag()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setNavigationbar()
         configureView()
+        bind()
     }
     
-    func bind() {
+    private func bind() {
+        let input = EditProfileViewModel.Input(
+            editType: self.editType,
+            contentText: contentTextField.rx.text.orEmpty,
+            saveButtonTap: saveButton.rx.tap
+        )
+        let output = viewModel.transform(input: input)
+        
+        output.content
+            .bind(to: contentTextField.rx.text)
+            .disposed(by: disposeBag)
+        
+        output.contentValidation
+            .bind(to: saveButton.rx.isEnabled)
+            .disposed(by: disposeBag)
+        
+        output.contentValidation
+            .bind(with: self) { owner, bool in
+                owner.saveButton.backgroundColor = bool ? .black : .gray
+            }
+            .disposed(by: disposeBag)
+        
+        output.editResponse
+            .subscribe(with: self) { owner, result in
+                switch result {
+                case .success(let response):
+                    owner.delegate?.updateProfile(info: response)
+                    owner.dismiss(animated: true)
+                case .failure(let error):
+                    print("======프로필 수정 에러=====", error)
+                    owner.dismiss(animated: true)
+                    let message = "네트워크 서버 장애로 프로필이 수정되지 않았습니다. 다시 시도해주세요"
+                    owner.showAlertMessage(title: "프로필 수정 오류", message: message)
+                }
+            }
+            .disposed(by: disposeBag)
         
     }
     
-    func configureView() {
+    private func configureView() {
         switch editType {
         case .nickname:
             titleLabel.text = "닉네임"
+            contentTextField.placeholder = "이름 또는 별명"
             contentTextField.text = profileInfo.nick
             wordCntLabel.isHidden = false
         case .phone:
             titleLabel.text = "휴대폰 번호"
+            contentTextField.placeholder = "예) 010-1234-5678"
             contentTextField.text = profileInfo.phoneNum
             wordCntLabel.isHidden = true
         }

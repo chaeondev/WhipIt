@@ -73,6 +73,7 @@ final class ProfileSettingViewController: BaseViewController {
                 let vc = EditProfileViewController()
                 vc.profileInfo = owner.profile
                 vc.editType = .nickname
+                vc.delegate = self
                 let nav = UINavigationController(rootViewController: vc)
                 nav.modalPresentationStyle = .pageSheet
                 
@@ -85,6 +86,7 @@ final class ProfileSettingViewController: BaseViewController {
                 let vc = EditProfileViewController()
                 vc.profileInfo = owner.profile
                 vc.editType = .phone
+                vc.delegate = self
                 let nav = UINavigationController(rootViewController: vc)
                 nav.modalPresentationStyle = .pageSheet
                 
@@ -238,4 +240,11 @@ extension ProfileSettingViewController: YPImagePickerDelegate {
         return config
     }
     
+}
+
+extension ProfileSettingViewController: EditDelegate {
+    func updateProfile(info: GetMyProfileResponse) {
+        self.profile = info
+        configureView()
+    }
 }
