@@ -67,6 +67,30 @@ final class ProfileSettingViewController: BaseViewController {
                 owner.presentImagePicker()
             }
             .disposed(by: disposeBag)
+        
+        nicknameView.editButton.rx.tap
+            .bind(with: self) { owner, _ in
+                let vc = EditProfileViewController()
+                vc.profileInfo = owner.profile
+                vc.editType = .nickname
+                let nav = UINavigationController(rootViewController: vc)
+                nav.modalPresentationStyle = .pageSheet
+                
+                owner.present(nav, animated: true)
+            }
+            .disposed(by: disposeBag)
+        
+        phoneView.editButton.rx.tap
+            .bind(with: self) { owner, _ in
+                let vc = EditProfileViewController()
+                vc.profileInfo = owner.profile
+                vc.editType = .phone
+                let nav = UINavigationController(rootViewController: vc)
+                nav.modalPresentationStyle = .pageSheet
+                
+                owner.present(nav, animated: true)
+            }
+            .disposed(by: disposeBag)
     }
     
     private func configureView() {

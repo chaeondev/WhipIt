@@ -37,9 +37,11 @@ final class EditProfileViewController: BaseViewController {
     func configureView() {
         switch editType {
         case .nickname:
+            titleLabel.text = "닉네임"
             contentTextField.text = profileInfo.nick
             wordCntLabel.isHidden = false
         case .phone:
+            titleLabel.text = "휴대폰 번호"
             contentTextField.text = profileInfo.phoneNum
             wordCntLabel.isHidden = true
         }
