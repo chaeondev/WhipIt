@@ -43,11 +43,10 @@ class LoginViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         bind()
-        UserDefaultsManager.isLaunched = true
         
     }
 
-    func bind() {
+    private func bind() {
         
         let input = LoginViewModel.Input(
             emailText: emailView.textField.rx.text.orEmpty,

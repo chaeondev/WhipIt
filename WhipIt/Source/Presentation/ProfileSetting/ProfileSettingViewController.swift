@@ -93,6 +93,19 @@ final class ProfileSettingViewController: BaseViewController {
                 owner.present(nav, animated: true)
             }
             .disposed(by: disposeBag)
+        
+        logoutButton.rx.tap
+            .bind(with: self) { owner, _ in
+                owner.showAlertMessageWithCancel(title: "로그아웃", message: "로그아웃 하시겠습니까?") {
+                    KeyChainManager.shared.delete(account: .accessToken)
+                    KeyChainManager.shared.delete(account: .refreshToken)
+                    KeyChainManager.shared.delete(account: .userID)
+                    UserDefaultsManager.isLogin = false
+                    let loginVC = UINavigationController(rootViewController: LoginViewController())
+                    (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootViewController(loginVC)
+                }
+            }
+            .disposed(by: disposeBag)
     }
     
     private func configureView() {

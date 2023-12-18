@@ -43,6 +43,7 @@ class StyleListViewController: BaseViewController {
         setNavigationBar()
         configureDataSource()
         //bind()
+        UserDefaultsManager.isLogin = true
         
     }
     
