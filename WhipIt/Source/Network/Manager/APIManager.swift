@@ -122,4 +122,8 @@ extension APIManager {
     func requestGetMyProfile() -> Single<NetworkResult<GetMyProfileResponse>> {
         return request(target: .getMyProfile)
     }
+    
+    func requestEditMyProfile(model: EditMyProfileRequest) -> Single<NetworkResult<GetMyProfileResponse>> {
+        return request(target: .editMyProfile(model: model))
+    }
 }

@@ -31,6 +31,7 @@ enum LSLPAPI {
     
     //Profile
     case getMyProfile
+    case editMyProfile(model: EditMyProfileRequest)
 }
 
 extension LSLPAPI: TargetType {
@@ -70,6 +71,8 @@ extension LSLPAPI: TargetType {
             "post/\(postID)/comment/\(commentID)"
         case .getMyProfile:
             "profile/me"
+        case .editMyProfile:
+            "profile/me"
         }
     }
     
@@ -81,6 +84,8 @@ extension LSLPAPI: TargetType {
             return .get
         case .deleteComment:
             return .delete
+        case .editMyProfile:
+            return .put
         }
     }
     
@@ -141,6 +146,23 @@ extension LSLPAPI: TargetType {
             return .requestPlain
         case .getMyProfile:
             return .requestPlain
+        case .editMyProfile(let model):
+            if let image = model.profile {
+                let imageData = MultipartFormData(provider: .data(image), name: "profile", fileName: "\(image).jpeg", mimeType: "image/jpeg")
+                return .uploadMultipart([imageData])
+            }
+            
+            if let nick = model.nick {
+                let nickData = MultipartFormData(provider: .data(nick.data(using: .utf8)!), name: "nick")
+                return .uploadMultipart([nickData])
+            }
+            
+            if let phoneNum = model.phoneNum {
+                let phoneData = MultipartFormData(provider: .data(phoneNum.data(using: .utf8)!), name: "phoneNum")
+                return .uploadMultipart([phoneData])
+            }
+            
+            return .requestPlain
         }
     }
     
@@ -151,7 +173,7 @@ extension LSLPAPI: TargetType {
                     "SesacKey": APIKey.sesacKey]
         case .refreshToken, .getPost, .getPostByID, .getPostListByUserID, .likePost, .getLikedPostList, .deleteComment, .getMyProfile:
             return ["SesacKey": APIKey.sesacKey]
-        case .createPost:
+        case .createPost, .editMyProfile:
             return ["Content-Type": "multipart/form-data",
                     "SesacKey": APIKey.sesacKey]
         }
