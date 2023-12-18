@@ -12,6 +12,7 @@ final class BookMarkCell: BaseCollectionViewCell {
     let imageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFill
+        view.clipsToBounds = true
         view.backgroundColor = .blue
         return view
     }()
