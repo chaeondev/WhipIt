@@ -83,6 +83,12 @@ class MyAccountViewController: BaseViewController {
                 }
             }
             .disposed(by: disposeBag)
+        
+        output.likeCnt
+            .bind(with: self) { owner, cnt in
+                owner.bookCnt = cnt
+            }
+            .disposed(by: disposeBag)
 
 
     }
@@ -131,9 +137,12 @@ private extension MyAccountViewController {
 
             let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as? AccountHeaderView
             view?.configureView(postCnt: self.postCnt, bookCnt: self.bookCnt)
+            view?.bookmarkButton.addTarget(self, action: #selector(self.bookmarkButtonClicked), for: .touchUpInside)
 
             return view
         }
+    @objc func bookmarkButtonClicked() {
+        tabBarController?.selectedIndex = 1
     }
     
     func configureSnapshot() {
@@ -182,7 +191,7 @@ private extension MyAccountViewController {
     func updateLayout(section: NSCollectionLayoutSection) -> UICollectionViewLayout {
         let postSection = section
         
-        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(70))
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(60))
         let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
         sectionHeader.pinToVisibleBounds = true
         
@@ -223,7 +232,7 @@ private extension MyAccountViewController {
         
         let section = NSCollectionLayoutSection(group: group)
         
-        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(70))
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(60))
         let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
         sectionHeader.pinToVisibleBounds = true
         
