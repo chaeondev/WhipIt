@@ -15,13 +15,7 @@ final class InfoCell: BaseCollectionViewCell {
         view.setImage(image, for: .normal)
         return view
     }()
-    let bookmarkButton = {
-        let view = UIButton()
-        view.tintColor = .black
-        let image = UIImage(resource: .ribbon)
-        view.setImage(image, for: .normal)
-        return view
-    }()
+    let bookmarkButton = BookmarkButton()
     let commentCntLabel = UILabel.labelBuilder(text: "댓글 2개", font: UIFont(name: Suit.semiBold, size: 14)!, textColor: .black)
     let bookmarkCntLabel = UILabel.labelBuilder(text: "북마크 27개", font: UIFont(name: Suit.semiBold, size: 14)!, textColor: .black)
     let contentLabel = UILabel.labelBuilder(text: "오늘의 OOTD \n#오오티디 #라이징슈즈 #요즘아우터 #오뭐압", font: UIFont(name: Suit.light, size: 15)!, textColor: .black, numberOfLines: 0)
@@ -77,6 +71,7 @@ final class InfoCell: BaseCollectionViewCell {
             make.bottom.horizontalEdges.equalToSuperview()
             make.height.equalTo(1)
         }
+        separatorView.isHidden = true
         
     }
     
