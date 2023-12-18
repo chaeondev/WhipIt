@@ -40,13 +40,16 @@ class MyAccountViewController: BaseViewController {
     
     private let viewModel = MyAccountViewModel()
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        configureDataSource()
+        configureSnapshot()
+        bind()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setNavigationBar()
-        configureDataSource()
-        configureSnapshot()
-        
-        bind()
         
         collectionView.delegate = self
     }
@@ -73,7 +76,7 @@ class MyAccountViewController: BaseViewController {
             .subscribe(with: self) { owner, result in
                 switch result {
                 case .success(let response):
-                    owner.postList.append(contentsOf: response.data)
+                    owner.postList = response.data
                     owner.nextCursor = response.next_cursor
                     let ratios = response.data.map {
                         let floatRatio: CGFloat = CGFloat(NSString(string: $0.content1).floatValue)
