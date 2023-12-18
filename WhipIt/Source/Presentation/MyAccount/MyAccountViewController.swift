@@ -147,6 +147,7 @@ private extension MyAccountViewController {
         let profileCell = UICollectionView.CellRegistration<ProfileCollectionCell, GetMyProfileResponse> { cell, indexPath, itemIdentifier in
             
             cell.configureCell(profile: itemIdentifier)
+            cell.profileSettingButton.addTarget(self, action: #selector(self.settingButtonClicked), for: .touchUpInside)
         }
         
         let postCell = UICollectionView.CellRegistration<StyleCollectionViewCell, Post> { cell, indexPath, itemIdentifier in
@@ -176,6 +177,16 @@ private extension MyAccountViewController {
 
             return view
         }
+        
+        
+    }
+    
+    @objc func settingButtonClicked() {
+        let vc = ProfileSettingViewController()
+        vc.profile = profile
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
     @objc func bookmarkButtonClicked() {
         tabBarController?.selectedIndex = 1
     }

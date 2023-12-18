@@ -11,7 +11,7 @@ final class ProfileSettingViewController: BaseViewController {
     
     private lazy var profileImageView = {
         let view = RoundImageView(frame: .zero)
-        view.backgroundColor = .blue.withAlphaComponent(0.5)
+        view.backgroundColor = .systemGray5
         view.image = UIImage(systemName: "star")
         view.contentMode = .scaleAspectFill
         view.clipsToBounds = true
@@ -44,8 +44,19 @@ final class ProfileSettingViewController: BaseViewController {
         return view
     }()
     
+    var profile: GetMyProfileResponse?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureView()
+    }
+    
+    private func configureView() {
+        guard let profile else { return }
+        profileImageView.setKFImage(imageUrl: profile.profile ?? "")
+        emailView.contentLabel.text = profile.email
+        nicknameView.contentLabel.text = profile.nick
+        phoneView.contentLabel.text = profile.phoneNum
     }
     
     override func setHierarchy() {
@@ -111,8 +122,4 @@ final class ProfileSettingViewController: BaseViewController {
             make.height.equalTo(35)
         }
     }
-}
-
-#Preview {
-    ProfileSettingViewController()
 }
