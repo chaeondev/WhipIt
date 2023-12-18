@@ -14,7 +14,7 @@ enum SettingViewType {
     
     var title: String {
         switch self {
-        case .emailID: "프로필 이름"
+        case .emailID: "이메일 아이디"
         case .nickname: "닉네임"
         case .phoneNum: "휴대폰 번호"
         }
