@@ -75,6 +75,7 @@
 		DEC1F4322B2DFCD500E085FF /* ProfileSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC1F4312B2DFCD500E085FF /* ProfileSettingViewController.swift */; };
 		DEC1F4342B2DFE2A00E085FF /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC1F4332B2DFE2A00E085FF /* SettingView.swift */; };
 		DEC1F43E2B30BE4B00E085FF /* EditMyProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC1F43D2B30BE4B00E085FF /* EditMyProfile.swift */; };
+		DEC1F4432B30F04300E085FF /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC1F4422B30F04300E085FF /* EditProfileViewController.swift */; };
 		DEC518242B2C63D20007F92C /* BookMarkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC518232B2C63D20007F92C /* BookMarkViewModel.swift */; };
 		DECB97612B29A0800020F4B1 /* DeleteComment.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECB97602B29A0800020F4B1 /* DeleteComment.swift */; };
 		DECB97632B29D2AA0020F4B1 /* BookmarkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECB97622B29D2AA0020F4B1 /* BookmarkButton.swift */; };
@@ -187,6 +188,7 @@
 		DEC1F4312B2DFCD500E085FF /* ProfileSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSettingViewController.swift; sourceTree = "<group>"; };
 		DEC1F4332B2DFE2A00E085FF /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
 		DEC1F43D2B30BE4B00E085FF /* EditMyProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditMyProfile.swift; sourceTree = "<group>"; };
+		DEC1F4422B30F04300E085FF /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
 		DEC518232B2C63D20007F92C /* BookMarkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookMarkViewModel.swift; sourceTree = "<group>"; };
 		DECB97602B29A0800020F4B1 /* DeleteComment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteComment.swift; sourceTree = "<group>"; };
 		DECB97622B29D2AA0020F4B1 /* BookmarkButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkButton.swift; sourceTree = "<group>"; };
@@ -450,6 +452,7 @@
 				DEAC3D012B1300260062E336 /* BookMark */,
 				DEAC3D022B1300490062E336 /* MyAccount */,
 				DEC1F4302B2DFCA300E085FF /* ProfileSetting */,
+				DEC1F4412B30F02200E085FF /* EditProfile */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -648,6 +651,14 @@
 				DEC1F4332B2DFE2A00E085FF /* SettingView.swift */,
 			);
 			path = ProfileSetting;
+			sourceTree = "<group>";
+		};
+		DEC1F4412B30F02200E085FF /* EditProfile */ = {
+			isa = PBXGroup;
+			children = (
+				DEC1F4422B30F04300E085FF /* EditProfileViewController.swift */,
+			);
+			path = EditProfile;
 			sourceTree = "<group>";
 		};
 		DECB97662B2AB8210020F4B1 /* Cell */ = {
@@ -854,6 +865,7 @@
 				DE6137BD2B2084A30011E6A5 /* ViewBuilder.swift in Sources */,
 				DECB97682B2AB8350020F4B1 /* BookMarkCell.swift in Sources */,
 				DE3832392B093694002C6960 /* ViewModelType.swift in Sources */,
+				DEC1F4432B30F04300E085FF /* EditProfileViewController.swift in Sources */,
 				DEC1F4342B2DFE2A00E085FF /* SettingView.swift in Sources */,
 				DEAC3D0C2B130C6A0062E336 /* BookMarkViewController.swift in Sources */,
 				DE6137CF2B21AFBB0011E6A5 /* CommentCell.swift in Sources */,
