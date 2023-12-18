@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum Section: Int, CaseIterable {
+enum PostSection: Int, CaseIterable {
     case content
     case info
     case comment
@@ -17,6 +17,7 @@ final class StyleDetailView: UIView {
     
     lazy var collectionView = {
         let view = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
+        view.keyboardDismissMode = .onDrag
         return view
     }()
     
@@ -43,7 +44,7 @@ private extension StyleDetailView {
 
         let layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, environment in
             guard let self else { return nil }
-            let section = Section.allCases[sectionIndex]
+            let section = PostSection.allCases[sectionIndex]
             switch section {
             case .content: return self.contentSectionLayout()
             case .info: return self.infoSectionLayout()

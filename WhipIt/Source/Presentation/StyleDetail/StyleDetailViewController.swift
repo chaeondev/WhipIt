@@ -21,7 +21,7 @@ class StyleDetailViewController: BaseViewController {
     
     private var disposeBag = DisposeBag()
     
-    var dataSource: UICollectionViewDiffableDataSource<Section, AnyHashable>!
+    var dataSource: UICollectionViewDiffableDataSource<PostSection, AnyHashable>!
     
     override func loadView() {
         view = mainView
@@ -121,7 +121,7 @@ extension StyleDetailViewController {
         }
         
         dataSource = UICollectionViewDiffableDataSource(collectionView: mainView.collectionView) { collectionView, indexPath, itemIdentifier in
-            let section = Section.allCases[indexPath.section]
+            let section = PostSection.allCases[indexPath.section]
             switch section {
             case .content:
                 return collectionView.dequeueConfiguredReusableCell(using: contentCell, for: indexPath, item: itemIdentifier as? ContentItem)
@@ -135,25 +135,25 @@ extension StyleDetailViewController {
     }
     
     func configureSnapshot(item: Post) {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>()
-        snapshot.appendSections(Section.allCases)
+        var snapshot = NSDiffableDataSourceSnapshot<PostSection, AnyHashable>()
+        snapshot.appendSections(PostSection.allCases)
         
         let contentItem = ContentItem(creator: item.creator, time: item.time, image: item.image, content1: item.content1)
         let infoItem = InfoItem(likes: item.likes, content: item.content, comments: item.comments, hashTags: item.hashTags)
         
-        snapshot.appendItems( [contentItem], toSection: Section.content)
-        snapshot.appendItems( [infoItem], toSection: Section.info)
-        snapshot.appendItems( item.comments, toSection: Section.comment)
+        snapshot.appendItems( [contentItem], toSection: PostSection.content)
+        snapshot.appendItems( [infoItem], toSection: PostSection.info)
+        snapshot.appendItems( item.comments, toSection: PostSection.comment)
         
         dataSource.apply(snapshot)
     }
     
     func applySnapshotForCreateComment(items: [Comment]) {
         var snapshot = dataSource.snapshot()
-        if let first = snapshot.itemIdentifiers(inSection: Section.comment).first {
+        if let first = snapshot.itemIdentifiers(inSection: PostSection.comment).first {
             snapshot.insertItems(items, beforeItem: first)
         } else {
-            snapshot.appendItems(items, toSection: Section.comment)
+            snapshot.appendItems(items, toSection: PostSection.comment)
         }
         dataSource.apply(snapshot, animatingDifferences: true)
     }
