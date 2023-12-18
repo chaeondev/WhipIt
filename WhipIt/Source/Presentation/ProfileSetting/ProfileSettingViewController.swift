@@ -6,6 +6,10 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
+import YPImagePicker
+import Photos
 
 final class ProfileSettingViewController: BaseViewController {
     
@@ -44,16 +48,31 @@ final class ProfileSettingViewController: BaseViewController {
         return view
     }()
     
+    private let selectedPhotoSubject = PublishSubject<UIImage>()
+    var selectedItems = [YPMediaItem]()
+    
     var profile: GetMyProfileResponse?
+    
+    private var disposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
+        bind()
+    }
+    
+    func bind() {
+        profileButton.rx.tap
+            .bind(with: self) { owner, _ in
+                owner.presentImagePicker()
+            }
+            .disposed(by: disposeBag)
     }
     
     private func configureView() {
         guard let profile else { return }
         profileImageView.setKFImage(imageUrl: profile.profile ?? "")
+        emailView.editButton.isHidden = true
         emailView.contentLabel.text = profile.email
         nicknameView.contentLabel.text = profile.nick
         phoneView.contentLabel.text = profile.phoneNum
@@ -122,4 +141,77 @@ final class ProfileSettingViewController: BaseViewController {
             make.height.equalTo(35)
         }
     }
+}
+
+extension ProfileSettingViewController: YPImagePickerDelegate {
+    
+    func imagePickerHasNoItemsInLibrary(_ picker: YPImagePicker) {
+        print("사진이 없습니다.")
+    }
+    
+    func shouldAddToSelection(indexPath: IndexPath, numSelections: Int) -> Bool {
+        true
+    }
+    
+    func presentImagePicker() {
+        let config = setImagePickerConfiguration()
+        
+        let imagePicker = YPImagePicker(configuration: config)
+        imagePicker.imagePickerDelegate = self
+        
+        imagePicker.didFinishPicking { [weak imagePicker] items, cancelled in
+            if cancelled {
+                imagePicker?.dismiss(animated: true)
+            }
+            
+            self.selectedItems = items
+            if let singlePhoto = items.first {
+                switch singlePhoto {
+                case .photo(let photo):
+                    let photoData = photo.image.jpegData(compressionQuality: 0.4)
+                    let editRequest = EditMyProfileRequest(nick: nil, phoneNum: nil, profile: photoData)
+                    APIManager.shared.requestEditMyProfile(model: editRequest)
+                        .asObservable()
+                        .subscribe(with: self) { owner, result in
+                            switch result {
+                            case .success(let response):
+                                owner.profileImageView.setKFImage(imageUrl: response.profile ?? "")
+                                imagePicker?.dismiss(animated: true)
+                            case .failure(let error):
+                                imagePicker?.dismiss(animated: true)
+                                var message: String {
+                                    switch error {
+                                    case .wrongRequest: "사진 용량은 최대 1MB 이하로 선택해주세요!"
+                                    default: "네트워크 서버 장애로 프로필 사진이 수정되지 않았습니다. 다시시도해주세요"
+                                    }
+                                }
+                                owner.showAlertMessage(title: "프로필 사진 수정 오류", message: message)
+                            }
+                        }
+                        .disposed(by: self.disposeBag)
+                    
+                default:
+                    imagePicker?.dismiss(animated: true)
+                    
+                }
+            }
+        }
+        
+        imagePicker.modalPresentationStyle = .overFullScreen
+        present(imagePicker, animated: true)
+    }
+    
+    func setImagePickerConfiguration() -> YPImagePickerConfiguration {
+        var config = YPImagePickerConfiguration()
+        
+        config.startOnScreen = .library
+        config.showsPhotoFilters = false
+        config.library.defaultMultipleSelection = false
+        config.library.mediaType = .photo
+        config.hidesBottomBar = true
+        config.showsCrop = .none
+        
+        return config
+    }
+    
 }
