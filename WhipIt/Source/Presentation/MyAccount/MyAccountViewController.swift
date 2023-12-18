@@ -32,7 +32,7 @@ class MyAccountViewController: BaseViewController {
         }
     }
     
-    
+    var profile: GetMyProfileResponse!
     var postList: [Post] = []
     var nextCursor: String = ""
     
@@ -42,10 +42,13 @@ class MyAccountViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setNavigationBar()
         configureDataSource()
         configureSnapshot()
         
         bind()
+        
+        collectionView.delegate = self
     }
     
     private func bind() {
@@ -56,6 +59,7 @@ class MyAccountViewController: BaseViewController {
             .subscribe(with: self) { owner, result in
                 switch result {
                 case .success(let response):
+                    owner.profile = response
                     owner.postCnt = response.posts.count
                     owner.configureSnapshotForProfile(profile: response)
                 case .failure(let error):
@@ -93,6 +97,27 @@ class MyAccountViewController: BaseViewController {
 
     }
     
+    func setNavigationBar() {
+        let appearance = UINavigationBarAppearance()
+        appearance.titleTextAttributes = [
+            NSAttributedString.Key.font: UIFont(name: Suit.bold, size: 17)!,
+            NSAttributedString.Key.foregroundColor: UIColor.black
+        ]
+        appearance.configureWithOpaqueBackground()
+        appearance.shadowColor = .clear
+        appearance.backgroundColor = .white
+        
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().compactAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        
+        title = "내 프로필"
+        
+    }
+    
     override func setHierarchy() {
         super.setHierarchy()
         view.addSubview(collectionView)
@@ -102,6 +127,16 @@ class MyAccountViewController: BaseViewController {
         super.setConstraints()
         collectionView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
+        }
+    }
+}
+
+extension MyAccountViewController: UICollectionViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if collectionView.contentOffset.y >= 80 {
+            title = profile.nick
+        } else {
+            title = "내 프로필"
         }
     }
 }
