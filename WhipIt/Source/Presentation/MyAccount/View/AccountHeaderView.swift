@@ -9,10 +9,10 @@ import UIKit
 
 final class AccountHeaderView: UICollectionReusableView {
     
-    let postCntLabel = UILabel.labelBuilder(text: "5", font: UIFont(name: Suit.extraBold, size: 18)!, textColor: .black)
+    let postCntLabel = UILabel.labelBuilder(text: "5", font: UIFont(name: Suit.extraBold, size: 16)!, textColor: .black)
     let postLabel = UILabel.labelBuilder(text: "게시물", font: UIFont(name: Suit.light, size: 14)!, textColor: .black)
     
-    let bookmarkCntLabel = UILabel.labelBuilder(text: "23", font: UIFont(name: Suit.extraBold, size: 18)!, textColor: .black)
+    let bookmarkCntLabel = UILabel.labelBuilder(text: "23", font: UIFont(name: Suit.extraBold, size: 16)!, textColor: .black)
     let bookmarkLabel = UILabel.labelBuilder(text: "관심 스타일", font: UIFont(name: Suit.light, size: 14)!, textColor: .black)
     let bookmarkButton = UIButton()
     
@@ -40,7 +40,7 @@ final class AccountHeaderView: UICollectionReusableView {
     func setConstraints() {
         self.backgroundColor = .white
         postCntLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(12)
+            make.top.equalToSuperview().offset(8)
             make.centerX.equalToSuperview().multipliedBy(0.5)
         }
         postLabel.snp.makeConstraints { make in
@@ -49,7 +49,7 @@ final class AccountHeaderView: UICollectionReusableView {
         }
         
         bookmarkCntLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(12)
+            make.top.equalToSuperview().offset(8)
             make.centerX.equalToSuperview().multipliedBy(1.5)
         }
         bookmarkLabel.snp.makeConstraints { make in
