@@ -139,3 +139,14 @@ extension APIManager {
         return request(target: .editMyProfile(model: model))
     }
 }
+
+// MARK: 팔로우 관련 API Method
+extension APIManager {
+    func requestFollow(userID: String) -> Single<NetworkResult<FollowResponse>> {
+        return request(target: .follow(userID: userID))
+    }
+    
+    func requestUnFollow(userID: String) -> Single<NetworkResult<FollowResponse>> {
+        return request(target: .unfollow(userID: userID))
+    }
+}

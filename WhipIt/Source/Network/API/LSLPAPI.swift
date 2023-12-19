@@ -37,6 +37,10 @@ enum LSLPAPI {
     
     //Hashtag
     case hashtag(limit: String, next: String?, hashtag: String)
+    
+    //Follow
+    case follow(userID: String)
+    case unfollow(userID: String)
 }
 
 extension LSLPAPI: TargetType {
@@ -84,16 +88,20 @@ extension LSLPAPI: TargetType {
             "profile/me"
         case .hashtag:
             "post/hashtag"
+        case .follow(let userID):
+            "follow/\(userID)"
+        case .unfollow(let userID):
+            "follow/\(userID)"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .signUp, .emailValidation, .login, .createPost, .likePost, .createComment:
+        case .signUp, .emailValidation, .login, .createPost, .likePost, .createComment, .follow:
             return .post
         case .refreshToken, .getPost, .getPostByID, .getPostListByUserID, .getLikedPostList, .getMyProfile, .withdraw, .hashtag:
             return .get
-        case .deleteComment, .deletePost:
+        case .deleteComment, .deletePost, .unfollow:
             return .delete
         case .editMyProfile:
             return .put
@@ -183,6 +191,11 @@ extension LSLPAPI: TargetType {
                 parameters: ["limit": limit, "next": next ?? "0", "hashTag": hashtag],
                 encoding: URLEncoding.queryString
             )
+            
+        case .follow:
+            return .requestPlain
+        case .unfollow:
+            return .requestPlain
         }
     }
     
@@ -191,7 +204,7 @@ extension LSLPAPI: TargetType {
         case .signUp, .emailValidation, .login, .createComment:
             return ["Content-Type": "application/json",
                     "SesacKey": APIKey.sesacKey]
-        case .refreshToken, .getPost, .getPostByID, .getPostListByUserID, .likePost, .getLikedPostList, .deleteComment, .getMyProfile, .withdraw, .hashtag, .deletePost:
+        case .refreshToken, .getPost, .getPostByID, .getPostListByUserID, .likePost, .getLikedPostList, .deleteComment, .getMyProfile, .withdraw, .hashtag, .deletePost, .follow, .unfollow:
             return ["SesacKey": APIKey.sesacKey]
         case .createPost, .editMyProfile:
             return ["Content-Type": "multipart/form-data",
