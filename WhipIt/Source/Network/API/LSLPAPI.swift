@@ -33,6 +33,9 @@ enum LSLPAPI {
     //Profile
     case getMyProfile
     case editMyProfile(model: EditMyProfileRequest)
+    
+    //Hashtag
+    case hashtag(limit: String, next: String?, hashtag: String)
 }
 
 extension LSLPAPI: TargetType {
@@ -76,6 +79,8 @@ extension LSLPAPI: TargetType {
             "profile/me"
         case .editMyProfile:
             "profile/me"
+        case .hashtag:
+            "post/hashtag"
         }
     }
     
@@ -83,7 +88,7 @@ extension LSLPAPI: TargetType {
         switch self {
         case .signUp, .emailValidation, .login, .createPost, .likePost, .createComment:
             return .post
-        case .refreshToken, .getPost, .getPostByID, .getPostListByUserID, .getLikedPostList, .getMyProfile, .withdraw:
+        case .refreshToken, .getPost, .getPostByID, .getPostListByUserID, .getLikedPostList, .getMyProfile, .withdraw, .hashtag:
             return .get
         case .deleteComment:
             return .delete
@@ -168,6 +173,11 @@ extension LSLPAPI: TargetType {
             }
             
             return .requestPlain
+        case .hashtag(let limit, let next, let hashtag):
+            return .requestParameters(
+                parameters: ["limit": limit, "next": next ?? "0", "hashTag": hashtag],
+                encoding: URLEncoding.queryString
+            )
         }
     }
     
@@ -176,7 +186,7 @@ extension LSLPAPI: TargetType {
         case .signUp, .emailValidation, .login, .createComment:
             return ["Content-Type": "application/json",
                     "SesacKey": APIKey.sesacKey]
-        case .refreshToken, .getPost, .getPostByID, .getPostListByUserID, .likePost, .getLikedPostList, .deleteComment, .getMyProfile, .withdraw:
+        case .refreshToken, .getPost, .getPostByID, .getPostListByUserID, .likePost, .getLikedPostList, .deleteComment, .getMyProfile, .withdraw, .hashtag:
             return ["SesacKey": APIKey.sesacKey]
         case .createPost, .editMyProfile:
             return ["Content-Type": "multipart/form-data",

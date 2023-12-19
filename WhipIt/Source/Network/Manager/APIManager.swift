@@ -108,6 +108,10 @@ extension APIManager {
     func requestLikedPostList(limit: Int, next: String?) -> Single<NetworkResult<GetPostResponse>> {
         return request(target: .getLikedPostList(limit: "\(limit)", next: next))
     }
+    
+    func requestHashtagList(limit: Int, next: String?, hashtag: String) -> Single<NetworkResult<GetPostResponse>> {
+        return request(target: .hashtag(limit: "\(limit)", next: next, hashtag: hashtag))
+    }
 }
 
 // MARK: Comment 관련 API Method
