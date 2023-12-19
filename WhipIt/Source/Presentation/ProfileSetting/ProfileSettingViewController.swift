@@ -62,6 +62,7 @@ final class ProfileSettingViewController: BaseViewController {
     }
     
     func bind() {
+        
         profileButton.rx.tap
             .bind(with: self) { owner, _ in
                 owner.presentImagePicker()
@@ -103,6 +104,29 @@ final class ProfileSettingViewController: BaseViewController {
                     UserDefaultsManager.isLogin = false
                     let loginVC = UINavigationController(rootViewController: LoginViewController())
                     (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootViewController(loginVC)
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        withdrawButton.rx.tap
+            .bind(with: self) { owner, _ in
+                owner.showAlertMessageWithCancel(title: "회원탈퇴", message: "회원탈퇴시 회원 정보 및 서비스 이용 기록이 삭제됩니다 (다시 복구할 수 없어요!!) 탈퇴하시겠습니까?") {
+                    APIManager.shared.requestWithdraw()
+                        .subscribe(with: self) { owner, result in
+                            switch result {
+                            case .success:
+                                KeyChainManager.shared.delete(account: .accessToken)
+                                KeyChainManager.shared.delete(account: .refreshToken)
+                                KeyChainManager.shared.delete(account: .userID)
+                                UserDefaultsManager.isLogin = false
+                                let loginVC = UINavigationController(rootViewController: LoginViewController())
+                                (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootViewController(loginVC)
+                            case .failure(let error):
+                                let message = "네트워크 서버 장애로 회원탈퇴가 진행되지 않았습니다. 다시 시도해주세요"
+                                owner.showAlertMessage(title: "회원탈퇴 오류", message: message)
+                            }
+                        }
+                        .disposed(by: self.disposeBag)
                 }
             }
             .disposed(by: disposeBag)
