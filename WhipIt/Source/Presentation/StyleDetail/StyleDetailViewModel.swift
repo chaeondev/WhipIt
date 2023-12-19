@@ -22,6 +22,7 @@ final class StyleDetailViewModel: ViewModelType {
     struct Output {
         let commentResponse: PublishSubject<NetworkResult<Comment>>
         let commentValidation: BehaviorSubject<Bool>
+        let profile: PublishSubject<String?>
     }
     
     func transform(input: Input) -> Output {
@@ -29,6 +30,7 @@ final class StyleDetailViewModel: ViewModelType {
         let postIDSubject = BehaviorSubject(value: input.postID)
         let commentResponse = PublishSubject<NetworkResult<Comment>>()
         let commentValidation = BehaviorSubject(value: false)
+        let profile = PublishSubject<String?>()
         
         // MARK: Comment 등록 네트워크 통신
         input.commentText
@@ -51,7 +53,18 @@ final class StyleDetailViewModel: ViewModelType {
                 commentResponse.onNext(result)
             }
             .disposed(by: disposeBag)
+        
+        APIManager.shared.requestGetMyProfile()
+            .subscribe(with: self) { owner, result in
+                switch result {
+                case .success(let response):
+                    profile.onNext(response.profile)
+                case .failure(let error):
+                    print("====프로필 사진 에러====", error)
+                }
+            }
+            .disposed(by: disposeBag)
                     
-        return Output(commentResponse: commentResponse, commentValidation: commentValidation)
+        return Output(commentResponse: commentResponse, commentValidation: commentValidation, profile: profile)
     }
 }

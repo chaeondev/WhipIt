@@ -11,8 +11,8 @@ final class CommentCell: BaseCollectionViewCell {
     let profileImageView = {
         let view = RoundImageView(frame: .zero)
         view.image = UIImage(systemName: "star")
-        view.contentMode = .scaleAspectFit
-        view.backgroundColor = .blue
+        view.contentMode = .scaleAspectFill
+        view.clipsToBounds = true
         return view
     }()
     let userLabel = UILabel.labelBuilder(text: "위핏이8888", font: UIFont(name: Suit.extraBold, size: 12)!, textColor: .black, numberOfLines: 1)

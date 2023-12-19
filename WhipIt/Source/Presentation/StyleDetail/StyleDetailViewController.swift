@@ -80,6 +80,12 @@ class StyleDetailViewController: BaseViewController {
             }
             .disposed(by: disposeBag)
         
+        output.profile
+            .subscribe(with: self) { owner, profile in
+                owner.commentView.profileImageView.setKFImage(imageUrl: profile ?? "")
+            }
+            .disposed(by: disposeBag)
+        
         
 
     }
