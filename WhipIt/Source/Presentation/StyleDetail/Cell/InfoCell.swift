@@ -19,6 +19,17 @@ final class InfoCell: BaseCollectionViewCell {
     let commentCntLabel = UILabel.labelBuilder(text: "댓글 2개", font: UIFont(name: Suit.semiBold, size: 14)!, textColor: .black)
     let bookmarkCntLabel = UILabel.labelBuilder(text: "북마크 27개", font: UIFont(name: Suit.semiBold, size: 14)!, textColor: .black)
     let contentLabel = UILabel.labelBuilder(text: "오늘의 OOTD \n#오오티디 #라이징슈즈 #요즘아우터 #오뭐압", font: UIFont(name: Suit.light, size: 15)!, textColor: .black, numberOfLines: 0)
+    
+    let contentTextView = {
+        let view = HashtagTextView()
+        view.text = "오늘의 OOTD \n#오오티디 #라이징슈즈 #요즘아우터 #오뭐압"
+        view.linkTextAttributes = [.foregroundColor: UIColor.systemBlue]
+        view.font = UIFont(name: Suit.light, size: 15)!
+        view.textColor = .black
+        view.isScrollEnabled = false
+        return view
+    }()
+    
     let separatorView = UIView.barViewBuilder(color: .systemGray5)
     
     func configureCell(_ item: InfoItem) {
@@ -26,13 +37,13 @@ final class InfoCell: BaseCollectionViewCell {
         let bookmarkCnt = item.likes.count
         commentCntLabel.text = "댓글 \(commentCnt)개"
         bookmarkCntLabel.text = "북마크 \(bookmarkCnt)개"
-        contentLabel.text = item.content
+        contentTextView.text = item.content
     }
     
     override func setHierarchy() {
         super.setHierarchy()
         
-        [commentButton, bookmarkButton, commentCntLabel, bookmarkCntLabel, contentLabel, separatorView].forEach { contentView.addSubview($0) }
+        [commentButton, bookmarkButton, commentCntLabel, bookmarkCntLabel, contentTextView, separatorView].forEach { contentView.addSubview($0) }
     }
     
     override func setConstraints() {
@@ -61,10 +72,11 @@ final class InfoCell: BaseCollectionViewCell {
             make.trailing.equalToSuperview().inset(20)
         }
         
-        contentLabel.snp.makeConstraints { make in
+        contentTextView.snp.makeConstraints { make in
             make.top.equalTo(commentCntLabel.snp.bottom).offset(16)
-            make.horizontalEdges.equalToSuperview().inset(20)
+            make.horizontalEdges.equalToSuperview().inset(16)
             make.bottom.equalToSuperview().inset(16)
+            make.height.greaterThanOrEqualTo(50)
         }
         
         separatorView.snp.makeConstraints { make in
@@ -76,4 +88,5 @@ final class InfoCell: BaseCollectionViewCell {
     }
     
 }
+
 

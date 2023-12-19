@@ -109,6 +109,8 @@ extension StyleDetailViewController {
         
         let infoCell = UICollectionView.CellRegistration<InfoCell, InfoItem> { cell, indexPath, itemIdentifier in
             cell.configureCell(itemIdentifier)
+            cell.contentTextView.delegate = self
+            cell.contentTextView.resolveHashTags()
             cell.bookmarkButton.addTarget(self, action: #selector(self.bookmarkButtonClicked), for: .touchUpInside)
             guard let userID = KeyChainManager.shared.userID else { return }
             cell.bookmarkButton.isSelected = itemIdentifier.likes.contains(userID)
@@ -164,6 +166,22 @@ extension StyleDetailViewController {
         dataSource.apply(snapshot, animatingDifferences: true)
     }
        
+}
+
+extension StyleDetailViewController: UITextViewDelegate {
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        guard let contentTextView = textView as? HashtagTextView  else { return false }
+        print("====url scheme====", URL.absoluteString)
+        let url = URL.absoluteString
+        let arrId = Int(url)
+        
+        let vc = SearchViewController()
+        vc.str = contentTextView.hashtagArr![arrId!]
+        
+        self.navigationController?.pushViewController(vc, animated: true)
+          
+        return false
+    }
 }
 
 // MARK: 댓글 삭제
