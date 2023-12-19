@@ -77,6 +77,8 @@
 		DEC1F43E2B30BE4B00E085FF /* EditMyProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC1F43D2B30BE4B00E085FF /* EditMyProfile.swift */; };
 		DEC1F4432B30F04300E085FF /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC1F4422B30F04300E085FF /* EditProfileViewController.swift */; };
 		DEC1F4452B30F91D00E085FF /* EditProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC1F4442B30F91D00E085FF /* EditProfileViewModel.swift */; };
+		DEC1F48A2B3132BC00E085FF /* HashtagTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC1F4892B3132BC00E085FF /* HashtagTextView.swift */; };
+		DEC1F48C2B31376600E085FF /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC1F48B2B31376600E085FF /* SearchViewController.swift */; };
 		DEC518242B2C63D20007F92C /* BookMarkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC518232B2C63D20007F92C /* BookMarkViewModel.swift */; };
 		DECB97612B29A0800020F4B1 /* DeleteComment.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECB97602B29A0800020F4B1 /* DeleteComment.swift */; };
 		DECB97632B29D2AA0020F4B1 /* BookmarkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECB97622B29D2AA0020F4B1 /* BookmarkButton.swift */; };
@@ -191,6 +193,8 @@
 		DEC1F43D2B30BE4B00E085FF /* EditMyProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditMyProfile.swift; sourceTree = "<group>"; };
 		DEC1F4422B30F04300E085FF /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
 		DEC1F4442B30F91D00E085FF /* EditProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewModel.swift; sourceTree = "<group>"; };
+		DEC1F4892B3132BC00E085FF /* HashtagTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashtagTextView.swift; sourceTree = "<group>"; };
+		DEC1F48B2B31376600E085FF /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		DEC518232B2C63D20007F92C /* BookMarkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookMarkViewModel.swift; sourceTree = "<group>"; };
 		DECB97602B29A0800020F4B1 /* DeleteComment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteComment.swift; sourceTree = "<group>"; };
 		DECB97622B29D2AA0020F4B1 /* BookmarkButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkButton.swift; sourceTree = "<group>"; };
@@ -450,6 +454,7 @@
 				DE6DCD6A2B062D1B009236FD /* SignUp */,
 				DEAC3D142B1334890062E336 /* CreatePost */,
 				DEAC3D002B12F0350062E336 /* StyleList */,
+				DEC1F48D2B31376E00E085FF /* Search */,
 				DE6137B92B207D560011E6A5 /* StyleDetail */,
 				DEAC3D012B1300260062E336 /* BookMark */,
 				DEAC3D022B1300490062E336 /* MyAccount */,
@@ -501,6 +506,7 @@
 				DE3A005B2B28415500624BF6 /* CommentTextField.swift */,
 				DE3A00602B286A5600624BF6 /* HashTagButton.swift */,
 				DECB97622B29D2AA0020F4B1 /* BookmarkButton.swift */,
+				DEC1F4892B3132BC00E085FF /* HashtagTextView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -662,6 +668,14 @@
 				DEC1F4442B30F91D00E085FF /* EditProfileViewModel.swift */,
 			);
 			path = EditProfile;
+			sourceTree = "<group>";
+		};
+		DEC1F48D2B31376E00E085FF /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				DEC1F48B2B31376600E085FF /* SearchViewController.swift */,
+			);
+			path = Search;
 			sourceTree = "<group>";
 		};
 		DECB97662B2AB8210020F4B1 /* Cell */ = {
@@ -841,6 +855,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DE6DCD8F2B064C54009236FD /* APIManager.swift in Sources */,
+				DEC1F48C2B31376600E085FF /* SearchViewController.swift in Sources */,
 				DECB976E2B2AC22D0020F4B1 /* AccountHeaderView.swift in Sources */,
 				DE6DCD7F2B064228009236FD /* LSLPAPI.swift in Sources */,
 				DE6DCD712B062EFE009236FD /* TextFieldBuilder.swift in Sources */,
@@ -872,6 +887,7 @@
 				DEC1F4342B2DFE2A00E085FF /* SettingView.swift in Sources */,
 				DEAC3D0C2B130C6A0062E336 /* BookMarkViewController.swift in Sources */,
 				DE6137CF2B21AFBB0011E6A5 /* CommentCell.swift in Sources */,
+				DEC1F48A2B3132BC00E085FF /* HashtagTextView.swift in Sources */,
 				DE6DCD8B2B06482B009236FD /* Login.swift in Sources */,
 				DEAC3D4A2B15D9030062E336 /* CreatePost.swift in Sources */,
 				DECB97612B29A0800020F4B1 /* DeleteComment.swift in Sources */,

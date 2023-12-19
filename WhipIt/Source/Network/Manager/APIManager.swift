@@ -70,6 +70,10 @@ extension APIManager {
         return request(target: .login(model: model))
     }
     
+    func requestWithdraw() -> Single<NetworkResult<WithdrawResponse>> {
+        return request(target: .withdraw)
+    }
+    
 }
 
 // MARK: 토큰 refresh API Method

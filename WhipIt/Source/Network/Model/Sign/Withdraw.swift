@@ -8,6 +8,7 @@
 import Foundation
 
 struct WithdrawResponse: Decodable {
+    let _id: String
     let email: String
     let nick: String
 }

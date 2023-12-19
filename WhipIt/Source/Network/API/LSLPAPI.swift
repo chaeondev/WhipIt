@@ -13,6 +13,7 @@ enum LSLPAPI {
     case signUp(model: SignUpRequest)
     case emailValidation(model: EmailValidationRequest)
     case login(model: LoginRequest)
+    case withdraw
     
     //토큰 refresh
     case refreshToken
@@ -51,6 +52,8 @@ extension LSLPAPI: TargetType {
             "validation/email"
         case .login: 
             "login"
+        case .withdraw:
+            "withdraw"
         case .refreshToken:
             "refresh"
         case .createPost:
@@ -80,7 +83,7 @@ extension LSLPAPI: TargetType {
         switch self {
         case .signUp, .emailValidation, .login, .createPost, .likePost, .createComment:
             return .post
-        case .refreshToken, .getPost, .getPostByID, .getPostListByUserID, .getLikedPostList, .getMyProfile:
+        case .refreshToken, .getPost, .getPostByID, .getPostListByUserID, .getLikedPostList, .getMyProfile, .withdraw:
             return .get
         case .deleteComment:
             return .delete
@@ -97,6 +100,8 @@ extension LSLPAPI: TargetType {
             return .requestJSONEncodable(model)
         case .login(let model):
             return .requestJSONEncodable(model)
+        case .withdraw:
+            return .requestPlain
         case .refreshToken:
             return .requestPlain
         case .createPost(let model):
@@ -110,24 +115,24 @@ extension LSLPAPI: TargetType {
         case .getPost(let limit, let next):
             if let limit {
                 return .requestParameters(
-                    parameters: ["limit": limit, "product_id": ProductID.test, "next": next ?? "0"],
+                    parameters: ["limit": limit, "product_id": ProductID.basic, "next": next ?? "0"],
                     encoding: URLEncoding.queryString
                     )
             } else {
                 return .requestParameters(
-                    parameters: ["product_id": ProductID.test],
+                    parameters: ["product_id": ProductID.basic],
                     encoding: URLEncoding.queryString
                     )
             }
         case .getPostListByUserID(let limit, let next, _):
             if let limit {
                 return .requestParameters(
-                    parameters: ["limit": limit, "product_id": ProductID.test, "next": next ?? "0"],
+                    parameters: ["limit": limit, "product_id": ProductID.basic, "next": next ?? "0"],
                     encoding: URLEncoding.queryString
                     )
             } else {
                 return .requestParameters(
-                    parameters: ["product_id": ProductID.test],
+                    parameters: ["product_id": ProductID.basic],
                     encoding: URLEncoding.queryString
                     )
             }
@@ -171,7 +176,7 @@ extension LSLPAPI: TargetType {
         case .signUp, .emailValidation, .login, .createComment:
             return ["Content-Type": "application/json",
                     "SesacKey": APIKey.sesacKey]
-        case .refreshToken, .getPost, .getPostByID, .getPostListByUserID, .likePost, .getLikedPostList, .deleteComment, .getMyProfile:
+        case .refreshToken, .getPost, .getPostByID, .getPostListByUserID, .likePost, .getLikedPostList, .deleteComment, .getMyProfile, .withdraw:
             return ["SesacKey": APIKey.sesacKey]
         case .createPost, .editMyProfile:
             return ["Content-Type": "multipart/form-data",
