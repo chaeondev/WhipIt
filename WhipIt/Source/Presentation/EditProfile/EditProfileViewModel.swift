@@ -36,7 +36,7 @@ final class EditProfileViewModel: ViewModelType {
             case .nickname:
                 input.contentText
                     .asObservable()
-                    .map { $0.count >= 3 }
+                    .map { $0.count >= 3 && $0.count <= 25 }
                     .bind(to: contentValidation)
                     .disposed(by: disposeBag)
                 

@@ -53,6 +53,12 @@ final class EditProfileViewController: BaseViewController {
             .bind(to: contentTextField.rx.text)
             .disposed(by: disposeBag)
         
+        output.content
+            .bind(with: self) { owner, text in
+                owner.wordCntLabel.text = "\(text.count)/25"
+            }
+            .disposed(by: disposeBag)
+        
         output.contentValidation
             .bind(to: saveButton.rx.isEnabled)
             .disposed(by: disposeBag)
@@ -75,6 +81,12 @@ final class EditProfileViewController: BaseViewController {
                     let message = "네트워크 서버 장애로 프로필이 수정되지 않았습니다. 다시 시도해주세요"
                     owner.showAlertMessage(title: "프로필 수정 오류", message: message)
                 }
+            }
+            .disposed(by: disposeBag)
+        
+        navigationItem.rightBarButtonItem!.rx.tap
+            .bind(with: self) { owner, _ in
+                owner.dismiss(animated: true)
             }
             .disposed(by: disposeBag)
         
