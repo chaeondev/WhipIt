@@ -62,6 +62,7 @@ class StyleDetailViewController: BaseViewController {
                 switch result {
                 case .success(let response):
                     owner.applySnapshotForCreateComment(items: [response])
+                    owner.updatePost(postID: postData._id)
                     owner.commentView.commentTextField.text = ""
                     owner.commentView.commentTextField.sendActions(for: .valueChanged)
                 case .failure(let error):
@@ -111,6 +112,8 @@ extension StyleDetailViewController {
     func configureDataSource() {
         let contentCell = UICollectionView.CellRegistration<ContentCell, ContentItem> { cell, indexPath, itemIdentifier in
             cell.configureCell(itemIdentifier)
+            self.setMenuButton(cell.menuButton)
+            cell.menuButton.showsMenuAsPrimaryAction = true
         }
         
         let infoCell = UICollectionView.CellRegistration<InfoCell, InfoItem> { cell, indexPath, itemIdentifier in
@@ -182,7 +185,7 @@ extension StyleDetailViewController: UITextViewDelegate {
         let arrId = Int(url)
         
         let vc = SearchViewController()
-        vc.str = contentTextView.hashtagArr![arrId!]
+        vc.hashtag = contentTextView.hashtagArr![arrId!]
         
         self.navigationController?.pushViewController(vc, animated: true)
           
@@ -240,6 +243,46 @@ extension StyleDetailViewController {
                 }
             }
             .disposed(by: disposeBag)
+    }
+    
+    func setMenuButton(_ sender: UIButton) {
+        
+        guard let postData else { return }
+        
+        if postData.creator._id == KeyChainManager.shared.userID {
+            let postShare = UIAction(title: "게시물 공유") { action in
+                print(action)
+            }
+            
+            let postDelete = UIAction(title: "게시물 삭제", attributes: .destructive) { action in
+                self.showAlertMessageWithCancel(title: "게시물을 삭제하시겠습니까?", handler: {
+                    APIManager.shared.requestDeletePost(postID: postData._id)
+                        .subscribe(with: self) { owner, result in
+                            switch result {
+                            case .success:
+                                owner.navigationController?.popViewController(animated: true)
+                            case .failure(let error):
+                                var message: String {
+                                    switch error {
+                                    case .notFound: return "이미 삭제된 게시글입니다."
+                                    case .permissionDenied: return "본인이 작성한 글에 한해서만 삭제가 가능합니다."
+                                    default: return "네트워크 오류로 인해 게시글이 삭제되지 않았습니다. 다시 시도해주세요"
+                                    }
+                                }
+                                
+                                owner.showAlertMessage(title: "게시글 삭제 오류", message: message)
+                            }
+                        }
+                        .disposed(by: self.disposeBag)
+                })
+            }
+            sender.menu = UIMenu(children: [postShare, postDelete])
+        } else {
+            let postShare = UIAction(title: "게시글 공유") { action in
+                print(action)
+            }
+            sender.menu = UIMenu(children: [postShare])
+        }
     }
     
     func updatePost(postID: String) {
