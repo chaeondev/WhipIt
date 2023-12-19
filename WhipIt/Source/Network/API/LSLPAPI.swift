@@ -25,6 +25,7 @@ enum LSLPAPI {
     case getPostListByUserID(limit: String?, next: String?, userID: String)
     case likePost(postID: String)
     case getLikedPostList(limit: String, next: String?)
+    case deletePost(postID: String)
     
     //Comment
     case createComment(model: CreateCommentRequest, postID: String)
@@ -71,6 +72,8 @@ extension LSLPAPI: TargetType {
             "post/like/\(postID)"
         case .getLikedPostList:
             "post/like/me"
+        case .deletePost(let postID):
+            "post/\(postID)"
         case .createComment(_, let postID):
             "post/\(postID)/comment"
         case .deleteComment(let postID, let commentID):
@@ -90,7 +93,7 @@ extension LSLPAPI: TargetType {
             return .post
         case .refreshToken, .getPost, .getPostByID, .getPostListByUserID, .getLikedPostList, .getMyProfile, .withdraw, .hashtag:
             return .get
-        case .deleteComment:
+        case .deleteComment, .deletePost:
             return .delete
         case .editMyProfile:
             return .put
@@ -150,6 +153,8 @@ extension LSLPAPI: TargetType {
                 parameters: ["limit": limit, "next": next ?? "0"],
                 encoding: URLEncoding.queryString
             )
+        case .deletePost:
+            return .requestPlain
         case .createComment(let model, _):
             return .requestJSONEncodable(model)
         case .deleteComment:
@@ -186,7 +191,7 @@ extension LSLPAPI: TargetType {
         case .signUp, .emailValidation, .login, .createComment:
             return ["Content-Type": "application/json",
                     "SesacKey": APIKey.sesacKey]
-        case .refreshToken, .getPost, .getPostByID, .getPostListByUserID, .likePost, .getLikedPostList, .deleteComment, .getMyProfile, .withdraw, .hashtag:
+        case .refreshToken, .getPost, .getPostByID, .getPostListByUserID, .likePost, .getLikedPostList, .deleteComment, .getMyProfile, .withdraw, .hashtag, .deletePost:
             return ["SesacKey": APIKey.sesacKey]
         case .createPost, .editMyProfile:
             return ["Content-Type": "multipart/form-data",

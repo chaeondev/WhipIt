@@ -89,6 +89,7 @@
 		DED014A12B1F2B8900599DEF /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED014A02B1F2B8900599DEF /* SplashViewController.swift */; };
 		DED014A32B1F2CEB00599DEF /* SplashViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED014A22B1F2CEB00599DEF /* SplashViewModel.swift */; };
 		DED4B80C2B316E9A003DBC0F /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED4B80B2B316E9A003DBC0F /* SearchViewModel.swift */; };
+		DED4B80E2B317B0E003DBC0F /* DeletePost.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED4B80D2B317B0E003DBC0F /* DeletePost.swift */; };
 		DEEB8DE52B18AB82003D53FE /* StyleListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEB8DE42B18AB82003D53FE /* StyleListViewModel.swift */; };
 		DEEB8DE72B18AFFF003D53FE /* GetPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEB8DE62B18AFFF003D53FE /* GetPost.swift */; };
 		DEEB8DEB2B18E471003D53FE /* UIImageView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEB8DEA2B18E471003D53FE /* UIImageView+Extension.swift */; };
@@ -206,6 +207,7 @@
 		DED014A02B1F2B8900599DEF /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
 		DED014A22B1F2CEB00599DEF /* SplashViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewModel.swift; sourceTree = "<group>"; };
 		DED4B80B2B316E9A003DBC0F /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
+		DED4B80D2B317B0E003DBC0F /* DeletePost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeletePost.swift; sourceTree = "<group>"; };
 		DEEB8DE42B18AB82003D53FE /* StyleListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleListViewModel.swift; sourceTree = "<group>"; };
 		DEEB8DE62B18AFFF003D53FE /* GetPost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetPost.swift; sourceTree = "<group>"; };
 		DEEB8DEA2B18E471003D53FE /* UIImageView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Extension.swift"; sourceTree = "<group>"; };
@@ -650,6 +652,7 @@
 				DEAC3D492B15D9030062E336 /* CreatePost.swift */,
 				DEEB8DE62B18AFFF003D53FE /* GetPost.swift */,
 				DECB97642B29D5FF0020F4B1 /* LikePost.swift */,
+				DED4B80D2B317B0E003DBC0F /* DeletePost.swift */,
 			);
 			path = Post;
 			sourceTree = "<group>";
@@ -885,6 +888,7 @@
 				DEA03B6C2B0A0669009473D4 /* JoinView.swift in Sources */,
 				DE3A00642B28792700624BF6 /* CreateComment.swift in Sources */,
 				DE6137BD2B2084A30011E6A5 /* ViewBuilder.swift in Sources */,
+				DED4B80E2B317B0E003DBC0F /* DeletePost.swift in Sources */,
 				DECB97682B2AB8350020F4B1 /* BookMarkCell.swift in Sources */,
 				DE3832392B093694002C6960 /* ViewModelType.swift in Sources */,
 				DEC1F4432B30F04300E085FF /* EditProfileViewController.swift in Sources */,

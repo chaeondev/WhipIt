@@ -112,6 +112,10 @@ extension APIManager {
     func requestHashtagList(limit: Int, next: String?, hashtag: String) -> Single<NetworkResult<GetPostResponse>> {
         return request(target: .hashtag(limit: "\(limit)", next: next, hashtag: hashtag))
     }
+    
+    func requestDeletePost(postID: String) -> Single<NetworkResult<DeletePostResponse>> {
+        return request(target: .deletePost(postID: postID))
+    }
 }
 
 // MARK: Comment 관련 API Method
