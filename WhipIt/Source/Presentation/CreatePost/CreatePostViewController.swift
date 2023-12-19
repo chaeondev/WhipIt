@@ -175,11 +175,27 @@ class CreatePostViewController: BaseViewController {
         navigationController?.popViewController(animated: true)
     }
     
+    @objc func autoHashTagButtonClicked(_ sender: UIButton) {
+        guard let autoText = sender.titleLabel?.text else { return }
+        if let originalText = contentTextView.text, originalText != self.textPlaceholder {
+            contentTextView.text = originalText + autoText
+            contentTextView.refreshControl?.sendActions(for: .valueChanged)
+        } else {
+            contentTextView.text = autoText
+            contentTextView.refreshControl?.sendActions(for: .valueChanged)
+        }
+    }
+    
     override func setHierarchy() {
         super.setHierarchy()
         [button1, button2, button3, button4, button5, button6, button7, button8].forEach { buttonStackView.addArrangedSubview($0) }
+        [button1, button2, button3, button4, button5, button6, button7, button8].forEach {
+            $0.addTarget(self, action: #selector(autoHashTagButtonClicked), for: .touchUpInside)
+        }
+        
         scrollView.addSubview(buttonStackView)
         [photoImageView, reselectButton, contentTextView, scrollView, borderView].forEach { view.addSubview($0) }
+        
     }
     
     override func setConstraints() {
