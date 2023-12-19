@@ -46,7 +46,7 @@ class StyleDetailViewController: BaseViewController {
             //commentText: commentView.commentTextField.rx.observe(String.self, "text"),
             commentText: commentView.commentTextField.rx.text.orEmpty,
             registerButtonTap: commentView.commentTextField.registerButton.rx.tap,
-            postID: postData._id
+            post: postData
         )
         let output = viewModel.transform(input: input)
         
@@ -111,6 +111,12 @@ extension StyleDetailViewController {
     
     func configureDataSource() {
         let contentCell = UICollectionView.CellRegistration<ContentCell, ContentItem> { cell, indexPath, itemIdentifier in
+            
+            guard let postData = self.postData else { return }
+            if postData.creator._id == KeyChainManager.shared.userID {
+                cell.followButton.isHidden = true
+            }
+            cell.followButton.addTarget(self, action: #selector(self.followButtonClicked), for: .touchUpInside)
             cell.configureCell(itemIdentifier)
             self.setMenuButton(cell.menuButton)
             cell.menuButton.showsMenuAsPrimaryAction = true
@@ -227,9 +233,10 @@ extension StyleDetailViewController {
     }
 }
 
-// MARK: 북마크(좋아요) toggle -> post refresh
+
 extension StyleDetailViewController {
     
+    // MARK: 북마크(좋아요) toggle -> post refresh
     @objc func bookmarkButtonClicked(_ sender: UIButton) {
         guard let post = postData else { return }
         APIManager.shared.requestLikePost(postID: post._id)
@@ -245,6 +252,7 @@ extension StyleDetailViewController {
             .disposed(by: disposeBag)
     }
     
+    // MARK: 게시글 삭제 버튼
     func setMenuButton(_ sender: UIButton) {
         
         guard let postData else { return }
@@ -283,6 +291,54 @@ extension StyleDetailViewController {
             }
             sender.menu = UIMenu(children: [postShare])
         }
+    }
+    
+    // MARK: 팔로우 버튼 클릭
+    @objc func followButtonClicked(_ sender: UIButton) {
+        
+        guard let postData else { return }
+        
+        if !sender.isSelected {
+            APIManager.shared.requestFollow(userID: postData.creator._id)
+                .asObservable()
+                .subscribe(with: self) { owner, result in
+                    switch result {
+                    case .success(let response):
+                        sender.isSelected = response.following_status
+                        owner.updatePost(postID: postData._id)
+                    case .failure(let error):
+                        var message: String {
+                            switch error {
+                            case .serverConflict: return "이미 팔로윙된 계정입니다."
+                            case .notFound: return "알 수 없는 계정입니다."
+                            default: return "네트워크 오류로 팔로우가 되지 않았습니다. 다시 시도해주세요"
+                            }
+                        }
+                        owner.showAlertMessage(title: "팔로우 오류", message: message)
+                    }
+                }
+                .disposed(by: disposeBag)
+        } else {
+            APIManager.shared.requestUnFollow(userID: postData.creator._id)
+                .asObservable()
+                .subscribe(with: self) { owner, result in
+                    switch result {
+                    case .success(let response):
+                        sender.isSelected = response.following_status
+                        owner.updatePost(postID: postData._id)
+                    case .failure(let error):
+                        var message: String {
+                            switch error {
+                            case .notFound: return "알 수 없는 계정입니다."
+                            default: return "네트워크 오류로 언팔로우가 되지 않았습니다. 다시 시도해주세요"
+                            }
+                        }
+                        owner.showAlertMessage(title: "언팔로우 오류", message: message)
+                    }
+                }
+                .disposed(by: disposeBag)
+        }
+        
     }
     
     func updatePost(postID: String) {
