@@ -10,8 +10,8 @@ import RxSwift
 import RxCocoa
 
 enum ProductID {
-//    static let basic = "whipit_style" //"whipit_style_test", "whipit_test1"
-    static let test = "whipit_test1"
+    static let basic = "whipit_style"
+    //static let test = "whipit_test1"
 }
 
 class CreatePostViewModel: ViewModelType {
@@ -81,11 +81,11 @@ class CreatePostViewModel: ViewModelType {
             .filter { $0.3 }
             .map { text, image, ratio, validation in
                 
-                return CreatePostRequest(product_id: ProductID.test, content: text, content1: ratio, file: image!)
+                return CreatePostRequest(product_id: ProductID.basic, content: text, content1: ratio, file: image!)
             }
         
         input.registerBarButtonTap
-            .throttle(.seconds(1), scheduler: MainScheduler.instance)
+            .throttle(.seconds(5), scheduler: MainScheduler.instance)
             .withLatestFrom(postRequest) { _, request in
                 return request
             }
