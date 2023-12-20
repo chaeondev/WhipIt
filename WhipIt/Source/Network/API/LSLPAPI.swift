@@ -34,6 +34,7 @@ enum LSLPAPI {
     //Profile
     case getMyProfile
     case editMyProfile(model: EditMyProfileRequest)
+    case getUserProfile(userID: String)
     
     //Hashtag
     case hashtag(limit: String, next: String?, hashtag: String)
@@ -86,6 +87,8 @@ extension LSLPAPI: TargetType {
             "profile/me"
         case .editMyProfile:
             "profile/me"
+        case .getUserProfile(let userID):
+            "profile/\(userID)"
         case .hashtag:
             "post/hashtag"
         case .follow(let userID):
@@ -99,7 +102,7 @@ extension LSLPAPI: TargetType {
         switch self {
         case .signUp, .emailValidation, .login, .createPost, .likePost, .createComment, .follow:
             return .post
-        case .refreshToken, .getPost, .getPostByID, .getPostListByUserID, .getLikedPostList, .getMyProfile, .withdraw, .hashtag:
+        case .refreshToken, .getPost, .getPostByID, .getPostListByUserID, .getLikedPostList, .getMyProfile, .withdraw, .hashtag, .getUserProfile:
             return .get
         case .deleteComment, .deletePost, .unfollow:
             return .delete
@@ -169,6 +172,8 @@ extension LSLPAPI: TargetType {
             return .requestPlain
         case .getMyProfile:
             return .requestPlain
+        case .getUserProfile:
+            return .requestPlain
         case .editMyProfile(let model):
             if let image = model.profile {
                 let imageData = MultipartFormData(provider: .data(image), name: "profile", fileName: "\(image).jpeg", mimeType: "image/jpeg")
@@ -204,7 +209,7 @@ extension LSLPAPI: TargetType {
         case .signUp, .emailValidation, .login, .createComment:
             return ["Content-Type": "application/json",
                     "SesacKey": APIKey.sesacKey]
-        case .refreshToken, .getPost, .getPostByID, .getPostListByUserID, .likePost, .getLikedPostList, .deleteComment, .getMyProfile, .withdraw, .hashtag, .deletePost, .follow, .unfollow:
+        case .refreshToken, .getPost, .getPostByID, .getPostListByUserID, .likePost, .getLikedPostList, .deleteComment, .getMyProfile, .withdraw, .hashtag, .deletePost, .follow, .unfollow, .getUserProfile:
             return ["SesacKey": APIKey.sesacKey]
         case .createPost, .editMyProfile:
             return ["Content-Type": "multipart/form-data",

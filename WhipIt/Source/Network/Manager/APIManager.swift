@@ -131,12 +131,16 @@ extension APIManager {
 
 // MARK: Profile 관련 API Method
 extension APIManager {
-    func requestGetMyProfile() -> Single<NetworkResult<GetMyProfileResponse>> {
+    func requestGetMyProfile() -> Single<NetworkResult<GetProfileResponse>> {
         return request(target: .getMyProfile)
     }
     
-    func requestEditMyProfile(model: EditMyProfileRequest) -> Single<NetworkResult<GetMyProfileResponse>> {
+    func requestEditMyProfile(model: EditMyProfileRequest) -> Single<NetworkResult<GetProfileResponse>> {
         return request(target: .editMyProfile(model: model))
+    }
+    
+    func requestGetUserProfile(userID: String) -> Single<NetworkResult<GetProfileResponse>> {
+        return request(target: .getUserProfile(userID: userID))
     }
 }
 
