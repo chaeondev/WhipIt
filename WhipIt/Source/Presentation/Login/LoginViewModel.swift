@@ -98,9 +98,9 @@ class LoginViewModel: ViewModelType {
             .subscribe(with: self) { owner, result in
                 switch result {
                 case .success(let response):
-                    print(response)
                     KeyChainManager.shared.create(account: .accessToken, value: response.token)
                     KeyChainManager.shared.create(account: .refreshToken, value: response.refreshToken)
+                    KeyChainManager.shared.create(account: .userID, value: response._id)
                     UserDefaultsManager.isLogin = true
                     loginResponse.onNext(.success("Login Success"))
                 case .failure(let error):

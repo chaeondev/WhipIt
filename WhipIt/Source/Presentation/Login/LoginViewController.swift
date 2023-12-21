@@ -122,10 +122,14 @@ class LoginViewController: BaseViewController {
         styleVC.tabBarItem = UITabBarItem(title: "STYLE", image: UIImage(systemName: "heart.text.square"), selectedImage: UIImage(systemName: "heart.text.square.fill"))
         let bookmarkVC = UINavigationController(rootViewController: BookMarkViewController())
         bookmarkVC.tabBarItem = UITabBarItem(title: "SAVED", image: UIImage(systemName: "bookmark"), selectedImage: UIImage(systemName: "bookmark.fill"))
-        let accountVC = UINavigationController(rootViewController: MyAccountViewController())
-        accountVC.tabBarItem = UITabBarItem(title: "MY", image: UIImage(systemName: "person"), selectedImage: UIImage(systemName: "person.fill"))
+        let accountVC = MyAccountViewController()
+        accountVC.accountType = .me
+        accountVC.userID = KeyChainManager.shared.userID
+        let accountNav = UINavigationController(rootViewController: accountVC)
+        accountNav.tabBarItem = UITabBarItem(title: "MY", image: UIImage(systemName: "person"), selectedImage: UIImage(systemName: "person.fill"))
         
-        tabBar.viewControllers = [styleVC, bookmarkVC, accountVC]
+        tabBar.viewControllers = [styleVC, bookmarkVC, accountNav]
+        tabBar.tabBar.tintColor = .black
         
         return tabBar
     }
