@@ -16,21 +16,23 @@ final class StyleDetailViewModel: ViewModelType {
     struct Input {
         let commentText: ControlProperty<String>
         let registerButtonTap: ControlEvent<Void>
-        let postID: String
+        let post: Post
     }
     
     struct Output {
         let commentResponse: PublishSubject<NetworkResult<Comment>>
         let commentValidation: BehaviorSubject<Bool>
         let profile: PublishSubject<String?>
+        let creator: PublishSubject<GetProfileResponse>
     }
     
     func transform(input: Input) -> Output {
         
-        let postIDSubject = BehaviorSubject(value: input.postID)
+        let postIDSubject = BehaviorSubject(value: input.post._id)
         let commentResponse = PublishSubject<NetworkResult<Comment>>()
         let commentValidation = BehaviorSubject(value: false)
         let profile = PublishSubject<String?>()
+        let creator = PublishSubject<GetProfileResponse>()
         
         // MARK: Comment 등록 네트워크 통신
         input.commentText
@@ -64,7 +66,18 @@ final class StyleDetailViewModel: ViewModelType {
                 }
             }
             .disposed(by: disposeBag)
+        
+        APIManager.shared.requestGetUserProfile(userID: input.post.creator._id)
+            .subscribe(with: self) { owner, result in
+                switch result {
+                case .success(let response):
+                    creator.onNext(response)
+                case .failure(let error):
+                    print("====creator profile 에러====", error)
+                }
+            }
+            .disposed(by: disposeBag)
                     
-        return Output(commentResponse: commentResponse, commentValidation: commentValidation, profile: profile)
+        return Output(commentResponse: commentResponse, commentValidation: commentValidation, profile: profile, creator: creator)
     }
 }

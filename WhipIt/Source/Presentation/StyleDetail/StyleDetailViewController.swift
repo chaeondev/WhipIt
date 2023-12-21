@@ -17,6 +17,8 @@ class StyleDetailViewController: BaseViewController {
     
     var postData: Post?
     
+    var isfollowing = BehaviorSubject(value: false)
+    
     private let viewModel = StyleDetailViewModel()
     
     private var disposeBag = DisposeBag()
@@ -92,7 +94,11 @@ class StyleDetailViewController: BaseViewController {
             }
             .disposed(by: disposeBag)
         
-        
+        output.creator
+            .map { $0.followers.map { $0._id } }
+            .map { $0.contains(KeyChainManager.shared.userID) }
+            .bind(to: isfollowing)
+            .disposed(by: disposeBag)
 
     }
     
@@ -121,6 +127,13 @@ extension StyleDetailViewController {
             if postData.creator._id == KeyChainManager.shared.userID {
                 cell.followButton.isHidden = true
             }
+            
+            self.isfollowing
+                .bind(with: self) { owner, bool in
+                    cell.followButton.isSelected = bool
+                }
+                .disposed(by: self.disposeBag)
+            
             cell.headerButton.addTarget(self, action: #selector(self.userButtonClicked), for: .touchUpInside)
             cell.followButton.addTarget(self, action: #selector(self.followButtonClicked), for: .touchUpInside)
             cell.configureCell(itemIdentifier)
