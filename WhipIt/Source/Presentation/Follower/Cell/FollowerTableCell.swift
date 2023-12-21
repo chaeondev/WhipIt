@@ -233,8 +233,36 @@ extension FollowerTableCell: UICollectionViewDelegate, UICollectionViewDataSourc
         
         let data = userPostList[indexPath.item]
         cell.imageView.setKFImage(imageUrl: data.image.first ?? "")
+        cell.profileButton.addTarget(self, action: #selector(profileButtonClicked), for: .touchUpInside)
+        if userPostList.count < 5 {
+            if indexPath.item == 1 {
+                cell.profileButton.isHidden = false
+            }
+        } else if userPostList.count >= 5 {
+            if indexPath.item == 4 {
+                cell.profileButton.isHidden = false
+            }
+        }
         
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        let data = userPostList[indexPath.item]
+        
+        let vc = StyleDetailViewController()
+        vc.postData = data
+        delegate?.transitionView(vc: vc)
+        
+    }
+    
+    @objc func profileButtonClicked() {
+        guard let userData else { return }
+        let vc = MyAccountViewController()
+        vc.accountType = (userData._id == KeyChainManager.shared.userID) ? .me : .user
+        vc.userID = userData._id
+        delegate?.transitionView(vc: vc)
     }
     
     
