@@ -29,12 +29,13 @@ class BookMarkViewController: BaseViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        tabBarController?.tabBar.isHidden = false
+        setNavigationBar()
         bind()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setNavigationBar()
     }
     
     private func bind() {
@@ -103,7 +104,9 @@ extension BookMarkViewController: UICollectionViewDelegate, UICollectionViewData
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
+        let vc = StyleDetailViewController()
+        vc.postData = postList[indexPath.item]
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     private func collectionViewLayout() -> UICollectionViewFlowLayout {
