@@ -9,6 +9,12 @@ import UIKit
 import RxSwift
 import RxCocoa
 
+protocol TableCellDelegate: AnyObject {
+    func transitionView(vc: UIViewController) 
+    func updateTableView()
+    func showAlert(title: String, message: String)
+}
+
 final class FollowerTableCell: UITableViewCell {
     
     let headerView = UIView()
@@ -22,9 +28,10 @@ final class FollowerTableCell: UITableViewCell {
     
     let userLabel = UILabel.labelBuilder(text: "macaronron", font: Font.bold16, textColor: .black)
     let userFollowerCntLabel = UILabel.labelBuilder(text: "팔로워 15명", font: Font.light12, textColor: .gray)
-    let followButton = {
+    lazy var followButton = {
         let view = FollowButton(frame: .zero)
         view.titleLabel?.font = UIFont(name: Suit.semiBold, size: 12)!
+        view.addTarget(self, action: #selector(followButtonClicked), for: .touchUpInside)
         return view
     }()
     lazy var collectionView = {
@@ -37,6 +44,8 @@ final class FollowerTableCell: UITableViewCell {
     
     var userData: User?
     var userPostList: [Post] = []
+    
+    var delegate: TableCellDelegate?
     
     private var disposeBag = DisposeBag()
     
@@ -56,6 +65,7 @@ final class FollowerTableCell: UITableViewCell {
         super.prepareForReuse()
         
         disposeBag = DisposeBag()
+        followButton.isHidden = false
     }
 
     override func layoutSubviews() {
@@ -120,6 +130,7 @@ extension FollowerTableCell {
                 switch result {
                 case .success(let response):
                     owner.userFollowerCntLabel.text = "팔로워 \(response.followers.count)명"
+                    owner.followButton.isSelected = response.followers.map { $0._id }.contains(KeyChainManager.shared.userID!)
                     owner.collectionView.reloadData()
                 case .failure(let error):
                     print("=====user profile error======", error)
@@ -153,6 +164,53 @@ extension FollowerTableCell {
                 }
             }
             .disposed(by: disposeBag)
+    }
+}
+
+extension FollowerTableCell {
+    @objc func followButtonClicked(_ sender: UIButton) {
+        
+        guard let userData else { return }
+        if !sender.isSelected {
+            APIManager.shared.requestFollow(userID: userData._id)
+                .asObservable()
+                .subscribe(with: self) { owner, result in
+                    switch result {
+                    case .success(let response):
+                        sender.isSelected = response.following_status
+                        owner.delegate?.updateTableView()
+                    case .failure(let error):
+                        var message: String {
+                            switch error {
+                            case .serverConflict: return "이미 팔로윙된 계정입니다."
+                            case .notFound: return "알 수 없는 계정입니다."
+                            default: return "네트워크 오류로 팔로우가 되지 않았습니다. 다시 시도해주세요"
+                            }
+                        }
+                        owner.delegate?.showAlert(title: "팔로우 오류", message: message)
+                    }
+                }
+                .disposed(by: disposeBag)
+        } else {
+            APIManager.shared.requestUnFollow(userID: userData._id)
+                .asObservable()
+                .subscribe(with: self) { owner, result in
+                    switch result {
+                    case .success(let response):
+                        sender.isSelected = response.following_status
+                        owner.delegate?.updateTableView()
+                    case .failure(let error):
+                        var message: String {
+                            switch error {
+                            case .notFound: return "알 수 없는 계정입니다."
+                            default: return "네트워크 오류로 언팔로우가 되지 않았습니다. 다시 시도해주세요"
+                            }
+                        }
+                        owner.delegate?.showAlert(title: "언팔로우 오류", message: message)
+                    }
+                }
+                .disposed(by: disposeBag)
+        }
     }
 }
 
