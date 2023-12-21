@@ -19,9 +19,6 @@ class StyleListViewController: BaseViewController {
         return view
     }()
     
-    private lazy var searchBar = UISearchBar()
-    
-    
     var dataSource: UICollectionViewDiffableDataSource<Int, Post>!
     
     private let viewModel = StyleListViewModel()
@@ -48,9 +45,7 @@ class StyleListViewController: BaseViewController {
     }
     
     private func bind() {
-        let input = StyleListViewModel.Input(
-            searchButtonTap: searchBar.rx.searchButtonClicked
-        )
+        let input = StyleListViewModel.Input()
         let output = viewModel.transform(input: input)
         output.feedResult
             .subscribe(with: self) { owner, result in
@@ -87,8 +82,14 @@ class StyleListViewController: BaseViewController {
     }
     
     private func setNavigationBar() {
-        navigationItem.titleView = searchBar
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "camera.fill"), style: .plain, target: self, action: #selector(postButtonClicked))
+        //navigationItem.titleView = searchBar
+        title = "STYLE"
+        navigationController?.navigationBar.titleTextAttributes = [
+            NSAttributedString.Key.font : UIFont(name: Suit.bold, size: 17)!
+        ]
+        let cameraButton = UIBarButtonItem(image: UIImage(systemName: "camera.fill"), style: .plain, target: self, action: #selector(postButtonClicked))
+        cameraButton.tintColor = .black
+        navigationItem.rightBarButtonItem = cameraButton
     }
     
     @objc func postButtonClicked() {
@@ -150,7 +151,7 @@ extension StyleListViewController: UICollectionViewDataSourcePrefetching {
         for indexPath in indexPaths {
 
             if postList.count - 2 == indexPath.item && nextCursor != "0" {
-                APIManager.shared.requestGetPost(limit: 10, next: nextCursor)
+                APIManager.shared.requestGetPost(limit: 20, next: nextCursor)
                     .asObservable()
                     .subscribe(with: self) { owner, result in
                         switch result {
@@ -186,6 +187,13 @@ extension StyleListViewController: StyleCellDelegate {
     func updateCollectionView() {
         postList = []
         bind()
+    }
+    
+    func transitionView(accoutType: AccountType, userID: String) {
+        let vc = MyAccountViewController()
+        vc.accountType = accoutType
+        vc.userID = userID
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     
