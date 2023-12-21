@@ -102,6 +102,7 @@ extension FollowerViewController: UITableViewDelegate, UITableViewDataSource {
         cell.getUserProfile()
         cell.getUserPost()
         cell.configureCell()
+        cell.delegate = self
         
         if data._id == KeyChainManager.shared.userID {
             cell.followButton.isHidden = true
@@ -110,4 +111,28 @@ extension FollowerViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let data = followList[indexPath.row]
+        let vc = MyAccountViewController()
+        vc.accountType = (data._id == KeyChainManager.shared.userID) ? .me : .user
+        vc.userID = data._id
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
 }
+
+extension FollowerViewController: TableCellDelegate {
+    
+    func transitionView(vc: UIViewController) {
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func updateTableView() {
+        tableView.reloadData()
+    }
+    
+    func showAlert(title: String, message: String) {
+        self.showAlertMessage(title: title, message: message)
+    }
+}
+
