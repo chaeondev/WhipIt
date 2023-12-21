@@ -15,7 +15,7 @@ class CreatePostViewController: BaseViewController {
     
     private lazy var photoImageView: UIImageView = {
         let view = UIImageView()
-        view.contentMode = .scaleToFill
+        view.contentMode = .scaleAspectFill
         view.layer.cornerRadius = 10
         view.clipsToBounds = true
         view.layer.borderWidth = 0.5
