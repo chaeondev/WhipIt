@@ -94,6 +94,13 @@ extension SearchViewController: UICollectionViewDelegate {
 
 
 extension SearchViewController: StyleCellDelegate {
+    func transitionView(accoutType: AccountType, userID: String) {
+        let vc = MyAccountViewController()
+        vc.accountType = accoutType
+        vc.userID = userID
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
     
     func updateCollectionView() {
         postList = []

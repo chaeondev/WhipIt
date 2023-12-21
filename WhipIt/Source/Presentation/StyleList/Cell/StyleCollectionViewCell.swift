@@ -12,6 +12,7 @@ import RxCocoa
 
 protocol StyleCellDelegate: AnyObject {
     func updateCollectionView()
+    func transitionView(accoutType: AccountType, userID: String)
 }
 
 final class StyleCollectionViewCell: BaseCollectionViewCell {
@@ -29,13 +30,13 @@ final class StyleCollectionViewCell: BaseCollectionViewCell {
         let view = RoundImageView(frame: .zero)
         view.image = UIImage(systemName: "star")
         view.contentMode = .scaleAspectFill
-        view.backgroundColor = .brown
+        view.backgroundColor = .systemGray5
         return view
     }()
     
     private lazy var userNickLabel: UILabel = UILabel.labelBuilder(text: "위핏이620", font: Font.light12, textColor: .darkGray)
     
-    private lazy var userButton = UIButton()
+    lazy var userButton = UIButton()
     
     lazy var bookMarkButton: UIButton = BookmarkButton()
     
@@ -96,10 +97,18 @@ final class StyleCollectionViewCell: BaseCollectionViewCell {
             
     }
     
+    @objc func userButtonClicked() {
+
+        let accountType: AccountType = stylePost.creator._id == KeyChainManager.shared.userID ? .me : .user
+        delegate?.transitionView(accoutType: accountType, userID: stylePost.creator._id)
+        
+    }
+    
     override func setHierarchy() {
         [photoImageView, userImageView, userNickLabel, userButton, bookMarkCntLabel, bookMarkButton, contentLabel].forEach { contentView.addSubview($0) }
         
         bookMarkButton.addTarget(self, action: #selector(bookmarkButtonClicked), for: .touchUpInside)
+        userButton.addTarget(self, action: #selector(userButtonClicked), for: .touchUpInside)
     }
     
     override func setConstraints() {
