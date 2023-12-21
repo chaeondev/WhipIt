@@ -51,7 +51,7 @@ final class ProfileSettingViewController: BaseViewController {
     private let selectedPhotoSubject = PublishSubject<UIImage>()
     var selectedItems = [YPMediaItem]()
     
-    var profile: GetMyProfileResponse?
+    var profile: GetProfileResponse?
     
     private var disposeBag = DisposeBag()
     
@@ -280,7 +280,7 @@ extension ProfileSettingViewController: YPImagePickerDelegate {
 }
 
 extension ProfileSettingViewController: EditDelegate {
-    func updateProfile(info: GetMyProfileResponse) {
+    func updateProfile(info: GetProfileResponse) {
         self.profile = info
         configureView()
     }
