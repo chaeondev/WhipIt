@@ -33,12 +33,28 @@ final class AccountHeaderView: UICollectionReusableView {
         bookmarkCntLabel.text = "\(bookCnt)"
     }
     
+    func remakeConstraints(accountType: AccountType) {
+        if accountType == .user {
+            postCntLabel.snp.remakeConstraints { make in
+                make.top.equalToSuperview().offset(8)
+                make.centerX.equalToSuperview()
+            }
+            postLabel.snp.remakeConstraints { make in
+                make.top.equalTo(postCntLabel.snp.bottom).offset(4)
+                make.centerX.equalTo(postCntLabel)
+            }
+            
+            [bookmarkCntLabel, bookmarkLabel, bookmarkButton].forEach { $0.isHidden = true }
+        }
+    }
+    
     func setHierarchy() {
         [postCntLabel, postLabel, bookmarkCntLabel, bookmarkLabel, bookmarkButton, borderView].forEach { self.addSubview($0) }
     }
     
     func setConstraints() {
         self.backgroundColor = .white
+
         postCntLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(8)
             make.centerX.equalToSuperview().multipliedBy(0.5)
@@ -56,7 +72,7 @@ final class AccountHeaderView: UICollectionReusableView {
             make.top.equalTo(bookmarkCntLabel.snp.bottom).offset(4)
             make.centerX.equalTo(bookmarkCntLabel)
         }
-        //bookmarkButton.backgroundColor = .blue.withAlphaComponent(0.5)
+
         bookmarkButton.snp.makeConstraints { make in
             make.top.equalTo(bookmarkCntLabel)
             make.centerX.equalTo(bookmarkCntLabel)

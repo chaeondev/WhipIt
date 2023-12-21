@@ -14,32 +14,39 @@ final class MyAccountViewModel: ViewModelType {
     var disposeBag = DisposeBag()
     
     struct Input {
-        
+        let accountType: AccountType
+        let userID: String
     }
     
     struct Output {
-        let profileResult: PublishSubject<NetworkResult<GetMyProfileResponse>>
+        let profileResult: PublishSubject<NetworkResult<GetProfileResponse>>
         let postResult: PublishSubject<NetworkResult<GetPostResponse>>
         let likeCnt: BehaviorSubject<Int>
 
     }
     
     func transform(input: Input) -> Output {
-        let profileResult = PublishSubject<NetworkResult<GetMyProfileResponse>>()
+        let profileResult = PublishSubject<NetworkResult<GetProfileResponse>>()
         let postResult = PublishSubject<NetworkResult<GetPostResponse>>()
         let likeCnt = BehaviorSubject(value: 0)
         
-        // MARK: My Profile 네트워크
-        APIManager.shared.requestGetMyProfile()
-            .subscribe(with: self) { owner, result in
-                profileResult.onNext(result)
-            }
-            .disposed(by: disposeBag)
+        // MARK: Profile 네트워크
+        if input.accountType == .me {
+            APIManager.shared.requestGetMyProfile()
+                .subscribe(with: self) { owner, result in
+                    profileResult.onNext(result)
+                }
+                .disposed(by: disposeBag)
+        } else {
+            APIManager.shared.requestGetUserProfile(userID: input.userID)
+                .subscribe(with: self) { owner, result in
+                    profileResult.onNext(result)
+                }
+                .disposed(by: disposeBag)
+        }
         
-        guard let userID = KeyChainManager.shared.userID else { return Output(profileResult: profileResult, postResult: postResult, likeCnt: likeCnt)}
-        
-        // MARK: 내가 쓴 포스트 리스트 조회
-        APIManager.shared.requestGetPostListByUserID(limit: 10, next: nil, userID: userID)
+        // MARK: 포스트 리스트 조회
+        APIManager.shared.requestGetPostListByUserID(limit: 30, next: nil, userID: input.userID)
             .asObservable()
             .subscribe(with: self) { owner, result in
                 postResult.onNext(result)

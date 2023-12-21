@@ -32,10 +32,8 @@ final class ProfileCollectionCell: BaseCollectionViewCell {
     }()
     
     let followButton = {
-        let view = UIButton.buttonBuilder(title: "팔로우", font: UIFont(name: Suit.light, size: 14)!, titleColor: .black)
-        view.layer.cornerRadius = 10
-        view.layer.borderWidth = 1
-        view.layer.borderColor = UIColor.lightGray.cgColor
+        let view = FollowButton(frame: .zero)
+        view.titleLabel?.font = UIFont(name: Suit.light, size: 14)!
         return view
     }()
     
@@ -49,13 +47,22 @@ final class ProfileCollectionCell: BaseCollectionViewCell {
     
     let separatorView = UIView.barViewBuilder(color: .systemGray6)
     
-    func configureCell(profile: GetMyProfileResponse) {
+    func configureCell(profile: GetProfileResponse, accountType: AccountType) {
         let followerCnt = profile.followers.count
         let followingCnt = profile.following.count
         profileImageView.setKFImage(imageUrl: profile.profile ?? "")
         userNameLabel.text = profile.nick
         followerButton.setTitle("팔로워 \(followerCnt)", for: .normal)
         followingButton.setTitle("팔로잉 \(followingCnt)", for: .normal)
+        
+        switch accountType {
+        case .me:
+            followButton.isHidden = true
+            profileSettingButton.isHidden = false
+        case .user:
+            followButton.isHidden = false
+            profileSettingButton.isHidden = true
+        }
     }
     
     override func setHierarchy() {
