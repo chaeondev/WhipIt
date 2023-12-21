@@ -14,7 +14,7 @@ enum EditProfileType {
 }
 
 protocol EditDelegate: AnyObject {
-    func updateProfile(info: GetMyProfileResponse)
+    func updateProfile(info: GetProfileResponse)
 }
 
 final class EditProfileViewController: BaseViewController {
@@ -26,7 +26,7 @@ final class EditProfileViewController: BaseViewController {
     private lazy var saveButton = BlackBackgroundRoundedButton(title: "저장하기")
     
     var editType: EditProfileType = .nickname
-    var profileInfo: GetMyProfileResponse!
+    var profileInfo: GetProfileResponse!
     
     var delegate: EditDelegate?
     

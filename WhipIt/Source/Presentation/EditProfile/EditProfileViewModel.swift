@@ -22,14 +22,14 @@ final class EditProfileViewModel: ViewModelType {
     struct Output {
         let contentValidation: BehaviorSubject<Bool>
         let content: BehaviorSubject<String>
-        let editResponse: PublishSubject<NetworkResult<GetMyProfileResponse>>
+        let editResponse: PublishSubject<NetworkResult<GetProfileResponse>>
     }
     
     func transform(input: Input) -> Output {
         
         let contentValidation = BehaviorSubject(value: false)
         let content = BehaviorSubject(value: "")
-        let editResponse = PublishSubject<NetworkResult<GetMyProfileResponse>>()
+        let editResponse = PublishSubject<NetworkResult<GetProfileResponse>>()
         
         var editRequest: Observable<EditMyProfileRequest> {
             switch input.editType {
