@@ -15,8 +15,6 @@ class StyleListViewModel: ViewModelType {
     var disposeBag = DisposeBag()
     
     struct Input {
-        let searchButtonTap: ControlEvent<Void>
-        let prefetchItems: ControlEvent<[IndexPath]>
     }
     
     struct Output {
@@ -27,7 +25,7 @@ class StyleListViewModel: ViewModelType {
         
         let feedResult = PublishSubject<NetworkResult<GetPostResponse>>()
  
-        APIManager.shared.requestGetPost(limit: 10, next: nil)
+        APIManager.shared.requestGetPost(limit: 20, next: nil)
             .asObservable()
             .subscribe(with: self) { owner, result in
                 feedResult.onNext(result)
@@ -36,6 +34,8 @@ class StyleListViewModel: ViewModelType {
     
         return Output(feedResult: feedResult)
     }
+    
+    
     
 }
 
