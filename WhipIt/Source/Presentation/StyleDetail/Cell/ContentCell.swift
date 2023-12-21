@@ -19,11 +19,7 @@ final class ContentCell: BaseCollectionViewCell {
     let dateLabel = UILabel.labelBuilder(text: "23년 11월 29일", font: UIFont(name: Suit.light, size: 10)!, textColor: .gray, numberOfLines: 1)
     let headerView = UIView()
     let headerButton = UIButton()
-    let followButton = {
-        let view = BlackBackgroundRoundedButton(title: "팔로우")
-        view.titleLabel?.font = UIFont(name: Suit.semiBold, size: 12)!
-        return view
-    }()
+    let followButton = FollowButton(frame: .zero)
     let menuButton = UIButton.buttonBuilder(image: UIImage(systemName: "ellipsis"))
     
     let styleImageView = {
