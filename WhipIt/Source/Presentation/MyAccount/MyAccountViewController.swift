@@ -165,9 +165,12 @@ extension MyAccountViewController: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let vc = StyleDetailViewController()
-        vc.postData = postList[indexPath.item]
-        navigationController?.pushViewController(vc, animated: true)
+        
+        if indexPath.section == 1 {
+            let vc = StyleDetailViewController()
+            vc.postData = postList[indexPath.item]
+            navigationController?.pushViewController(vc, animated: true)
+        }
     }
 }
 
@@ -177,6 +180,8 @@ private extension MyAccountViewController {
         let profileCell = UICollectionView.CellRegistration<ProfileCollectionCell, GetProfileResponse> { cell, indexPath, itemIdentifier in
             
             cell.configureCell(profile: itemIdentifier, accountType: self.accountType)
+            cell.followerButton.addTarget(self, action: #selector(self.followerButtonClicked), for: .touchUpInside)
+            cell.followingButton.addTarget(self, action: #selector(self.followingButtonClicked), for: .touchUpInside)
             cell.profileSettingButton.addTarget(self, action: #selector(self.settingButtonClicked), for: .touchUpInside)
             if self.accountType == .user {
                 self.isFollowing
@@ -228,6 +233,22 @@ private extension MyAccountViewController {
     
     @objc func bookmarkButtonClicked() {
         tabBarController?.selectedIndex = 1
+    }
+    
+    @objc func followerButtonClicked() {
+        let vc = FollowerViewController()
+        vc.followType = .follower
+        vc.profile = profile
+        vc.accountType = accountType
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    @objc func followingButtonClicked() {
+        let vc = FollowerViewController()
+        vc.followType = .following
+        vc.profile = profile
+        vc.accountType = accountType
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc func followButtonClicked(_ sender: UIButton) {
