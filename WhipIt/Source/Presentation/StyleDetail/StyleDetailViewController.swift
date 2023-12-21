@@ -27,13 +27,18 @@ class StyleDetailViewController: BaseViewController {
         view = mainView
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.prefersLargeTitles = false
+        tabBarController?.tabBar.isHidden = true
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         guard let postData else { return }
         configureDataSource()
         configureSnapshot(item: postData)
-        
-        tabBarController?.tabBar.isHidden = true
+
         
         bind()
     }
@@ -116,6 +121,7 @@ extension StyleDetailViewController {
             if postData.creator._id == KeyChainManager.shared.userID {
                 cell.followButton.isHidden = true
             }
+            cell.headerButton.addTarget(self, action: #selector(self.userButtonClicked), for: .touchUpInside)
             cell.followButton.addTarget(self, action: #selector(self.followButtonClicked), for: .touchUpInside)
             cell.configureCell(itemIdentifier)
             self.setMenuButton(cell.menuButton)
@@ -210,6 +216,7 @@ extension StyleDetailViewController {
                         switch result {
                         case .success:
                             print("====댓글 삭제 성공=====")
+                            owner.updatePost(postID: post._id)
                             owner.applySnapshotForDeleteComment(items: [comment])
                         case .failure(let error):
                             var message: String {
@@ -339,6 +346,15 @@ extension StyleDetailViewController {
                 .disposed(by: disposeBag)
         }
         
+    }
+    
+    // MARK: User Profile button 클릭
+    @objc func userButtonClicked() {
+        guard let postData else { return }
+        let vc = MyAccountViewController()
+        vc.accountType = postData.creator._id == KeyChainManager.shared.userID ? .me : .user
+        vc.userID = postData.creator._id
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     func updatePost(postID: String) {
