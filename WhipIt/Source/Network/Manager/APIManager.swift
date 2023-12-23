@@ -33,7 +33,7 @@ final class APIManager {
                         single(.success(.failure(.invalidData)))
                         return
                     }
-                    print("==DecodedData==", decodedData)
+                    print("==DecodedData 성공!!==")
                     switch response.statusCode {
                     case 200:
                         return single(.success(.success(decodedData)))
@@ -41,7 +41,7 @@ final class APIManager {
                         return single(.success(.failure(.statusError)))
                     }
                 case .failure(let error):
-                    dump(error)
+                    print(error)
                     guard let statusCode = error.response?.statusCode, let networkError = APIError(rawValue: statusCode) else {
                         single(.success(.failure(.serverError)))
                         return
