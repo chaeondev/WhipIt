@@ -44,8 +44,6 @@ final class AuthInterceptor: RequestInterceptor {
             return
         }
         
-        //print(response.debugDescription)
-        
         //토큰 갱신 API 호출
         
         let task = Observable.just(())
