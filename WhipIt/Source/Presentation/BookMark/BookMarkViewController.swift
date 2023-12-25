@@ -65,6 +65,8 @@ class BookMarkViewController: BaseViewController {
         ]
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .automatic
+        navigationController?.navigationBar.tintColor = .black
+        navigationItem.backButtonDisplayMode = .minimal
     }
     
     override func setHierarchy() {
