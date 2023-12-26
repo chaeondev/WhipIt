@@ -133,11 +133,13 @@ class MyAccountViewController: BaseViewController {
 
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.tintColor = .black
+        navigationItem.backButtonDisplayMode = .minimal
         
         if accountType == .me {
-            title = "내 프로필"
+            navigationItem.title = "내 프로필"
         } else {
-            title = ""
+            navigationItem.title = ""
         }
         
     }
@@ -158,9 +160,9 @@ class MyAccountViewController: BaseViewController {
 extension MyAccountViewController: UICollectionViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if collectionView.contentOffset.y >= 80 {
-            title = profile.nick
+            navigationItem.title = profile.nick
         } else {
-            title = accountType == .me ? "내 프로필" : ""
+            navigationItem.title = accountType == .me ? "내 프로필" : ""
         }
     }
     
