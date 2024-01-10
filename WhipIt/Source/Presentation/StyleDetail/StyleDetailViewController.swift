@@ -38,6 +38,7 @@ class StyleDetailViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         guard let postData else { return }
+        setNavigationBar()
         configureDataSource()
         configureSnapshot(item: postData)
 
@@ -100,6 +101,14 @@ class StyleDetailViewController: BaseViewController {
             .bind(to: isfollowing)
             .disposed(by: disposeBag)
 
+    }
+    
+    private func setNavigationBar() {
+        title = "POST"
+        navigationController?.navigationBar.titleTextAttributes = [
+            NSAttributedString.Key.font : UIFont(name: Suit.bold, size: 17)!
+        ]
+        navigationItem.backButtonDisplayMode = .minimal
     }
     
     override func setHierarchy() {
