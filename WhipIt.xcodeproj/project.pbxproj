@@ -51,6 +51,10 @@
 		DE6DCD8D2B064834009236FD /* Withdraw.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6DCD8C2B064834009236FD /* Withdraw.swift */; };
 		DE6DCD8F2B064C54009236FD /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6DCD8E2B064C54009236FD /* APIManager.swift */; };
 		DEA03B6C2B0A0669009473D4 /* JoinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA03B6B2B0A0669009473D4 /* JoinView.swift */; };
+		DEA1E3892B340E67007F949B /* FollowerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA1E3882B340E67007F949B /* FollowerViewController.swift */; };
+		DEA1E3932B3410CC007F949B /* FollowerTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA1E3922B3410CC007F949B /* FollowerTableCell.swift */; };
+		DEA1E3952B3410DA007F949B /* FollowerCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA1E3942B3410DA007F949B /* FollowerCollectionCell.swift */; };
+		DEA1E3992B342CA0007F949B /* UnderlineSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA1E3982B342CA0007F949B /* UnderlineSegmentedControl.swift */; };
 		DEAC3CED2B0F42D50062E336 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEAC3CEC2B0F42D50062E336 /* String+Extension.swift */; };
 		DEAC3CF62B11D5F80062E336 /* SignUpSuccessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEAC3CF52B11D5F80062E336 /* SignUpSuccessViewController.swift */; };
 		DEAC3CF82B1213EF0062E336 /* ImageViewBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEAC3CF72B1213EF0062E336 /* ImageViewBuilder.swift */; };
@@ -171,6 +175,10 @@
 		DE6DCD8C2B064834009236FD /* Withdraw.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Withdraw.swift; sourceTree = "<group>"; };
 		DE6DCD8E2B064C54009236FD /* APIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
 		DEA03B6B2B0A0669009473D4 /* JoinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinView.swift; sourceTree = "<group>"; };
+		DEA1E3882B340E67007F949B /* FollowerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowerViewController.swift; sourceTree = "<group>"; };
+		DEA1E3922B3410CC007F949B /* FollowerTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowerTableCell.swift; sourceTree = "<group>"; };
+		DEA1E3942B3410DA007F949B /* FollowerCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowerCollectionCell.swift; sourceTree = "<group>"; };
+		DEA1E3982B342CA0007F949B /* UnderlineSegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnderlineSegmentedControl.swift; sourceTree = "<group>"; };
 		DEAC3CEC2B0F42D50062E336 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		DEAC3CF52B11D5F80062E336 /* SignUpSuccessViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpSuccessViewController.swift; sourceTree = "<group>"; };
 		DEAC3CF72B1213EF0062E336 /* ImageViewBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewBuilder.swift; sourceTree = "<group>"; };
@@ -469,6 +477,7 @@
 				DEAC3D022B1300490062E336 /* MyAccount */,
 				DEC1F4302B2DFCA300E085FF /* ProfileSetting */,
 				DEC1F4412B30F02200E085FF /* EditProfile */,
+				DEA1E3872B340E45007F949B /* Follower */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -517,6 +526,7 @@
 				DECB97622B29D2AA0020F4B1 /* BookmarkButton.swift */,
 				DEC1F4892B3132BC00E085FF /* HashtagTextView.swift */,
 				DED4B80F2B31815E003DBC0F /* FollowButton.swift */,
+				DEA1E3982B342CA0007F949B /* UnderlineSegmentedControl.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -540,6 +550,24 @@
 				DE6DCD862B0645F0009236FD /* APIKey.swift */,
 			);
 			path = API;
+			sourceTree = "<group>";
+		};
+		DEA1E3872B340E45007F949B /* Follower */ = {
+			isa = PBXGroup;
+			children = (
+				DEA1E38A2B340F22007F949B /* Cell */,
+				DEA1E3882B340E67007F949B /* FollowerViewController.swift */,
+			);
+			path = Follower;
+			sourceTree = "<group>";
+		};
+		DEA1E38A2B340F22007F949B /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				DEA1E3922B3410CC007F949B /* FollowerTableCell.swift */,
+				DEA1E3942B3410DA007F949B /* FollowerCollectionCell.swift */,
+			);
+			path = Cell;
 			sourceTree = "<group>";
 		};
 		DEAC3CF42B11D5890062E336 /* Manager */ = {
@@ -909,11 +937,13 @@
 				DE6DCD242B0623E6009236FD /* AppDelegate.swift in Sources */,
 				DE6137C82B21A0940011E6A5 /* StyleDetailView.swift in Sources */,
 				DEAC3CED2B0F42D50062E336 /* String+Extension.swift in Sources */,
+				DEA1E3992B342CA0007F949B /* UnderlineSegmentedControl.swift in Sources */,
 				DEAC3D112B1320630062E336 /* AuthInterceptor.swift in Sources */,
 				DE6DCD6C2B062D51009236FD /* LoginViewController.swift in Sources */,
 				DE6562972B0B2874000FE5B8 /* SignUpViewModel.swift in Sources */,
 				DE3A00662B287D4400624BF6 /* StyleDetailViewModel.swift in Sources */,
 				DEAC3D062B1305490062E336 /* UserDefaultsKey.swift in Sources */,
+				DEA1E3932B3410CC007F949B /* FollowerTableCell.swift in Sources */,
 				DEC1F43E2B30BE4B00E085FF /* EditMyProfile.swift in Sources */,
 				DECB97652B29D5FF0020F4B1 /* LikePost.swift in Sources */,
 				DE0FD4C82B2B06EA00902B07 /* GetMyProfile.swift in Sources */,
@@ -928,6 +958,8 @@
 				DE6DCD262B0623E6009236FD /* SceneDelegate.swift in Sources */,
 				DEAC3D132B13291E0062E336 /* Refresh.swift in Sources */,
 				DEC1F4452B30F91D00E085FF /* EditProfileViewModel.swift in Sources */,
+				DEA1E3952B3410DA007F949B /* FollowerCollectionCell.swift in Sources */,
+				DEA1E3892B340E67007F949B /* FollowerViewController.swift in Sources */,
 				DE6DCD872B0645F0009236FD /* APIKey.swift in Sources */,
 				DEAC3D162B133BC50062E336 /* BaseCollectionViewCell.swift in Sources */,
 				DEAC3CFA2B121D140062E336 /* BlackBackgroundRoundedButton.swift in Sources */,
