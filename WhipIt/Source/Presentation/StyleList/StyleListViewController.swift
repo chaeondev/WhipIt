@@ -89,7 +89,9 @@ class StyleListViewController: BaseViewController {
         ]
         let cameraButton = UIBarButtonItem(image: UIImage(systemName: "camera.fill"), style: .plain, target: self, action: #selector(postButtonClicked))
         cameraButton.tintColor = .black
+        navigationController?.navigationBar.tintColor = .black
         navigationItem.rightBarButtonItem = cameraButton
+        navigationItem.backButtonDisplayMode = .minimal
     }
     
     @objc func postButtonClicked() {
