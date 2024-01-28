@@ -17,7 +17,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let scene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: scene)
 
-        
+        //UserDefaultsManager.isLogin = false
         let loginVC = UINavigationController(rootViewController: LoginViewController())
         window?.rootViewController = UserDefaultsManager.isLogin ? SplashViewController() : loginVC
 
