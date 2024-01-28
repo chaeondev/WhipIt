@@ -15,14 +15,12 @@
 ## 프로젝트 소개
 
 > 앱 소개
-- 회원가입, 로그인 기능 제공
-- 사진과 텍스트를 기반한 게시글 작성, 편집 및 삭제 가능
+- 회원가입, 로그인, 로그아웃, 회원탈퇴 기능 제공
+- 사진과 텍스트를 기반한 게시글을 피드 형식으로 보여줌
 - 게시글에 해시태그 추가 가능, 해시태그 기반으로 게시글 필터링 기능 제공
 - 북마크, 댓글을 통해 다른유저와 소통 가능
 - 다른 유저를 팔로우하고 프로필 확인 가능
 - 나의 프로필에서 게시글, 팔로우 관리 기능 제공
-
-
 
 ---
 
@@ -36,15 +34,28 @@
 
 > 기술스택
 
-- **프레임워크** : UIKit
+- **프레임워크** : UIKit, Security(KeyChain)
 - **디자인패턴** : MVVM, Singleton, Input/Output
 - **라이브러리** : RxSwift, Moya, SnapKit, Kingfisher, YPImagePicker, IQKeyboardManager
 - **의존성관리** : Swift Package Manager
-- **ETC** : CodabaseUI, CompositionalLayout, DiffableDataSource
+- **ETC** : CodabaseUI, CompositionalLayout, DiffableDataSource, PropertyWrapper
 
 ---
 
 > 주요기능
+
+#### ✔︎ 회원가입, 로그인
+- **정규표현식**을 사용하여 회원가입 유효성 검증, **RxSwift**에 기반한 로직 구현
+- **JWT Token** 기반 로그인 구현 및 **KeyChain**을 통한 Token 정보 관리
+- Alamofire의 **RequestInterceptor**를 활용해 **AccessToken** 갱신 및 **RefreshToken** 만료 로직 처리
+
+#### ✔︎ 포스트(게시글)
+- **CompositionalLayout**과 **DiffableDataSource**를 사용해 이미지 사이즈에 기반한 **동적인** CollectionViewCell 레이아웃 피드 구현
+- **Cursor Based Pagination** 구현을 통한 피드 데이터 실시간 갱신
+- **NSAttributedString의 link**와 UITextViewDelegate method를 사용해 포스트 내 **해시태그 감지**
+
+#### ✔︎
+#### ✔︎
 
 ---
 
