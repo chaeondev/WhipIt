@@ -48,16 +48,19 @@
 - **정규표현식**을 사용하여 회원가입 유효성 검증, **RxSwift**에 기반한 로직 구현
 - **JWT Token** 기반 로그인 구현 및 **KeyChain**을 통한 Token 정보 관리
 - Alamofire의 **RequestInterceptor**를 활용해 **AccessToken** 갱신 및 **RefreshToken** 만료 로직 처리
+- SplashView에서 Token 갱신 API를 이용해 **자동로그인 로직**을 통한 화면전환 분기 처리 및 사용성 개선
 
 #### ✔︎ 포스트(게시글)
 - **CompositionalLayout**과 **DiffableDataSource**를 사용해 이미지 사이즈에 기반한 **동적인** CollectionViewCell 레이아웃 피드 구현
 - **Cursor Based Pagination** 구현을 통한 피드 데이터 실시간 갱신
 - **NSAttributedString의 link**와 UITextViewDelegate method를 사용해 포스트 내 **해시태그 감지**
 - **YPImagePicker** 라이브러리를 활용해 포스트 작성 시 자유로운 **이미지 커스터마이징** 제공
+- **multipart/form-data** 형식을 통한 이미지, 텍스트 포함한 데이터 업로드 구현
 
 #### ✔︎ 네트워크
 
 #### ✔︎ 기타
+- **Rxswift** 기반 **MVVM Input/Output** 패턴을 적용해 비즈니스 로직 분리 및 코드 가독성 개선
 - **Kingfisher**를 활용해 이미지 **캐싱** 및 **다운샘플링** 기능 기반 메모리 사용량 개선
 
 ---
