@@ -4,6 +4,10 @@
 
 # WhipIt
 
+## Preview
+<img width="1000" alt="image" src="https://github.com/chaeondev/WhipIt/assets/80023607/8e834e8b-3f61-4687-8ac6-7996526a513e">
+
+<img width="1000" alt="image" src="https://github.com/chaeondev/WhipIt/assets/80023607/78957236-d5d1-4db4-950b-2b7e8a22e628">
 <br></br>
 
 ## 프로젝트 소개
