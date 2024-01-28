@@ -34,11 +34,11 @@
 
 > 기술스택
 
-- **프레임워크** : UIKit, Security(KeyChain)
+- **프레임워크** : UIKit
 - **디자인패턴** : MVVM, Singleton, Input/Output
 - **라이브러리** : RxSwift, Moya, SnapKit, Kingfisher, YPImagePicker, IQKeyboardManager
 - **의존성관리** : Swift Package Manager
-- **ETC** : CodabaseUI, CompositionalLayout, DiffableDataSource, PropertyWrapper
+- **ETC** : CodabaseUI, CompositionalLayout, DiffableDataSource, PropertyWrapper, KeyChain
 
 ---
 
@@ -50,20 +50,24 @@
 - Alamofire의 **RequestInterceptor**를 활용해 **AccessToken** 갱신 및 **RefreshToken** 만료 로직 처리
 - SplashView에서 Token 갱신 API를 이용해 **자동로그인 로직**을 통한 화면전환 분기 처리 및 사용성 개선
 
-#### ✔︎ 포스트(게시글)
-- **CompositionalLayout**과 **DiffableDataSource**를 사용해 이미지 사이즈에 기반한 **동적인** CollectionViewCell 레이아웃 피드 구현
+#### ✔︎ 포스트
+- **CompositionalLayout**를 사용해 이미지 비율 기반 **dynamic** CollectionViewCell 레이아웃 피드 구현
+- **DiffableDataSource** 기반 섹션 별 **Hashable**한 데이터 모델과 **스냅샷**을 통해 UI 상태 관리 및 interactive한 사용자 경험 제공
 - **Cursor Based Pagination** 구현을 통한 피드 데이터 실시간 갱신
 - **NSAttributedString의 link**와 UITextViewDelegate method를 사용해 포스트 내 **해시태그 감지**
 - **YPImagePicker** 라이브러리를 활용해 포스트 작성 시 자유로운 **이미지 커스터마이징** 제공
 - **multipart/form-data** 형식을 통한 이미지, 텍스트 포함한 데이터 업로드 구현
-- 
 
 #### ✔︎ 네트워크
+- **RxSwift Single Trait**를 사용해 네트워크 요청 로직 구현 
+- Moya를 통해 네트워크 계층 **Router Pattern** 구성, **Generic** 기반 Request 메서드 구현을 통해 **코드 추상화**
+- enum을 활용해 status code 기반 네트워크 에러 분기처리
 
 #### ✔︎ 기타
 - **Rxswift** 기반 **MVVM Input/Output** 패턴을 적용해 비즈니스 로직 분리 및 코드 가독성 개선
 - **Kingfisher**를 활용해 이미지 **캐싱** 및 **다운샘플링** 기능 기반 메모리 사용량 개선
 - **PropertyWrapper**를 기반한 **UserDefaults**Manager를 통해 코드 재사용성 향상
+- **접근제어자** final, private를 사용하여 **Static Dispatch**를 이용한 컴파일 최적화 및 은닉화
 
 ---
 
