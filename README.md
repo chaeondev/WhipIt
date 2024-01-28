@@ -72,3 +72,42 @@
 ---
 
 <br> </br>
+
+## 트러블 슈팅
+
+### 1. RxSwift Single의 특성으로 인한 Subscribe 이슈
+
+#### Issue
+#### Solution
+
+<br> </br>
+
+### 2. Interceptor에서 retry할 때 refreshToken API 호출 에러
+
+#### Issue
+#### Solution
+
+<br> </br>
+
+### 3. Kingfisher 비동기 이미지 다운로드로 인한 피드 Layout 이슈
+
+#### Issue
+#### Solution
+
+<br> </br>
+
+### 4. 댓글 문구 버튼으로 댓글 Post시 값 전달 에러 
+
+#### Issue
+#### Solution
+
+<br> </br>
+
+## 회고
+
+### ▹ 배운점
+
+
+
+### ▹ 아쉬운점
+
