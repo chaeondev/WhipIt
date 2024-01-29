@@ -232,14 +232,6 @@ output.feedResult
 
 <br> </br>
 
-### 4. 댓글 문구 버튼으로 댓글 Post시 값 전달 에러 
-
-#### Issue
-
-#### Solution
-
-<br> </br>
-
 ## 회고
 
 ### ▹ 배운점
