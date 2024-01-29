@@ -178,13 +178,65 @@ RxSwift의 Scheduler에 대해 찾아보게 되었고 MainSchduler 자체가 Ser
 ### 3. Kingfisher 비동기 이미지 다운로드로 인한 피드 Layout 이슈
 
 #### Issue
+게시글 피드를 이미지의 사이즈 비율을 기반으로 dynamic한 CollectionView Cell을 이용해 레이아웃을 구성하고자 했습니다.
+하지만 **Kingfisher**를 통해 서버에서 이미지를 다운로드 하는 과정이 **비동기로 동작**하기 때문에 **이미지 다운로드가 완료되지 않은 채로 cell의 layout을 잡게되는 문제**가 발생했습니다. 
+
 #### Solution
+이를 해결하기 위해서 다양한 방법을 고민했습니다. 네트워크 통신으로 게시글 데이터를 전달 받은 후 다시 CollectionView layout을 업데이트 해주는 로직으로 구성했기 때문에 이미지 데이터 뿐만 아니라 게시글 자체의 데이터 또한 고려해야 했습니다.
+그렇기에 이미지 다운로드가 끝나면 completionHandler를 통해 알리고 layout을 잡는 방법은 적절하지 않았습니다. 문제는 생각보다 간단한 방법으로 해결할 수 있었습니다. 게시글 작성 후 서버로 데이터를 전달할 시 모델 자체에 이미지의 비율을 미리 계산해 전달했습니다. 이를 통해 이미지 다운로드 여부와 관계없이 동적인 layout을 구성할 수 있었습니다.
+
+* Post Request Model에 이미지 비율 데이터 추가
+
+```swift
+struct CreatePostRequest: Encodable {
+    let product_id: String
+    let content: String
+    let file: Data
+    let fileRatio: String
+}
+```
+* Post 네트워크 통신 전 이미지 비율 계산
+
+```swift
+input.imageRatio
+    .filter { $0 != 0.0 }
+    .map {
+        return String(format: "%.2f", $0)
+    }
+    .bind(to: ratio)
+    .disposed(by: disposeBag)
+```
+* 게시글 네트워크 GET 이후 레이아웃 업데이트
+
+```swift
+output.feedResult
+  .subscribe(with: self) { owner, result in
+      switch result {
+      case .success(let response):
+          owner.postList.append(contentsOf: response.data)
+          owner.nextCursor = response.next_cursor
+          let ratios = response.data.map {
+              let floatRatio: CGFloat = CGFloat(NSString(string: $0.fileRatio).floatValue) //POST 때 서버에 전달한 이미지 비율 이용
+              return Ratio(ratio: floatRatio * 0.75)
+          }
+          let layout = PinterestLayout(columnsCount: 2, itemRatios: ratios, spacing: 10, contentWidth: owner.view.frame.width)
+          
+          owner.collectionView.collectionViewLayout = UICollectionViewCompositionalLayout(section: layout.section)
+          
+          owner.configureSnapshot(response)
+      case .failure(let error):
+          print(error.localizedDescription)
+      }
+  }
+  .disposed(by: disposeBag)
+```
 
 <br> </br>
 
 ### 4. 댓글 문구 버튼으로 댓글 Post시 값 전달 에러 
 
 #### Issue
+
 #### Solution
 
 <br> </br>
