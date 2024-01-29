@@ -130,8 +130,46 @@ func request<T: Decodable>(target: LSLPAPI) -> Single<NetworkResult<T>> {
 ### 2. Interceptor에서 retry할 때 refreshToken API 호출 에러
 
 #### Issue
+Alamofire의 RequestInterceptor를 사용해 Token 관리를 진행했습니다. adapt method를 통해 네트워크 request 전에 accessToken이 필요한 API에 header로 삽입해주고 accessToken 갱신 문제로 인한 네트워크 실패시 retry method에서 refreshToken API를 통해 accessToken을 갱신하는 로직을 구현했습니다. 그러나 accessToken이 만료되어 retry method가 실행되고, **refresh Token API가 진행되는 시점에 Moya sync error가 발생**했습니다. 
 
 #### Solution
+처음에는 retry 내의 refreshToken 네트워크 Stream에 `.observe(on: MainScheduler.asyncInstance)`을 추가해서 오류는 막을 수 있었습니다. 
+하지만 네트워크 통신 로직을 Main thread에서 하는게 맞는가에 대한 의문이 들었습니다. 
+RxSwift의 Scheduler에 대해 찾아보게 되었고 MainSchduler 자체가 SerialDispatchQueueScheduler의 한 종류라는 것을 알 수 있었습니다.
+그 중 `SerialDispatchQueueScheduler.init(qos: .userInitiated)`를 찾을 수 있었습니다. 
+`userInitiated`는 유저가 실행시킨 작업들을 즉각적이지는 않지만, async하게 처리해주었고 이게 에러를 방지하면서 네트워크 통신에 적절한 Scheduler라고 판단했습니다.
+
+```swift
+ func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
+    print("retry 진입")
+    guard let response = request.task?.response as? HTTPURLResponse, response.statusCode == 419 else {
+        completion(.doNotRetryWithError(error))
+        return
+    }
+
+    let task = Observable.just(())
+    
+    task
+        .observe(on: MainScheduler.asyncInstance)
+        .flatMap { APIManager.shared.refreshToken() }
+        .subscribe(with: self) { owner, result in
+            switch result {
+            case .success(let response):
+                KeyChainManager.shared.create(account: .accessToken, value: response.token)
+                completion(.retry)
+                
+            case .failure(let error):
+
+                if [401, 418].contains(error.rawValue) {
+                    owner.reLogin()
+                }
+                completion(.doNotRetryWithError(error))
+            }
+        }
+        .disposed(by: disposeBag)
+    
+}
+```
 
 <br> </br>
 
