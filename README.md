@@ -44,6 +44,11 @@
 
 > 주요기능
 
+- **Rxswift** 기반 **MVVM Input/Output** 패턴을 적용해 비즈니스 로직 분리 및 코드 가독성 개선
+- **Kingfisher** 이미지 **캐싱** 및 **다운샘플링** 기능을 통해 메모리 사용량 개선
+- **PropertyWrapper**를 기반한 **UserDefaultsManager**를 구현하여 코드 재사용성 향상
+- **접근제어자** final, private를 사용하여 **Static Dispatch**를 이용한 컴파일 최적화 및 은닉화
+
 #### ✔︎ 회원가입, 로그인
 - **정규표현식**을 사용하여 회원가입 유효성 검증, **RxSwift**에 기반한 반응형 UI 구현
 - **JWT Token** 기반 로그인 구현 및 **KeyChain**을 통한 Token 정보 관리
@@ -62,12 +67,6 @@
 - **RxSwift Single Trait**을 사용해 네트워크 요청 로직 구현 
 - Moya를 통해 네트워크 계층 **Router Pattern** 구성, **Generic** 기반 Request 메서드 구현을 통해 **코드 추상화**
 - enum을 활용해 status code 기반 네트워크 **에러 핸들링**
-
-#### ✔︎ 기타
-- **Rxswift** 기반 **MVVM Input/Output** 패턴을 적용해 비즈니스 로직 분리 및 코드 가독성 개선
-- **Kingfisher** 이미지 **캐싱** 및 **다운샘플링** 기능을 통해 메모리 사용량 개선
-- **PropertyWrapper**를 기반한 **UserDefaultsManager**를 구현하여 코드 재사용성 향상
-- **접근제어자** final, private를 사용하여 **Static Dispatch**를 이용한 컴파일 최적화 및 은닉화
 
 ---
 
@@ -152,23 +151,23 @@ RxSwift의 Scheduler에 대해 찾아보게 되었고 MainSchduler 자체가 Ser
     let task = Observable.just(())
     
     task
-        .observe(on: MainScheduler.asyncInstance)
-        .flatMap { APIManager.shared.refreshToken() }
-        .subscribe(with: self) { owner, result in
-            switch result {
-            case .success(let response):
-                KeyChainManager.shared.create(account: .accessToken, value: response.token)
-                completion(.retry)
-                
-            case .failure(let error):
+      .observe(on: SerialDispatchQueueScheduler.init(qos: .userInitiated))
+      .flatMap { APIManager.shared.refreshToken() }
+      .subscribe(with: self) { owner, result in
+          switch result {
+          case .success(let response):
+              KeyChainManager.shared.create(account: .accessToken, value: response.token)
+              completion(.retry)
+              
+          case .failure(let error):
 
-                if [401, 418].contains(error.rawValue) {
-                    owner.reLogin()
-                }
-                completion(.doNotRetryWithError(error))
-            }
-        }
-        .disposed(by: disposeBag)
+              if [401, 418].contains(error.rawValue) {
+                  owner.reLogin()
+              }
+              completion(.doNotRetryWithError(error))
+          }
+      }
+      .disposed(by: disposeBag)
     
 }
 ```
