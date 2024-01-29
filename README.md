@@ -17,8 +17,8 @@
 > 앱 소개
 - 회원가입, 로그인, 로그아웃, 회원탈퇴 기능 제공
 - 사진과 텍스트를 기반한 게시글을 피드 형식으로 보여줌
-- 게시글에 해시태그 추가 가능, 해시태그 기반으로 게시글 필터링 기능 제공
-- 북마크, 댓글을 통해 다른 유저와 소통 가능
+- 게시글에 북마크, 댓글 작성 가능
+- 해시태그 추가 가능, 해시태그 기반으로 게시글 필터링 기능 제공
 - 다른 유저를 팔로우하고 프로필 확인 가능
 - 나의 프로필에서 게시글, 팔로우 관리 기능 제공
 
@@ -48,14 +48,14 @@
 - **정규표현식**을 사용하여 회원가입 유효성 검증, **RxSwift**에 기반한 로직 구현
 - **JWT Token** 기반 로그인 구현 및 **KeyChain**을 통한 Token 정보 관리
 - Alamofire의 **RequestInterceptor**를 활용해 **AccessToken** 갱신 및 **RefreshToken** 만료 로직 처리
-- SplashView에서 Token 갱신 API를 이용해 **자동로그인 로직**을 통한 화면전환 분기 처리
+- SplashView에서 Token 갱신 API를 이용해 **자동로그인** 로직 구현
 
 #### ✔︎ 포스트
 - **CompositionalLayout**를 사용해 이미지 비율 기반 **dynamic** CollectionViewCell 레이아웃 피드 구현
 - **DiffableDataSource** 기반 섹션 별 **Hashable**한 데이터 모델과 **스냅샷**을 통해 UI 상태 관리 및 interactive한 사용자 경험 제공
 - **Cursor Based Pagination** 구현을 통한 피드 데이터 실시간 갱신
 - **NSAttributedString의 link**와 UITextViewDelegate method를 사용해 포스트 내 **해시태그 감지**
-- **YPImagePicker** 라이브러리를 활용해 포스트 작성 시 자유로운 **이미지 커스터마이징** 제공
+- **YPImagePicker** 라이브러리를 활용해 포스트 작성 시 **이미지 커스터마이징** 제공
 - **multipart/form-data** 형식을 통한 이미지, 텍스트 포함한 데이터 업로드 구현
 
 #### ✔︎ 네트워크
@@ -66,7 +66,7 @@
 #### ✔︎ 기타
 - **Rxswift** 기반 **MVVM Input/Output** 패턴을 적용해 비즈니스 로직 분리 및 코드 가독성 개선
 - **Kingfisher** 이미지 **캐싱** 및 **다운샘플링** 기능을 통해 메모리 사용량 개선
-- **PropertyWrapper**를 기반한 **UserDefaults**Manager를 구현하여 코드 재사용성 향상
+- **PropertyWrapper**를 기반한 **UserDefaultsManager**를 구현하여 코드 재사용성 향상
 - **접근제어자** final, private를 사용하여 **Static Dispatch**를 이용한 컴파일 최적화 및 은닉화
 
 ---
@@ -98,7 +98,7 @@ enum NetworkResult<T: Decodable> {
 ```
 * request method 반환값 `Single<NetworkResult<T>>`로 설정
 ```swift
-func request<T: Decodable>(target: LSLPAPI) -> Single<NetworkResult<T>> {
+func request<T: Decodable>(target: APIRouter) -> Single<NetworkResult<T>> {
     return Single<NetworkResult<T>>.create { single in
         self.provider.request(target) { result in
             switch result {
@@ -130,7 +130,9 @@ func request<T: Decodable>(target: LSLPAPI) -> Single<NetworkResult<T>> {
 ### 2. Interceptor에서 retry할 때 refreshToken API 호출 에러
 
 #### Issue
-Alamofire의 RequestInterceptor를 사용해 Token 관리를 진행했습니다. adapt method를 통해 네트워크 request 전에 accessToken이 필요한 API에 header로 삽입해주고 accessToken 갱신 문제로 인한 네트워크 실패시 retry method에서 refreshToken API를 통해 accessToken을 갱신하는 로직을 구현했습니다. 그러나 accessToken이 만료되어 retry method가 실행되고, **refresh Token API가 진행되는 시점에 Moya sync error가 발생**했습니다. 
+Alamofire의 RequestInterceptor를 사용해 Token 관리를 진행했습니다. 
+adapt method를 통해 네트워크 request 전에 accessToken이 필요한 API에 header로 삽입해주고 retry method에서 네트워크 실패시 refreshToken API를 통해 accessToken을 갱신하는 로직을 구현했습니다. 
+그러나 accessToken이 만료되어 retry method가 실행되고, **refresh Token API가 진행되는 시점에 Moya sync error가 발생**했습니다. 
 
 #### Solution
 처음에는 retry 내의 refreshToken 네트워크 Stream에 `.observe(on: MainScheduler.asyncInstance)`을 추가해서 오류는 막을 수 있었습니다. 
