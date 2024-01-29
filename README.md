@@ -45,7 +45,7 @@
 > 주요기능
 
 #### ✔︎ 회원가입, 로그인
-- **정규표현식**을 사용하여 회원가입 유효성 검증, **RxSwift**에 기반한 로직 구현
+- **정규표현식**을 사용하여 회원가입 유효성 검증, **RxSwift**에 기반한 반응형 UI 구현
 - **JWT Token** 기반 로그인 구현 및 **KeyChain**을 통한 Token 정보 관리
 - Alamofire의 **RequestInterceptor**를 활용해 **AccessToken** 갱신 및 **RefreshToken** 만료 로직 처리
 - SplashView에서 Token 갱신 API를 이용해 **자동로그인** 로직 구현
@@ -131,7 +131,7 @@ func request<T: Decodable>(target: APIRouter) -> Single<NetworkResult<T>> {
 
 #### Issue
 Alamofire의 RequestInterceptor를 사용해 Token 관리를 진행했습니다. 
-adapt method를 통해 네트워크 request 전에 accessToken이 필요한 API에 header로 삽입해주고 retry method에서 네트워크 실패시 refreshToken API를 통해 accessToken을 갱신하는 로직을 구현했습니다. 
+adapt method를 통해 네트워크 request 전에 accessToken이 필요한 API에 header로 삽입해주고, retry method에서 네트워크 실패시 refreshToken API를 통해 accessToken을 갱신하는 로직을 구현했습니다. 
 그러나 accessToken이 만료되어 retry method가 실행되고, **refresh Token API가 진행되는 시점에 Moya sync error가 발생**했습니다. 
 
 #### Solution
