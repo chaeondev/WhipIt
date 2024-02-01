@@ -50,7 +50,7 @@
 - **접근제어자** final, private를 사용하여 **Static Dispatch**를 이용한 컴파일 최적화 및 은닉화
 
 #### ✔︎ 회원가입, 로그인
-- **정규표현식**을 사용하여 회원가입 유효성 검증, **RxSwift**에 기반한 반응형 UI 구현
+- **Regular Experession**을 사용하여 회원가입 유효성 검증, **RxSwift**에 기반한 반응형 UI 구현
 - **JWT Token** 기반 로그인 구현 및 **KeyChain**을 통한 Token 정보 관리
 - Alamofire의 **RequestInterceptor**를 활용해 **AccessToken** 갱신 및 **RefreshToken** 만료 로직 처리
 - SplashView에서 Token 갱신 API를 이용해 **자동로그인** 로직 구현
