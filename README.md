@@ -236,7 +236,5 @@ output.feedResult
 
 ### ▹ 배운점
 
-
-
 ### ▹ 아쉬운점
 
