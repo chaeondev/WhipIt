@@ -18,11 +18,11 @@ class SplashViewModel: ViewModelType {
     }
     
     struct Output {
-        let autoLoginValidation: PublishSubject<Bool>
+        let autoLoginValidation: BehaviorSubject<AutoLoginValidation>
     }
     
     func transform(input: Input) -> Output {
-        let autoLoginValidation = PublishSubject<Bool>()
+        let autoLoginValidation = BehaviorSubject<AutoLoginValidation>(value: .nothing)
         
         if let _ = KeyChainManager.shared.accessToken,
            let _ = KeyChainManager.shared.refreshToken {
@@ -31,14 +31,14 @@ class SplashViewModel: ViewModelType {
                     switch result {
                     case .success(let response):
                         KeyChainManager.shared.create(account: .accessToken, value: response.token)
-                        autoLoginValidation.onNext(true)
+                        autoLoginValidation.onNext(.accept)
                     case .failure(let error):
                         print("===autoLogin Error===", error)
                         switch error {
                         case .serverConflict:
-                            autoLoginValidation.onNext(true)
+                            autoLoginValidation.onNext(.accept)
                         default:
-                            autoLoginValidation.onNext(false)
+                            autoLoginValidation.onNext(.reject)
                             KeyChainManager.shared.delete(account: .accessToken)
                             KeyChainManager.shared.delete(account: .refreshToken)
                             KeyChainManager.shared.delete(account: .userID)
@@ -46,8 +46,16 @@ class SplashViewModel: ViewModelType {
                     }
                 }
                 .disposed(by: disposeBag)
+        } else {
+            autoLoginValidation.onNext(.reject)
         }
         
         return Output(autoLoginValidation: autoLoginValidation)
     }
+}
+
+enum AutoLoginValidation {
+    case accept
+    case reject
+    case nothing
 }

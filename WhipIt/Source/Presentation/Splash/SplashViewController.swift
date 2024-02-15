@@ -33,14 +33,17 @@ class SplashViewController: BaseViewController {
         
         //자동로그인
         output.autoLoginValidation
-            .bind(with: self) { owner, bool in
-                if bool {
+            .bind(with: self) { owner, data in
+                switch data {
+                case .accept:
                     print("===자동 로그인 -> TabBar ===")
                     (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootViewController(owner.setTabBarController())
-                } else {
+                case .reject:
                     print("=== 자동 로그인 실패 -> LoginVC ===")
                     let loginVC = UINavigationController(rootViewController: LoginViewController())
                     (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootViewController(loginVC)
+                case .nothing:
+                    print("대체 왜 nothing?? 자동로그인에 문제생김")
                 }
             }
             .disposed(by: disposeBag)
